@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!--Eliminar Opción de Worked-->
+        <delete model="ir.ui.menu" id="mrp.mrp_message_menu" />
+
+        <!--Eliminar Opción de Desecho-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_scrap" />
+
+        <!--Eliminar Opción de Unbuild-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_unbuild" />
+
+        <!--Eliminar Opción de Ordeneos de Producción-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_production_action" />
+
+        <!--Eliminar Menu de Produccion-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_manufacturing" />
+
+        <!--Elimina menu de opcion de Productos-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_product_form" />
+
+        <!--Elimina menu de opcion de Lista de Materiales-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_bom_form_action" />
+
+        <!--Elimina menu Productos-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_bom" />
+
+        <!--Elimina Opcion Informe - Ordenes de Produccion-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_production_report" />
+
+        <!--Elimina Menu Informe-->
+        <delete model="ir.ui.menu" id="mrp.menu_mrp_reporting" />
+
+    </data>
+</openerp>

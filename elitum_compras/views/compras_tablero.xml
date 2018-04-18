@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Gráficas-->
+        <record id="elitumgroup_dashboard_purchases" model="ir.ui.view">
+            <field name="name">elitumgroup.dashboard.purchases</field>
+            <field name="model">elitumgroup.purchases.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="type_dashboard"/>
+                    <field name="kanban_dashboard"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(0)}">
+                                <t t-value="JSON.parse(record.kanban_dashboard.raw_value)" t-set="dashboard"/>
+                                <t t-value="record.type.raw_value" t-set="dashboard_type"/>
+                                <t t-value="record.type_dashboard.raw_value" t-set="type"/>
+                                <t t-call="TableroTop"/>
+                                <div class="container o_kanban_card_manage_pane o_invisible">
+                                    <t t-call="JournalManage"/>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <t t-call="BodyGraph"/>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="TableroTop">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_secondary" t-att-title="dashboard.title">
+                                        <!--MARZ-->
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">Más                                        <i class="fa fa-caret-down"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="BodyGraph">
+                            <div class="o_kanban_graph_section">
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar'"
+                                       t-att-graph_type="'bar'"
+                                       widget="dashboard_graph_purchases"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar_stacked'"
+                                       t-att-graph_type="'bar_stacked'"
+                                       widget="dashboard_graph_purchases"/>
+                            </div>
+                        </t>
+                        <t t-name="JournalManage">
+                            <!--Histórico de Facturas-->
+                            <t t-if="dashboard_type == 'bar' and type == 'meses'">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Mes</span>
+                                            </strong>
+                                        </div>
+                                        <t t-foreach="dashboard.dashboard_1" t-as="mes">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="mes['mes']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Valor</span>
+                                        </div>
+                                        <t t-value="dashboard.dashboard_1" t-set="valor"/>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree2', 'tipo':'facturas', 'mes': -2}">
+                                                <span>
+                                                    <t t-esc="valor[0]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree2', 'tipo':'facturas', 'mes': -1}">
+                                                <span>
+                                                    <t t-esc="valor[1]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree2', 'tipo':'facturas','mes': 0}">
+                                                <span>
+                                                    <t t-esc="valor[2]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+
+                            <!--Facturas por Proveedores-->
+                            <t t-if="dashboard_type == 'bar' and type == 'proveedores'">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Proveedor</span>
+                                            </strong>
+                                        </div>
+                                        <t t-foreach="dashboard.dashboard_3" t-as="data">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="data['empresa']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Valor</span>
+                                        </div>
+                                        <t t-foreach="dashboard.dashboard_3" t-as="data">
+                                            <div>
+                                                <a type="object"
+                                                   name="open_action"
+                                                   context="{'action_name': 'action_invoice_tree2', 'tipo':'factura_proveedor'}">
+                                                    <span>
+                                                        <t t-esc="data['total']"/>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!--Acciones-->
+        <!--MARZ-->
+        <record id="elitumgroup_open_dashboard_purchases" model="ir.actions.act_window">
+            <field name="name">Resumen de Compras</field>
+            <field name="res_model">elitumgroup.purchases.dashboard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="elitumgroup_open_dashboard_purchases_configuration" model="ir.actions.act_window">
+            <field name="name">Resumen de Compras</field>
+            <field name="res_model">elitumgroup.purchases.dashboard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="eliterp_open_productos_requerimientos" model="ir.actions.act_window">
+            <field name="name">Productos Requerimientos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">eliterp.request.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="orden_compra_action_eliterp" model="ir.actions.act_window">
+            <field name="name">Orden de Compra</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_todo':1, 'show_purchase': True}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a quotation that will be converted into a purchase order.
+                </p>
+                <p>
+                    Use this menu to search within your purchase orders by
+                    references, vendor, products, etc. For each purchase order,
+                    you can track the related discussion with the vendor, control
+                    the products received and control the vendor bills.
+                </p>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="action_invoice_factura_pending" model="ir.actions.act_window">
+            <field name="name">Facturas de Proveedor</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','in_invoice'), ('pago_provision', '=', False)]</field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}
+            </field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        </record>
+        <record id="action_invoice_nota_venta_pending" model="ir.actions.act_window">
+            <field name="name">Notas de Venta Proveedor</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="domain">[('type','=','in_sale_note')]</field>
+            <field name="context">{'default_type': 'in_sale_note', 'type': 'in_sale_note', 'journal_type':
+                'purchase_sale_note', 'fields_invisible': True}
+            </field> <!--Contexto, fields_invisible (Ocultar columnas no necesitadas)-->
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        </record>
+        <record id="eliterp_action_open_table_provision" model="ir.actions.act_window">
+            <field name="name">Tabla de Viáticos</field>
+            <field name="res_model">eliterp.table.provision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="eliterp_action_open_table_provision_destinos" model="ir.actions.act_window">
+            <field name="name">Destinos</field>
+            <field name="res_model">eliterp.table.provision.destinos</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--MARZ-->
+        <record id="elitumgroup_action_reporte_compras" model="ir.actions.act_window">
+            <field name="name">Reporte de Compras</field>
+            <field name="res_model">elitumgroup.report.purchases</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_compras.elitumgroup_reporte_compras_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="elitumgroup_action_reporte_tipo_compra" model="ir.actions.act_window">
+            <field name="name">Reporte de Tipo de Compra (Gasto)</field>
+            <field name="res_model">elitumgroup.report.purchase.type</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_compras.elitumgroup_reporte_tipo_compra_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <!--Menús-->
+        <menuitem id="purchase.menu_purchase_root"
+                  name="Compras"
+                  groups="elitum_compras.elitumgroup_group_purchases"
+                  web_icon="elitum_compras,static/description/icon.png"
+                  sequence="3"/>
+        <menuitem id="menu_compras_tablero_eliterp"
+                  name="Compras"
+                  action="elitumgroup_open_dashboard_purchases"
+                  parent="purchase.menu_purchase_root"
+                  sequence="-1"/>
+        <menuitem id="menu_adquisiciones_eliterp"
+                  name="Adquisiciones"
+                  parent="purchase.menu_purchase_root"
+                  sequence="1"/>
+        <menuitem id="elitumgroup_menu_reportes_compras"
+                  name="Reportes"
+                  parent="purchase.menu_purchase_root"
+                  sequence="2"/>
+        <menuitem id="elitumgroup_menu_reportes_compras_compras"
+                  sequence="1"
+                  parent="elitumgroup_menu_reportes_compras"
+                  name="Compras"
+                  action="elitumgroup_action_reporte_compras"/>
+        <menuitem id="elitumgroup_menu_reportes_compras_tipo_compra"
+                  sequence="2"
+                  parent="elitumgroup_menu_reportes_compras"
+                  name="Tipo de Compra (Gasto)"
+                  action="elitumgroup_action_reporte_tipo_compra"/>
+        <menuitem id="menu_compras_solicitud_eliterp"
+                  sequence="1"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Solicitud de Compra"
+                  action="elitum_compras.eliterp_solicitud_compra"/>
+        <menuitem id="menu_purchase_rfq_eliterp"
+                  name="Presupuesto/Cotizaciones"
+                  action="purchase.purchase_rfq"
+                  parent="menu_adquisiciones_eliterp"
+                  sequence="2"/>
+        <menuitem id="menu_purchase_form_action_eliterp"
+                  action="orden_compra_action_eliterp"
+                  name="Orden de Compra"
+                  parent="menu_adquisiciones_eliterp"
+                  sequence="3"/>
+        <!--MARZ-->
+        <menuitem id="elitumgroup_menu_purchases_dashboard"
+                  sequence="1"
+                  name="Tablero"
+                  action="elitumgroup_open_dashboard_purchases_configuration"
+                  parent="purchase.menu_purchase_config"/>
+        <menuitem id="menu_compras_facturas_eliterp"
+                  sequence="4"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Facturas"
+                  action="action_invoice_factura_pending"/>
+        <menuitem id="eliterp_compras_nota_venta"
+                  sequence="5"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Notas de Venta"
+                  action="action_invoice_nota_venta_pending"/>
+        <menuitem id="menu_compras_proveedores_eliterp"
+                  sequence="6"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Proveedores"
+                  action="base.action_partner_supplier_form"/>
+        <menuitem id="menu_compras_productos_eliterp"
+                  sequence="7"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Productos Corporativos"
+                  action="purchase.product_normal_action_puchased"/>
+        <menuitem id="menu_compras_productos_requerimientos_eliterp"
+                  sequence="8"
+                  parent="menu_adquisiciones_eliterp"
+                  name="Productos Internos"
+                  action="eliterp_open_productos_requerimientos"/>
+        <menuitem id="menu_config_proveedores"
+                  name="Proveedores"
+                  parent="purchase.menu_purchase_config"
+                  sequence="33"/>
+        <menuitem id="menu_config_terminos_pago"
+                  name="Plazo de Pagos"
+                  action="account.action_payment_term_form"
+                  parent="menu_config_proveedores"
+                  sequence="1"/>
+    </data>
+</openerp>

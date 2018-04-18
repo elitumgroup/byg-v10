@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_factura_view_form_tesoreria" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.form.tesoreria</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <button name="%(account.action_account_invoice_payment)d" position="replace">
+                    <button name="%(account.action_account_invoice_payment)d" invisible="1"/>
+                    <button name="add_withhold_eliterp"
+                            string="Retención"
+                            type="object"
+                            attrs="{'invisible': ['|','|', '|', '|', ('have_withhold','=', True),('state','=','cancel'),('type','=','in_refund'), ('type', '=', 'in_sale_note'), ('con_sin_withhold', '=', False)]}"
+                            class="oe_highlight"/>
+                </button>
+                <button name="%(account.action_account_invoice_refund)d" position="replace">
+                    <button name="%(account.action_account_invoice_refund)d" invisible="1"/>
+                </button>
+            </field>
+        </record>
+        <record id="eliterp_factura_view_form_tesoreria_2" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.form.tesoreria.2</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="elitum_contabilidad.eliterp_facturas_proveedor_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="residual" position="after">
+                    <field name="numero_retencion"
+                           invisible="context.get('fields_invisible', False)"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

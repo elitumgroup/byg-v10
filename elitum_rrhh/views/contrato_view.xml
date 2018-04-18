@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="eliterp_hr_contrato_funciones" model="ir.ui.view">
+            <field name="name">eliterp.hr.contrato.funciones</field>
+            <field name="model">hr.contract.funciones</field>
+            <field name="arch" type="xml">
+                <form string="Funciones">
+                    <sheet>
+                        <group string="Línea de Funciones">
+                            <field name="hr_contract_funciones_lines" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="prioridad"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="eliterp_hr_puesto_trabajo_form_view" model="ir.ui.view">
+            <field name="name">eliterp.hr.puesto.trabjo.form.view</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='name']" position="attributes">
+                        <attribute name="string">Nombre del Cargo</attribute>
+                    </xpath>
+                    <xpath expr="//label[@for='name']" position="attributes">
+                        <attribute name="string">Nombre del Cargo</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="eliterp_hr_contrato_form_view" model="ir.ui.view">
+            <field name="name">eliterp.hr.contrato.form.view</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <header>
+                        <button name="activar_contrato"
+                                string="Activar"
+                                type="object"
+                                attrs="{'invisible':[('state_eliterp','!=','draft')]}"
+                                class="oe_highlight"/>
+                    </header>
+                    <!--MARZ-->
+                    <xpath expr="//sheet/div[@class='oe_title']" position="replace">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                    </xpath>
+                    <xpath expr="//sheet/div[@class='oe_title']" position="before">
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_funciones" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="funciones_count" string="Funciones" widget="statinfo" options="{}"
+                                       modifiers="{'readonly': true}"/>
+                            </button>
+                        </div>
+                    </xpath>
+                    <xpath expr="//field[@name='type_id']" position="attributes">
+                        <attribute name="string">Tipo de Contrato</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='working_hours']" position="attributes">
+                        <attribute name="string">Jornada de Trabajo</attribute>
+                    </xpath>
+                    <xpath expr="//label[@for='trial_date_start']" position="replace"/>
+                    <xpath expr="//group[@name='duration_group']/div" position="replace"/>
+                    <xpath expr="//group[@name='duration_group']/div" position="after">
+                        <label for="if_trial" string="Período de Prueba?"/>
+                        <div>
+                            <field name="if_trial" class="oe_inline"/>
+                            <field name="if_end_trial" class="oe_inline"/>
+                        </div>
+                        <label for="trial_date_start"
+                               string="Duración"
+                               attrs="{'invisible':[('if_trial','=',False)]}"
+                        />
+                        <div attrs="{'invisible':[('if_trial','=',False)]}">
+                            <field name="trial_date_start"
+                                   class="oe_inline"
+                            />
+                            -
+                            <field name="trial_date_end"
+                                   class="oe_inline"
+                            />
+                        </div>
+                        <!--MARZ-->
+                        <field name="fecha_salida" readonly="1"
+                               attrs="{'invisible':[('fecha_salida','=',False)]}"/>
+                        <field name="leyenda_finalizado"
+                               attrs="{'invisible':['|',('if_trial','=',False),('if_end_trial','=',False)]}"/>
+                        <field name="days_for_trial"
+                               string="Contador de Período de Prueba"
+                               attrs="{'invisible':['|',('if_trial','=',False),('if_end_trial','=',True)]}"/>
+                    </xpath>
+                    <xpath expr="//notebook/page[2]" position="attributes">
+                        <attribute name="string">Personal Extranjero</attribute>
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='advantages']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                    <xpath expr="//label[@for='date_start']" position="replace"/>
+                    <xpath expr="//group[@name='duration_group']/div[1]" position="replace"/>
+                </data>
+                <xpath expr="//field[@name='employee_id']" position="after">
+                    <field name="date_start" string="Fecha de Ingreso"/>
+                    <field name="date_end" string="Fecha de Salida" invisible="1"/>
+                </xpath>
+                <field name="working_hours" position="replace"/>
+                <field name="type_id" position="after">
+                    <field name="working_hours"/>
+                    <!--MARZ-->
+                    <field name="show_days_for_jornada_parcial" invisible="1"/>
+                    <field name="days_for_jornada_parcial"
+                           attrs="{'invisible':[('show_days_for_jornada_parcial','=', False)]}"/>
+                </field>
+                <xpath expr="//field[@name='job_id']" position="attributes">
+                    <attribute name="string">Cargo</attribute>
+                </xpath>
+                <xpath expr="//field[@name='wage']" position="attributes">
+                    <attribute name="string">Sueldo</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state_eliterp" widget="statusbar"/>
+                </xpath>
+                <xpath expr="//group[@name='salary_and_advantages']" position="attributes">
+                    <attribute name="string">Remuneraciones</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_hr_contrato_form_view1" model="ir.ui.view">
+            <field name="name">eliterp.hr.contrato.form.view1</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_payroll.hr_contract_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='schedule_pay']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='struct_id']" position="after">
+                    <field name="legal_hours"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_hr_contrato_form_view2" model="ir.ui.view">
+            <field name="name">eliterp.hr.contrato.form.view2</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_payroll_account.hr_contract_form_inherit"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/group/group[last()]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_hr_contrato_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.hr.contrato.tree.view</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Contratos"
+                          class="tree_contrato_css"
+                          colors="red:state_eliterp=='pasivo'"
+                          default_order='create_date desc'>
+                        <field name="employee_id" string="Nombre"/>
+                        <field name="department_id"/>
+                        <field name="antiguedad" string="Antiguedad"/>
+                        <field name="date_start" string="Fecha de Inicio"/>
+                        <field name="fecha_salida"/>
+                        <field name="state_eliterp" string="Estado"/>
+                        <field name="state" invisible="1"/>
+                        <field name="wage" invisible="1"/>
+                        <field name="message_needaction" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_resouser_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.resouser.view.tree</field>
+            <field name="model">resource.calendar.attendance</field>
+            <field name="inherit_id" ref="resource.view_resource_calendar_attendance_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Working Time" editable="top">
+                        <field name="name"/>
+                        <field name="dayofweek"/>
+                        <field name="hour_from" widget="float_time"/>
+                        <field name="hour_to" widget="float_time"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.sequence" id="seq_eliterp_factura_proveedor_id">
+            <field name="name">Factura Proveedor</field>
+            <field name="code">account.invoice.purchase</field>
+            <field name="prefix">FPV-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <!--MARZ-->
+        <record model="ir.sequence" id="eliterp_seq_notas_venta_proveedor_id">
+            <field name="name">Notas de Ventas Proveedor</field>
+            <field name="code">account.invoice.purchase.sale.note</field>
+            <field name="prefix">NVP-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_factura_cliente_id">
+            <field name="name">Factura Cliente</field>
+            <field name="code">account.invoice.sale</field>
+            <field name="prefix">FVT-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_depositos_id">
+            <field name="name">Depositos</field>
+            <field name="code">account.payment.deposit</field>
+            <field name="prefix">DPB-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_diario_ajustes_id">
+            <field name="name">Diario de Ajustes</field>
+            <field name="code">account.account.just</field>
+            <field name="prefix">DAJ-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_transferencia_bancaria_id">
+            <field name="name">Transferencias</field>
+            <field name="code">account.account.transfer</field>
+            <field name="prefix">TFB-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_credito_bancario_id">
+            <field name="name">Credito Bancaria</field>
+            <field name="code">account.credit.bank</field>
+            <field name="prefix">NCB-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_debito_bancario_id">
+            <field name="name">Debito Bancaria</field>
+            <field name="code">account.debit.bank</field>
+            <field name="prefix">NDB-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_credito_contable_id">
+            <field name="name">Credito Contable</field>
+            <field name="code">account.credit.account</field>
+            <field name="prefix">NCP-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_debito_contable_id">
+            <field name="name">Debito Contable</field>
+            <field name="code">account.debit.account</field>
+            <field name="prefix">DBC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_asiento_conciliacion_id">
+            <field name="name">Asiento Conciliacion</field>
+            <field name="code">account.conciled</field>
+            <field name="prefix">ACM-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_ingreso_general_id">
+            <field name="name">Ingreso General</field>
+            <field name="code">account.ingreso.general</field>
+            <field name="prefix">ING-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_concilacion_bancaria_id">
+            <field name="name">Concilacion Bancaria</field>
+            <field name="code">account.concilacion.bancaria</field>
+            <field name="prefix">CBC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <!--Diarios-->
+        <record model="account.journal" id="diario_concilacion_bancaria_eliterp">
+            <field name="name">Concilacion Bancaria</field>
+            <field name="type">general</field>
+            <field name="code">CBC</field>
+            <field name="sequence_id" ref="seq_concilacion_bancaria_id"/>
+        </record>
+        <record model="account.journal" id="diario_ingreso_general_eliterp">
+            <field name="name">Ingreso General</field>
+            <field name="type">general</field>
+            <field name="code">ING</field>
+            <field name="sequence_id" ref="seq_ingreso_general_id"/>
+        </record>
+        <record model="account.journal" id="diario_asiento_conciliacion_id_eliterp">
+            <field name="name">Asiento Conciliacion</field>
+            <field name="type">general</field>
+            <field name="code">ACM</field>
+            <field name="sequence_id" ref="seq_asiento_conciliacion_id"/>
+        </record>
+        <record model="account.journal" id="diario_credito_contable_eliterp">
+            <field name="name">Credito Contable</field>
+            <field name="type">general</field>
+            <field name="code">NCP</field>
+            <field name="sequence_id" ref="seq_credito_contable_id"/>
+        </record>
+        <record model="account.journal" id="diario_debito_contable_eliterp">
+            <field name="name">Debito Contable</field>
+            <field name="type">general</field>
+            <field name="code">DBC</field>
+            <field name="sequence_id" ref="seq_debito_contable_id"/>
+        </record>
+        <record model="account.journal" id="diario_credito_bancaria_eliterp">
+            <field name="name">Credito Bancaria</field>
+            <field name="type">general</field>
+            <field name="code">NCB</field>
+            <field name="sequence_id" ref="seq_credito_bancario_id"/>
+        </record>
+        <record model="account.journal" id="diario_debito_bancaria_eliterp">
+            <field name="name">Debito Bancaria</field>
+            <field name="type">general</field>
+            <field name="code">NDB</field>
+            <field name="sequence_id" ref="seq_debito_bancario_id"/>
+        </record>
+        <record model="account.journal" id="diario_transferencia_bancaria_eliterp">
+            <field name="name">Transferencias</field>
+            <field name="type">general</field>
+            <field name="code">TFB</field>
+            <field name="sequence_id" ref="seq_transferencia_bancaria_id"/>
+        </record>
+        <record model="account.journal" id="diario_comprobante_ingreso_eliterp">
+            <field name="name">Depositos</field>
+            <field name="type">general</field>
+            <field name="code">DPB</field>
+            <field name="sequence_id" ref="seq_eliterp_depositos_id"/>
+        </record>
+        <record model="account.journal" id="diario_diario_ajustes_eliterp">
+            <field name="name">Diario de Ajustes</field>
+            <field name="type">general</field>
+            <field name="code">DAJ</field>
+            <field name="sequence_id" ref="seq_diario_ajustes_id"/>
+        </record>
+        <!--MARZ-->
+        <record model="account.journal" id="eliterp_diario_notas_venta_proveedor">
+            <field name="name">Notas de ventas Proveedor</field>
+            <field name="type">purchase_sale_note</field>
+            <field name="code">NVP</field>
+            <field name="sequence_id" ref="eliterp_seq_notas_venta_proveedor_id"/>
+        </record>
+    </data>
+</odoo>

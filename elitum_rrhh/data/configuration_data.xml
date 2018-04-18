@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--eliterp.tabla.gastos.deducibles-->
+        <record id="eliterp_data_tabla_gastos_deducibles_1" model="eliterp.tabla.gastos.deducibles">
+            <field name="name">Vivienda</field>
+            <field name="valor">3669.25</field>
+        </record>
+        <record id="eliterp_data_tabla_gastos_deducibles_2" model="eliterp.tabla.gastos.deducibles">
+            <field name="name">Educación</field>
+            <field name="valor">3669.25</field>
+        </record>
+        <record id="eliterp_data_tabla_gastos_deducibles_3" model="eliterp.tabla.gastos.deducibles">
+            <field name="name">Alimentación</field>
+            <field name="valor">3669.25</field>
+        </record>
+        <record id="eliterp_data_tabla_gastos_deducibles_4" model="eliterp.tabla.gastos.deducibles">
+            <field name="name">Vestimenta</field>
+            <field name="valor">3669.25</field>
+        </record>
+        <record id="eliterp_data_tabla_gastos_deducibles_5" model="eliterp.tabla.gastos.deducibles">
+            <field name="name">Salud</field>
+            <field name="valor">14677</field>
+        </record>
+    </data>
+</odoo>

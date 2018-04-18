@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--<data noupdate="1">-->
+        <record id="eliterp_template_quotation_sale" model="mail.template">
+            <field name="name">Cotización - Enviar por Email</field>
+            <field name="email_from">${(object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or '')|safe}</field>
+            <field name="subject">${object.state in ('draft', 'sent') and 'Cotización' or 'Pedido de Venta'} (Ref ${object.name or 'n/a' })</field>
+            <field name="partner_to">${object.partner_id.id}</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="report_template" ref="elitum_ventas.cotizacion"/>
+            <field name="report_name">${(object.name or '').replace('/','_')}${object.state == 'draft' and '_draft' or ''}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"><![CDATA[
+<p>Estimado ${object.partner_id.name}
+% set access_action = object.get_access_action()
+% set doc_name = 'cotizacion' if object.state in ('draft') else 'order confirmation'
+% set is_online = access_action and access_action['type'] == 'ir.actions.act_url'
+% set access_name = is_online and object.template_id and 'Accept and pay %s online' % doc_name or 'View %s' % doc_name
+% set access_url = is_online and access_action['url'] or object.get_signup_url()
+
+% if object.partner_id.parent_id:
+    (<i>${object.partner_id.parent_id.name}</i>)
+% endif
+,</p>
+<p>
+según lo acordado, adjunto para su consideración, nuestra propuesta ${object.name}.
+</p>
+<p>
+De tener alguna inquietud o sugerencia, por favor contáctese con nosotros.
+</p>
+
+    <br/><br/>
+% if is_online:
+    <center>
+        <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">${access_name}</a>
+        <br/><br/>
+        <span style="color:#888888">(or view attached PDF)</span>
+    </center>
+    <br/>
+% endif
+
+<p>Saludos cordiales</p>
+<p>ELITUMDEVELOP S.A.</p>
+<p></p>
+% if object.consultant_sale_id:
+<p>${object.consultant_sale_id.name}</p>
+% endif
+
+<p style="color:#eeeeee;">
+% if object.user_id and object.user_id.signature:
+    ${object.user_id.signature | safe}
+% endif
+</p>
+]]></field>
+        </record>
+
+        <!--Default Notification Email template for invoices-->
+        <record id="eliterp_mail_template_data_notification_sale_order" model="mail.template">
+            <field name="name">Diseño de Cotización/Pedido de Venta</field>
+            <field name="subject">${object.subject}</field>
+            <field name="model_id" ref="mail.model_mail_message"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html"><![CDATA[<html>
+                <head></head>
+                <body style="margin: 0; padding: 0;">
+                <table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed" summary="o_mail_notification">
+                    <tbody>
+
+                      <!-- HEADER -->
+                      <tr>
+                        <td align="center" style="min-width: 590px;">
+                          <table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(1, 53, 110); padding: 20px;">
+                            <tr>
+                              <td valign="middle">
+                                  <span style="font-size:20px; color:white; font-weight: bold;">
+                                      ${object.record_name}
+                                  </span>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- CONTENT -->
+                      <tr>
+                        <td align="center" style="min-width: 590px;">
+                          <table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px;">
+                            <tbody>
+                              <td valign="top" style="font-family:Arial,Helvetica,sans-serif; color: #555; font-size: 14px;">
+                                ${object.body | safe}
+                              </td>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+
+                      <!-- FOOTER -->
+                      <tr>
+                        <td align="center" style="min-width: 590px;">
+                          <table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(1, 53, 110); padding: 20px;">
+                            <tr>
+                              <td valign="middle" align="left" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">
+                                ${user.company_id.name}<br/>
+                                ${user.company_id.phone or ''}
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+                </body>
+                </html>
+            ]]></field>
+        </record>
+
+    <record id="eliterp_template_out_invoice" model="mail.template">
+        <field name="name">Factura de Cliente por Email</field>
+        <field name="email_from">
+            ${(object.user_id.email and '%s &lt;%s&gt;' % (object.user_id.name, object.user_id.email) or '')|safe}
+        </field>
+        <field name="subject">Factura No. ${object.numero_factura or '-'}</field>
+        <field name="partner_to">${object.partner_id.id}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="model_id" ref="account.model_account_invoice"/>
+        <field name="lang">${object.partner_id.lang}</field>
+        <field name="body_html">
+            <![CDATA[
+                <p>
+                    Estimado <b>${object.partner_id.name}</b>, se ha emitido a su nombre, la
+                    Factura con Referencia ${object.number} por el valor de $ <b>${object.amount_total}</b>
+                </p>
+                <p>
+                    De tener alguna inquietud o sugerencia, por favor contáctese con nosotros.
+                </p>
+            ]]>
+        </field>
+    </record>
+    <!--</data>-->
+</odoo>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="elitumgroup_group_rrhh" model="res.groups">
+            <field name="name">Módulo RRHH</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--
+            <record id="elitumgroup_group_gastos_anuales_user" model="res.groups">
+                <field name="name">Gastos Anuales (Usuario)</field>
+            </record>
+            <record id="elitumgroup_group_gastos_anuales_ec_level_2" model="res.groups">
+                <field name="name">Gastos Anuales (Nivel 2)</field>
+            </record>
+            <record id="elitumgroup_group_gastos_anuales_ec_manager" model="res.groups">
+                <field name="name">Gastos Anuales (Administrador)</field>
+            </record>
+        -->
+        <!--Aprobaciones/Negaciones-->
+        <record id="elitumgroup_group_approve_ausencias" model="res.groups">
+            <field name="name">Aprobar/Negar Ausencias</field>
+        </record>
+        <record id="elitumgroup_group_approve_anticipo" model="res.groups">
+            <field name="name">Aprobar/Negar Anticipo de Quincena</field>
+        </record>
+        <record id="elitumgroup_group_approve_rol_consolidado" model="res.groups">
+            <field name="name">Aprobar/Negar Rol Consolidado</field>
+        </record>
+        <!--Otros Botones-->
+        <record id="elitumgroup_group_validate_ausencias" model="res.groups">
+            <field name="name">Validar Ausencias</field>
+        </record>
+    </data>
+</odoo>
+
+

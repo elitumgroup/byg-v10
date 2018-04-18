@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_notes_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.notes.cancel.reason.view.wizard</field>
+            <field name="model">notes.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razon">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="cancel_reason_notes"
+                                type="object"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_nota_credito_view_form" model="ir.ui.view">
+            <field name="name">eliterp.nota.credito.view.form</field>
+            <field name="model">account.credit.debit.notes</field>
+            <field name="arch" type="xml">
+                <form string="Nota de Crédito" version="7">
+                    <header>
+                        <button name="imprimir_nota"
+                                type="object"
+                                string="Imprimir"/>
+                        <button name="confirmar_nota"
+                                class="oe_highlight"
+                                string="Confirmar"
+                                states="draft"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="anular_nota"
+                                string="Anular"
+                                states="posted"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['posted']]]}"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}"
+                             modifiers="{'invisible': [['state', '=', 'draft']]}">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="concepto" attrs="{'readonly':[('state','==','posted')]}"/>
+                             <!--ABEL-->
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
+                            <!---->
+                            <field name="move_id" invisible="1"/>
+                        </group>
+                        <group string="Debe">
+                            <field name="banco" attrs="{'readonly':[('state','==','posted')]}"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        <group string="Haber">
+                            <group>
+                                <field name="fecha" attrs="{'readonly':[('state','==','posted')]}"/>
+                                <field name="amount" attrs="{'readonly':[('state','==','posted')]}"/>
+                            </group>
+                            <group>
+                                <field name="account_id" attrs="{'readonly':[('state','==','posted')]}"
+                                   options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_nota_debito_view_form" model="ir.ui.view">
+            <field name="name">eliterp.nota.debito.view.form</field>
+            <field name="model">account.credit.debit.notes</field>
+            <field name="arch" type="xml">
+                <form string="Nota de Débito" version="7">
+                    <header>
+                        <button name="imprimir_nota"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button name="confirmar_nota"
+                                class="oe_highlight"
+                                string="Confirmar"
+                                states="draft"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="anular_nota"
+                                string="Anular"
+                                states="posted"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['posted']]]}"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}"
+                             modifiers="{'invisible': [['state', '=', 'draft']]}">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="concepto" attrs="{'readonly':[('state','==','posted')]}"/>
+                            <!--ABEL-->
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
+                            <!---->
+                            <field name="move_id" invisible="1"/>
+                        </group>
+                        <group string="Debe">
+                            <group>
+                                <field name="fecha" attrs="{'readonly':[('state','==','posted')]}"/>
+                                <field name="amount" attrs="{'readonly':[('state','==','posted')]}"/>
+                            </group>
+                            <group>
+                                <field name="account_id" attrs="{'readonly':[('state','==','posted')]}" options="{'no_create':True}"/>
+                            </group>
+                        </group>
+                        <group string="Haber">
+                            <field name="banco" attrs="{'readonly':[('state','==','posted')]}" options="{'no_create':True}"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_nota_credito_view_tree1" model="ir.ui.view">
+            <field name="name">eliterp.nota.credito.view.tree1</field>
+            <field name="model">account.credit.debit.notes</field>
+            <field name="arch" type="xml">
+                <tree string="Notas de Crédito"
+                      decoration-info="state == 'draft'"
+                      colors="red:state == 'cancel';blue:state == 'posted'"
+                      default_order='fecha desc'>
+                    <field name="name"/>
+                    <field name="fecha"/>
+                    <field name="banco"/>
+                    <field name="amount"/>
+                    <field name="account_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_nota_debito_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.nota.debito.view.tree</field>
+            <field name="model">account.credit.debit.notes</field>
+            <field name="arch" type="xml">
+                <tree string="Notas de Débito"
+                      decoration-info="state == 'draft'"
+                      colors="red:state == 'cancel';blue:state == 'posted'"
+                      default_order='fecha desc'>
+                    <field name="name"/>
+                    <field name="fecha"/>
+                    <field name="account_id"/>
+                    <field name="amount"/>
+                    <field name="banco"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_nota_credito_eliterp" model="ir.actions.act_window">
+            <field name="name">Notas de Crédito</field>
+            <field name="res_model">account.credit.debit.notes</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type', '=', 'credit')]</field>
+            <field name="context">{'default_type':'credit'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_nota_credito">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_nota_credito_view_tree1"/>
+            <field name="act_window_id" ref="action_nota_credito_eliterp"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_nota_credito">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_nota_credito_view_form"/>
+            <field name="act_window_id" ref="action_nota_credito_eliterp"/>
+        </record>
+        <record id="action_nota_debito_eliterp" model="ir.actions.act_window">
+            <field name="name">Notas de Débito</field>
+            <field name="res_model">account.credit.debit.notes</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type', '=', 'debit')]</field>
+            <field name="context">{'default_type':'debit'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_nota_debito">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_nota_debito_view_tree"/>
+            <field name="act_window_id" ref="action_nota_debito_eliterp"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_nota_debito">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_nota_debito_view_form"/>
+            <field name="act_window_id" ref="action_nota_debito_eliterp"/>
+        </record>
+    </data>
+</odoo>
+

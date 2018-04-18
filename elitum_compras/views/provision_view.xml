@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Vistas Formulario-->
+        <record id="eliterp_open_solicitud_provision_form" model="ir.ui.view">
+            <field name="name">eliterp.open.solicitud.provision.form</field>
+            <field name="model">eliterp.provision</field>
+            <field name='type'>form</field>
+            <field name="arch" type="xml">
+                <form string="Formulario - Solicitud de Viático">
+                    <header>
+                        <field name="state"
+                               statusbar_visible="draft,for_approved,approved,liquidada"
+                               widget="statusbar"
+                               modifiers="{'readonly': true}"/>
+                        <button name="print_solicitud_provision" type="object" class="oe_highlight" string="Imprimir"/>
+                        <button name="approval_solicitud"
+                                attrs="{'invisible': [('state', '!=', 'for_approved')]}"
+                                string="Aprobar"
+                                groups="elitum_compras.elitumgroup_group_approve_request_provision"
+                                type="object"
+                                confirm="Confirma la aprobación de la Solicitud de Viático?"
+                                class="oe_highlight"/>
+                        <button name="for_approval_solicitud"
+                                attrs="{'invisible': [('state', '!=', 'entered')]}"
+                                string="Solicitar Aprobación"
+                                type="object"
+                                class="oe_highlight"/>
+                        <button name="action_solicitud_cancel_reason"
+                                attrs="{'invisible': [('state', '!=', 'for_approved')]}"
+                                string="Negar"
+                                groups="elitum_compras.elitumgroup_group_approve_request_provision"
+                                confirm="Desea negar la Solicitud de Viático?"
+                                type="object"/>
+                    </header>
+                    <sheet>
+                        <h1 class="mt0">
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="con_sin_solicitud" invisible="1"/>
+                                <field name="application_date"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"/>
+                                <field name="beneficiary"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"
+                                       domain="[('state_laboral','=','activo')]"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="destination"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="reason"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"/>
+                                <field name="round_trip"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"/>
+                            </group>
+                            <group>
+                                <field name="trip_date"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"/>
+                                <field name="account_analytic_id"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="project_id"
+                                       attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="total_solicitud"/>
+                            </group>
+                        </group>
+                        <group states="denied">
+                            <field name="cancel_reason" readonly="1" style="color: red;"/>
+                        </group>
+                        <group string="Líneas de Viáticos" col="1">
+                            <field name="lines_provision"
+                                   attrs="{'readonly':[('state','in', ('approved', 'managed', 'liquidada'))]}"
+                                   nolabel="1">
+                                <tree editable="top/bottom">
+                                    <field name="table_provision_id" options="{'no_open': True, 'no_create': True}"
+                                           domain="[('account_id', '!=', False)]"/>
+                                    <field name="daily_value"/>
+                                    <field name="days"/>
+                                    <field name="number_of_people"/>
+                                    <field name="total" string="Total" sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_open_provision_voucher_view_form" model="ir.ui.view">
+            <field name="name">eliterp.open.provision.voucher.view.form</field>
+            <field name="model">eliterp.provision.voucher</field>
+            <field name="arch" type="xml">
+                <form string="Formulario - Documento Viático">
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="confirm_voucher"
+                                string="Confirmar"
+                                states="draft"
+                                class="oe_highlight"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="invoice_provision"
+                                string="Crear Factura"
+                                type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('type_voucher','=','vale'),('have_factura','=',True)]}"/>
+                        <button name="revisar_factura"
+                                string="Ver Factura"
+                                type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('type_voucher','=','vale'),('have_factura','=',False)]}"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <field name="have_factura" invisible="1"/>
+                            <group>
+                                <field name="date"/>
+                                <field name="table_provision_id" options="{'no_open': True, 'no_create': True}"
+                                       domain="[('account_id', '!=', False)]"/>
+                                <field name="number_ticket" attrs="{'invisible':[('type_voucher','=','invoice')]}"/>
+                            </group>
+                            <group>
+                                <field name="type_voucher"/>
+                                <field name="valor_vale" attrs="{'invisible':[('type_voucher','=','invoice')]}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_open_provision_liquidate_view_form" model="ir.ui.view">
+            <field name="name">eliterp.open.provision.administration.view.form</field>
+            <field name="model">eliterp.provision.liquidate</field>
+            <field name='type'>form</field>
+            <field name="arch" type="xml">
+                <form string="Formulario - Liquidación de Viáticos">
+                    <header>
+                        <field name="state"
+                               statusbar_visible="draft,for_approved,approved,liquidada"
+                               widget="statusbar"
+                               modifiers="{'readonly': true}"/>
+                        <button name="print_provision_liquidate" type="object" class="oe_highlight" string="Imprimir"/>
+                        <button name="approval_liquidate"
+                                attrs="{'invisible': [('state', '!=', 'for_approved')]}"
+                                string="Aprobar"
+                                groups="elitum_compras.elitumgroup_group_request_liquidate_provision"
+                                type="object"
+                                confirm="Confirma la aprobación de la Liquidación de Viáticos?"
+                                class="oe_highlight"/>
+                        <button name="for_approval_liquidate"
+                                attrs="{'invisible': [('state', '!=', 'entered')]}"
+                                string="Solicitar Aprobación"
+                                type="object"
+                                class="oe_highlight"/>
+                        <button name="action_liquidate_cancel_reason"
+                                attrs="{'invisible': [('state', '!=', 'for_approved')]}"
+                                string="Negar"
+                                groups="elitum_compras.elitumgroup_group_request_liquidate_provision"
+                                confirm="Desea negar la Liquidación de Viáticos?"
+                                type="object"/>
+                        <button name="validate_liquidate"
+                                string="Validar"
+                                type="object"
+                                groups="elitum_compras.elitumgroup_group_validate_liquidate_provision"
+                                attrs="{'invisible':[('state','!=', 'approved')]}"
+                                confirm="Confirma la validación de Liquidación de Viáticos?"
+                                class="oe_highlight"/>
+                        <button name="liquidate"
+                                string="Liquidar"
+                                type="object"
+                                groups="elitum_compras.elitumgroup_group_validate_liquidate_provision"
+                                attrs="{'invisible':[('state','!=', 'validate')]}"
+                                confirm="Confirma la Liquidación?"
+                                class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <h1 class="mt0">
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="show_have_anticipo" invisible="1"/>
+                                <field name="have_anticipo"
+                                       widget="radio"
+                                       attrs="{'readonly': [('show_have_anticipo','=', True)]}"
+                                       options="{'horizontal': true}"/>
+                            </group>
+                            <group>
+                                <field name="provision_id"
+                                       string="Solicitud de Viático"
+                                       options="{'no_create':True}"
+                                       attrs="{'invisible': [('have_anticipo','=', 'no')], 'readonly':[('state','in', ('approved', 'validate', 'liquidada'))]}"
+                                       domain="[('state', '=', 'managed'), ('con_sin_solicitud', '=', 'con_solicitud'), ('create_uid', '=', uid)]"
+                                />
+                            </group>
+                        </group>
+                        <group string="Completar Información"
+                               attrs="{'invisible': ['|', ('have_anticipo','=', 'yes'), ('show_have_anticipo', '=', True)]}">
+                            <group>
+                                <field name="application_date_tmp"/>
+                                <field name="beneficiary_tmp" domain="[('state_laboral','=','activo')]"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="destination_tmp" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="days_sin_anticipo_tmp"/>
+                                <field name="reason_tmp"/>
+                            </group>
+                            <group>
+                                <field name="trip_date_tmp"/>
+                                <field name="account_analytic_id_tmp" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="project_id_tmp" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="number_of_people_tmp"/>
+                                <field name="round_trip_tmp"/>
+                            </group>
+                        </group>
+                        <group string="Datos de Solicitud" attrs="{'invisible':[('provision_id','=', False)]}">
+                            <group>
+                                <field name="application_date" readonly="1"/>
+                                <field name="beneficiary" readonly="1" options="{'no_open': True}"/>
+                                <field name="destination" readonly="1" options="{'no_open': True}"/>
+                                <field name="reason" readonly="1"/>
+                                <field name="round_trip" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="trip_date" readonly="1"/>
+                                <field name="account_analytic_id" readonly="1" options="{'no_open': True}"/>
+                                <field name="project_id" readonly="1" options="{'no_open': True}"/>
+                                <field name="total_solicitud" readonly="1"
+                                       attrs="{'invisible':[('have_anticipo','=', 'no')]}"/>
+                            </group>
+                        </group>
+                        <group attrs="{'invisible':['|', ('have_anticipo','=', 'yes'), ('show_have_anticipo','=', False)]}">
+                            <group>
+                                <field name="days_sin_anticipo" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="number_of_people" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Notas y comentarios" attrs="{'invisible':[('provision_id','=', False)]}">
+                            <field name="notas" nolabel="1"/>
+                        </group>
+                        <group states="denied">
+                            <field name="cancel_reason" readonly="1" style="color: red;"/>
+                        </group>
+                        <notebook attrs="{'invisible':['|', ('provision_id','=', False), ('state', '=', 'denied')]}">
+                            <page string="Líneas de Documentos">
+                                <group attrs="{'invisible':[('state', 'in', ('validate', 'liquidada'))]}">
+                                    <button name="cargar_documentos"
+                                            type='object'
+                                            string="Cargar Documentos"
+                                            class="oe_highlight"/>
+                                </group>
+                                <field name="lines_documents_check" nolabel="1">
+                                    <tree editable="bottom" create="false">
+                                        <field name="provision_voucher_id" invisible="1"/>
+                                        <field name="date_check" readonly="1"/>
+                                        <field name="type_voucher_check" readonly="1"/>
+                                        <field name="number_document_check" readonly="1"/>
+                                        <field name="table_provision_id_check" readonly="1"/>
+                                        <field name="valor_check" sum="Total" readonly="1"/>
+                                        <field name="validation_check"/>
+                                        <field name="approval"/>
+                                        <field name="monto" sum="Total"/>
+                                    </tree>
+                                </field>
+                                <group attrs="{'invisible':['|', ('state', 'not in', ('validate', 'liquidada')), ('have_anticipo', '=', 'no')]}">
+                                    <h1>
+                                        <label for="diferencia" string="Diferencia:"/>
+                                        <field name="diferencia" readonly="1"/>
+                                    </h1>
+                                </group>
+                            </page>
+                            <page string="Asientos Contables" attrs="{'invisible':[('state', '!=', 'liquidada')]}">
+                                <group>
+                                    <field name="move_id" string="Asiento Contable" readonly="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!--Vistas Listado-->
+        <record id="eliterp_open_solicitud_provision_tree" model="ir.ui.view">
+            <field name="name">eliterp.open.solicitud.provision.tree</field>
+            <field name="model">eliterp.provision</field>
+            <field name="arch" type="xml">
+                <tree
+                      decoration-info="state == 'entered'"
+                      colors="red:state == 'denied';blue:state == 'liquidada'"
+                      string="Solicitudes de Viático" default_order='application_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="application_date" string="Fecha de Solicitud"/>
+                    <field name="trip_date" string="Fecha de Viaje"/>
+                    <field name="beneficiary" string="Beneficiario"/>
+                    <field name="create_uid" string="Solicitado por"/>
+                    <field name="total_solicitud" string="Total"/>
+                    <field name="state" string="Estado" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_open_provision_voucher_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.open.provision.voucher.view.tree</field>
+            <field name="model">eliterp.provision.voucher</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'"
+                      colors="red:state == 'cancel';blue:state == 'confirm'"
+                      string="Listado - Documentos de Viático"
+                      default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="date"/>
+                    <field name="type_voucher"/>
+                    <field name="number_document" string="No. Factura/Vale"/>
+                    <field name="table_provision_id"/>
+                    <field name="valor"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_open_provision_liquidate_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.open.provision.liquidate.view.tree</field>
+            <field name="model">eliterp.provision.liquidate</field>
+            <field name="arch" type="xml">
+                <tree
+                      decoration-info="state == 'entered'"
+                      colors="red:state == 'denied';blue:state == 'liquidada'"
+                      string="Listado de Liquidación de Viático" default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="provision_id" string="Solicitud de Viático"/>
+                    <field name="state" string="Estado" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+        <!--Acciones-->
+        <record id="eliterp_inicio_open_solicitud_viatico" model="ir.actions.act_window">
+            <field name="name">Solicitud de Viático</field>
+            <field name="res_model">eliterp.provision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('create_uid','=',uid), ('con_sin_solicitud', '=', 'con_solicitud')]</field>
+        </record>
+        <record id="eliterp_inicio_open_viatico_documentos" model="ir.actions.act_window">
+            <field name="name">Registro</field>
+            <field name="res_model">eliterp.provision.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('create_uid','=',uid)]</field>
+        </record>
+        <record id="eliterp_inicio_open_solicitud_viatico_liquidar" model="ir.actions.act_window">
+            <field name="name">Liquidación</field>
+            <field name="res_model">eliterp.provision.liquidate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('create_uid','=',uid)]</field>
+        </record>
+        <!--Vistas Diálogos-->
+        <record id="eliterp_solicitud_provision_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.solicitud.provision.cancel.reason.view.wizard</field>
+            <field name="model">eliterp.provision.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Razón para Negar Solicitud de Víatico">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="provision_cancel" type="object" class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_provision_liquidate_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.provision.liquidate.cancel.reason.view.wizard</field>
+            <field name="model">eliterp.provision.liquidate.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Razón para Negar Liquidación de Víatico">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="provision_cancel" type="object" class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!--Acciones Diálogos-->
+        <record id="eliterp_action_solicitud_provision_cancel_reason" model="ir.actions.act_window">
+            <field name="name">eliterp.action.solicitud.provision.cancel.reason</field>
+            <field name="res_model">eliterp.provision.cancel.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_solicitud_provision_cancel_reason_view_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="eliterp_action_provision_liquidate_cancel_reason" model="ir.actions.act_window">
+            <field name="name">eliterp.action.solicitud.provision.cancel.reason</field>
+            <field name="res_model">eliterp.provision.liquidate.cancel.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_solicitud_provision_cancel_reason_view_wizard"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>

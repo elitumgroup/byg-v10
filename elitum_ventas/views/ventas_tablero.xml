@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Acciones y Vistas-->
+        <record id="tablero_kanban_ventas" model="ir.ui.view">
+            <field name="name">tablero.kanban.ventas</field>
+            <field name="model">ventas.tablero</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="type_barra_doble"/>
+                    <field name="kanban_dashboard"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(0)}">
+                                <t t-value="JSON.parse(record.kanban_dashboard.raw_value)" t-set="dashboard"/>
+                                <t t-value="record.type.raw_value" t-set="dashboard_type"/>
+                                <t t-value="record.type_barra_doble.raw_value" t-set="type_barra"/>
+                                <t t-value="record.name.raw_value" t-set="nombre"/>
+                                <t t-call="TableroTop"/>
+                                <div class="container o_kanban_card_manage_pane o_invisible">
+                                    <t t-call="JournalManage"/>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <t t-call="BodyGraph"/>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-name="TableroTop">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_secondary" t-att-title="dashboard.title">
+                                        <!--MARZ-->
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">Más
+                                        <i class="fa fa-caret-down"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="BodyGraph">
+                            <div class="o_kanban_graph_section">
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar'"
+                                       t-att-graph_type="'bar'"
+                                       widget="dashboard_graph_ventas"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'line'"
+                                       t-att-graph_type="'line'"
+                                       widget="dashboard_graph_ventas"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'pie'"
+                                       t-att-graph_type="'pie'"
+                                       widget="dashboard_graph_ventas"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar_stacked'"
+                                       t-att-graph_type="'bar_stacked'"
+                                       widget="dashboard_graph_ventas"/>
+                            </div>
+                        </t>
+                        <t t-name="JournalManage">
+                            <t t-if="dashboard_type == 'bar' and type_barra=='meses'">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Mes</span>
+                                            </strong>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_3" t-as="mes">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="mes['mes']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Valor</span>
+                                        </div>
+                                        <t t-value="dashboard.mas_tablero_3" t-set="valor"/>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'account.action_invoice_tree1', 'tipo':'facturas', 'mes': -2}">
+                                                <span>
+                                                    <t t-esc="valor[0]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'account.action_invoice_tree1', 'tipo':'facturas', 'mes': -1}">
+                                                <span>
+                                                    <t t-esc="valor[1]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'account.action_invoice_tree1', 'tipo':'facturas','mes': 0}">
+                                                <span>
+                                                    <t t-esc="valor[2]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="dashboard_type == 'bar' and nombre == 'Pedidos por Cliente (Acumulado)'">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>Cliente</span>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_2" t-as="menu">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="menu['cliente']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Pedidos</span>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_2" t-as="menu">
+                                            <div class="col-xs-12 tex-right">
+                                                <a type="object"
+                                                   name="open_action"
+                                                   context="{'action_name': 'elitum_ventas.action_orders_eliterp','tipo':'clientes'}">
+                                                    <t t-esc="menu['monto']"/>
+                                                </a>
+
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="dashboard_type == 'bar_stacked' and type_barra=='asesor' ">
+                                <div class="row">
+                                    <div class="col-xs-5 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>Asesor</span>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_1" t-as="menu">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="menu['Asesor']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Cotizaciones</span>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_1" t-as="menu">
+                                            <div class="col-xs-12 tex-right">
+                                                <a type="object"
+                                                   name="open_action"
+                                                   context="{'action_name': 'elitum_ventas.action_quotations_eliterp','tipo':'asesor'}">
+                                                    <t t-esc="menu['Total de Cotizaciones']"/>
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Pedidos</span>
+                                        </div>
+                                        <t t-foreach="dashboard.mas_tablero_1" t-as="menu">
+                                            <div class="col-xs-12 tex-right">
+                                                <a type="object"
+                                                   name="open_action"
+                                                   context="{'action_name': 'elitum_ventas.action_orders_eliterp','tipo':'asesor'}">
+                                                    <t t-esc="menu['Total Pedidos']"/>
+                                                </a>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="action_orders_eliterp" model="ir.actions.act_window">
+            <field name="name">Pedidos de Ventas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+            <field name="context">{'show_sale': True}</field>
+            <field name="domain">
+                [('state_pedido_eliterp','in',('order','mrp','invoice_parcial','invoice','done','cancel'))]
+            </field>
+        </record>
+        <record id="action_quotations_eliterp" model="ir.actions.act_window">
+            <field name="name">Cotizaciones</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="sale.view_quotation_tree"/>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="context">{}</field>
+            <field name="domain">[('state','in',('draft','sale_partial','denied','done'))]</field>
+            <field name="search_view_id" ref="sale.view_sales_order_filter"/>
+        </record>
+        <record id="action_cantones_eliterp" model="ir.actions.act_window">
+            <field name="name">Cantones</field>
+            <field name="res_model">canton.dinardap</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_parroquias_eliterp" model="ir.actions.act_window">
+            <field name="name">Parroquias</field>
+            <field name="res_model">parroquias.dinardap</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_clasificacion_cliente_eliterp" model="ir.actions.act_window">
+            <field name="name">Clasifiación de Clientes</field>
+            <field name="res_model">clasificacion.cliente</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="open_tablero_ventas_config" model="ir.actions.act_window">
+            <field name="name">Resumen de Ventas</field>
+            <field name="res_model">ventas.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="open_tablero_ventas" model="ir.actions.act_window">
+            <field name="name">Resumen de Ventas</field>
+            <field name="res_model">ventas.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="action_eliterp_nota_credito_factura_ventas" model="ir.actions.act_window">
+            <field name="name">Notas de Crédito</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'nota_credito':True,'default_type':'out_refund'}</field>
+            <field name="domain">[('type', '=', 'out_refund')]</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_nota_debito_factura_ventas">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.invoice_tree"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura_ventas"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_nota_debito_factura_ventas">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_form"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura_ventas"/>
+        </record>
+        <!--
+            groups="elitum_ventas.elitumgroup_group_dashboard_user"
+            groups="elitum_ventas.elitumgroup_group_res_partner_user,elitum_ventas.elitumgroup_group_res_partner_senior,elitum_ventas.elitumgroup_group_res_partner_manager"
+        -->
+        <menuitem id="sales_team.menu_base_partner"
+                  name="Ventas"
+                  groups="elitum_ventas.elitumgroup_group_sales"
+                  web_icon="elitum_ventas,static/description/icon.png"
+                  sequence="2"/>
+        <menuitem id="menu_ventas_tablero"
+                  name="Ventas"
+                  action="open_tablero_ventas"
+                  parent="sales_team.menu_base_partner"
+                  sequence="-1"/>
+        <menuitem id="menu_ventas_comercial"
+                  name="Comercial"
+                  parent="sales_team.menu_base_partner"
+                  sequence="1"/>
+        <menuitem id="menu_comercial_clientes"
+                  name="Clientes"
+                  action="base.action_partner_form"
+                  parent="menu_ventas_comercial"
+                  sequence="1"/>
+        <menuitem id="menu_comercial_cotizaciones"
+                  name="Cotizaciones"
+                  action="action_quotations_eliterp"
+                  parent="menu_ventas_comercial"
+                  sequence="2"/>
+        <menuitem id="menu_comercial_pedido_ventas"
+                  name="Pedidos de Ventas"
+                  action="action_orders_eliterp"
+                  parent="menu_ventas_comercial"
+                  sequence="3"/>
+        <menuitem id="menu_gestion_root"
+                  parent="sales_team.menu_base_partner"
+                  name="Gestión"
+                  sequence="6"/>
+        <menuitem id="menu_embudo_ventas"
+                  name="Embudo de Ventas"
+                  action="crm.action_your_pipeline"
+                  parent="menu_gestion_root"
+                  sequence="1"/>
+        <menuitem id="menu_proximas_actividades"
+                  name="Actividades"
+                  action="open_eliterp_gestion_actividades"
+                  parent="menu_gestion_root"
+                  sequence="2"/>
+        <record id="action_comisiones_eliterp" model="ir.actions.act_window">
+            <field name="name">Administración de Ventas</field>
+            <field name="res_model">comisiones</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!--Menús-->
+        <menuitem id="menu_administracion_ventas"
+                  name="Administracion de Ventas"
+                  action="action_comisiones_eliterp"
+                  parent="menu_gestion_root"
+                  sequence="3"/>
+        <menuitem id="config_gestion"
+                  name="Gestión"
+                  parent="sales_team.menu_sale_config"
+                  sequence="6"/>
+        <menuitem id="config_gestion_tipo_actividad"
+                  name="Tipo de Actividad"
+                  action="open_elitum_gestion_tipo_actividad"
+                  parent="config_gestion"
+                  sequence="1"/>
+        <menuitem id="ventas_reportes_root"
+                  name="Reportes"
+                  parent="sales_team.menu_base_partner"
+                  sequence="7"/>
+        <record id="action_ventas_reportes_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Ventas</field>
+            <field name="res_model">reporte.ventas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_ventas.eliterp_reporte_ventas_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_ventas_wizard"
+                  name="Ventas"
+                  action="action_ventas_reportes_wizard"
+                  parent="ventas_reportes_root"
+                  sequence="1"/>
+        <menuitem id="menu_cotizacion_root" parent="sales_team.menu_sale_config" name="Cotizaciones" sequence="7"/>
+        <menuitem id="menu_cotizacion_condicion_pago"
+                  name="Condiciones de Pago"
+                  action="account.action_payment_term_form"
+                  parent="menu_cotizacion_root" sequence="1"/>
+        <menuitem id="menu_cotizacion_vigencia"
+                  name="Vigencia"
+                  action="open_eliterp_vigencia"
+                  parent="menu_cotizacion_root" sequence="2"/>
+        <menuitem id="menu_config_comision_root"
+                  parent="sales_team.menu_sale_config"
+                  name="Comisiones"
+                  sequence="8"/>
+        <record id="action_comision_presupuesto_eliterp" model="ir.actions.act_window">
+            <field name="name">Presupuesto</field>
+            <field name="res_model">presupuesto.comision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_config_comision_presupuesto"
+                  name="Presupuesto"
+                  action="action_comision_presupuesto_eliterp"
+                  parent="menu_config_comision_root"
+                  sequence="1"/>
+        <record id="action_comision_variable_eliterp" model="ir.actions.act_window">
+            <field name="name">Variables</field>
+            <field name="res_model">variables.comisiones</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_config_comision_variables"
+                  name="Variables"
+                  action="action_comision_variable_eliterp"
+                  parent="menu_config_comision_root"
+                  sequence="2"/>
+        <menuitem id="menu_embudo_ventas"
+                  name="Facturas de Cliente"
+                  action="account.action_invoice_tree1"
+                  parent="sale.menu_sale_invoicing" sequence="1"/>
+        <!--
+        <menuitem id="menu_notas_credito_ventas"
+                  name="Notas de Crédito"
+                  action="action_eliterp_nota_credito_factura_ventas"
+                  parent="sale.menu_sale_invoicing" sequence="2"/>
+        -->
+        <menuitem id="menu_cantones"
+                  name="Cantones"
+                  action="action_cantones_eliterp"
+                  parent="sales_team.menu_localisation" sequence="4"/>
+        <menuitem id="menu_parroquias"
+                  name="Parroquias"
+                  action="action_parroquias_eliterp"
+                  parent="sales_team.menu_localisation" sequence="5"/>
+        <menuitem id="menu_clasifiacion_cliente"
+                  name="Clasificación de Clientes"
+                  action="action_clasificacion_cliente_eliterp"
+                  parent="sales_team.menu_sale_config" sequence="2"/>
+        <menuitem id="menu_config_tablero_ventas"
+                  name="Tablero"
+                  action="open_tablero_ventas_config"
+                  parent="sales_team.menu_sale_config"
+                  sequence="1"/>
+        <record id="eliterp_view_invoice_line_calendar" model="ir.ui.view">
+            <field name="name">eliterp.view.invoice.line.calendar</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_invoice_line_calendar"/>
+            <field name="arch" type="xml">
+                <xpath expr="//calendar" position="replace">
+                    <calendar string="Invoices" color="journal_id" date_start="date_due">
+                        <field name="partner_id"/>
+                        <field name="amount_total_signed" widget="monetary"/>
+                    </calendar>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="eliterp_view_invoice_graph">
+            <field name="name">eliterp.view.invoice.graph</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.view_invoice_graph"/>
+            <field name="arch" type="xml">
+                <xpath expr="//graph" position="replace">
+                    <graph string="Invoices">
+                        <field name="date_due" interval="day" type="row"/>
+                        <field name="amount_total_signed" type="measure"/>
+                    </graph>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
+

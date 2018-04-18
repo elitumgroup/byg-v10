@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Elimina Opcion de Inventario-->
+        <delete model="ir.ui.menu" id="stock.menu_product_variant_config_stock"/>
+        <!--Elimina Opcion de Ejecutar Planificadores-->
+        <delete model="ir.ui.menu" id="stock.menu_stock_proc_schedulers"/>
+        <!--Elimina Opcion de Ejecutar Reglas de Abastecimiento-->
+        <delete model="ir.ui.menu" id="stock.menu_procurement_compute"/>
+        <!--Elimina Opcion de Incoterms-->
+        <delete model="ir.ui.menu" id="stock.menu_action_incoterm_open"/>
+        <!--Elimina Menu de Planificadores-->
+        <delete model="ir.ui.menu" id="stock.menu_stock_sched"/>
+        <!--Elimina Opcion de Nomenclaturas de código-->
+        <delete model="ir.ui.menu" id="stock.menu_wms_barcode_nomenclature_all"/>
+        <!--Elimina Opcion de Ajustes de Inventario-->
+        <delete model="ir.ui.menu" id="stock.menu_action_inventory_form"/>
+        <!--Elimina Opcion de Desecho-->
+        <delete model="ir.ui.menu" id="stock.menu_stock_scrap"/>
+        <!--Elimina Opcion de Todas las transferencias-->
+        <delete model="ir.ui.menu" id="stock.all_picking"/>
+        <!--Elimina Menu Operaciones-->
+        <delete model="ir.ui.menu" id=""/>
+        <!--Elimina Opcion de Reglas de Abastecimiento-->
+        <delete model="ir.ui.menu" id="stock.menu_reordering_rules_config"/>
+        <!--MARZ-->
+        <delete model="ir.ui.menu" id="stock.menu_stock_uom_form_action"/>
+    </data>
+</openerp>

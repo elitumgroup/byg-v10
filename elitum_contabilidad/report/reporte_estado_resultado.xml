@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="estado_resultado"
+                model="account.reportes.financieros"
+                string="Estado de Resultado"
+                report_type="qweb-pdf"
+                name="elitum_contabilidad.reporte_estado_resultado"
+                file="elitum_contabilidad.reporte_estado_resultado"/>
+        <record id="paperformat_estado_resultado" model="report.paperformat">
+            <field name="name">Estado de Resultados</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">2</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">2</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="elitum_contabilidad.estado_resultado" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="elitum_contabilidad.paperformat_estado_resultado" />
+        </record>
+        <template id="reporte_estado_resultado">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <style type="text/css">
+                            table > thead > tr > th {
+                            border: 1px solid black;
+                            }
+                        </style>
+                        <div class="row col-xs-12">
+                            <div class="col-xs-6" align="top" style="margin-top: -10px; padding-top:-10px">
+                                <img style="width:180px;"
+                                     align="center"
+                                     src="/elitum_ventas/static/src/img/elitum.png"/>
+                            </div>
+                            <div class="col-xs-6 text-center" style="margin-top: 2px; padding-top:2px" >
+                                <h2>
+                                    <p><strong style="font-size: 15pt; color: black; ">ESTADO DE RESULTADOS</strong></p>
+                                </h2>
+                            </div>
+                            <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px; margin-top: -30px; padding-top:-30px;" >
+                                <hr style="border-top: 1px solid white;border-bottom: 4px solid c9be4a; background-color:None;"></hr>
+                            </div>
+                        </div>
+                        <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <table class="col-xs-12" style="font-size: 10pt; border: 1px solid black;">
+                                <tbody >
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-1">EMPRESA</td>
+                                        <td  class="text-left col-xs-6" >
+                                            <b><span t-field="user.company_id.name"/></b>
+                                        </td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-1">PERÍODO</td>
+                                        <td class="text-left col-xs-1" >
+                                            <span t-esc="get_periodo(doc.fecha_inicio)"/>
+                                        </td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">FECHA CORTE</td>
+                                        <td class="text-left col-xs-1" >
+                                            <span t-field="doc.fecha_fin"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <table class="col-xs-12" style="font-size: 8pt;">
+                                <tbody>
+                                    <t t-foreach="get_reporte('4',doc)" t-as="line">
+                                        <t t-if="line['monto']!=0.00">
+                                            <t t-if="line['tipo'] == 'padre'">
+                                                <tr style="font-size: 12pt;">
+                                                    <td class="text-left col-xs-1">
+                                                        <b><span t-esc="line['code']"/></b>
+                                                    </td>
+                                                    <td class="text-left col-xs-8">
+                                                        <b><span t-esc="line['name']"/></b>
+                                                    </td>
+                                                    <td class="text-right col-xs-3">
+                                                        <b><span t-esc="'{0:,.2f}'.format(line['monto'])"/></b>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="line['tipo'] == 'vista'">
+                                                <tr>
+                                                    <td class="text-left col-xs-1">
+                                                        <b><span t-esc="line['code']"/></b>
+                                                    </td>
+                                                    <td class="text-left col-xs-8">
+                                                        <b><span t-esc="line['name']"/></b>
+                                                    </td>
+                                                    <td class="text-right col-xs-3">
+                                                        <b><span t-esc="'{0:,.2f}'.format(line['monto'])"/></b>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="line['sub_cuenta'] != False">
+                                                <t t-foreach="line['sub_cuenta']" t-as="line_movimiento">
+                                                    <t t-if="line_movimiento['monto']!=0.00">
+                                                        <tr>
+                                                            <td class="text-left col-xs-1">
+                                                                <span t-esc="line_movimiento['code']"/>
+                                                            </td>
+                                                            <td class="text-left col-xs-8">
+                                                                <span t-esc="line_movimiento['name']"/>
+                                                            </td>
+                                                            <td class="text-right col-xs-3">
+                                                                <span t-esc="'{0:,.2f}'.format(line_movimiento['monto'])"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                            <table class="col-xs-12" style="font-size: 8pt;">
+                                <tbody>
+                                    <t t-foreach="get_reporte('5',doc)" t-as="line">
+                                        <t t-if="line['monto']!=0.00">
+                                            <t t-if="line['tipo'] == 'padre'">
+                                                <tr style="font-size: 12pt;">
+                                                    <td class="text-left col-xs-1">
+                                                        <b><span t-esc="line['code']"/></b>
+                                                    </td>
+                                                    <td class="text-left col-xs-8">
+                                                        <b><span t-esc="line['name']"/></b>
+                                                    </td>
+                                                    <td class="text-right col-xs-3">
+                                                        <b><span t-esc="'{0:,.2f}'.format(line['monto'])"/></b>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="line['tipo'] == 'vista'">
+                                                <tr>
+                                                    <td class="text-left col-xs-1">
+                                                        <b><span t-esc="line['code']"/></b>
+                                                    </td>
+                                                    <td class="text-left col-xs-8">
+                                                        <b><span t-esc="line['name']"/></b>
+                                                    </td>
+                                                    <td class="text-right col-xs-3">
+                                                        <b><span t-esc="'{0:,.2f}'.format(line['monto'])"/></b>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="line['sub_cuenta'] != False">
+                                                <t t-foreach="line['sub_cuenta']" t-as="line_movimiento">
+                                                    <t t-if="line_movimiento['monto']!=0.00">
+                                                        <tr>
+                                                            <td class="text-left col-xs-1">
+                                                                <span t-esc="line_movimiento['code']"/>
+                                                            </td>
+                                                            <td class="text-left col-xs-8">
+                                                                <span t-esc="line_movimiento['name']"/>
+                                                            </td>
+                                                            <td class="text-right col-xs-3">
+                                                                <span t-esc="'{0:,.2f}'.format(line_movimiento['monto'])"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td class="text-left col-xs-1">
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-8">
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-3">
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                    </tr>
+                                    <tr style="font-size: 12pt;">
+                                        <td class="text-left col-xs-1">
+                                            <span></span>
+                                        </td>
+                                        <td class="text-left col-xs-8">
+                                            <t t-if="get_resultado()==False"><b><span>PERDIDA DEL EJERCICIO</span></b></t>
+                                            <t t-if="get_resultado()==True"><b><span>GANANCIA DEL EJERCICIO</span></b></t>
+                                        </td>
+                                        <td class="text-right col-xs-3">
+                                            <span t-esc="'{0:,.2f}'.format(get_total_ejercicio())"/>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <style type="text/css">
+                            .a6_format td {
+                            font-size: 10px;
+                            }
+                        </style>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <table class="row col-xs-12 a6_format" style="margin: 0px; padding:0px; padding-right:30px;" >
+                                <tbody>
+                                    <tr >
+                                        <td class="text-center col-xs-4"><span t-field="doc.create_uid"/></td>
+                                        <td class="text-center col-xs-4"></td>
+                                        <td class="text-center col-xs-4"></td>
+                                    </tr>
+                                    <tr >
+                                        <td class="text-center col-xs-4">ELABORADO</td>
+                                        <td class="text-center col-xs-4">REVISADO</td>
+                                        <td class="text-center col-xs-4">APROBADO</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;" >
+                            <hr style="border-top: 1px solid white;border-bottom: 4px solid c9be4a; background-color:None;"></hr>
+                        </div>
+                        <div class="col-xs-10" style="font-size: 7pt;">
+                            <table >
+                                <tbody>
+                                    <tr>
+                                        <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Usuario:</td>
+                                        <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;"><span t-esc="user.name"/></td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. 1/1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Fecha Impresión:</td>
+                                        <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;" ><span t-esc="(datetime.datetime.now()-datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')"/></td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;">REPO-CONT-003-V1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-2">
+                            <img style="width:100;"
+                                 align="left"
+                                 src="/elitum_ventas/static/src/img/elitum_footer.jpg"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

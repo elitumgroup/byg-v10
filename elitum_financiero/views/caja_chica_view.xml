@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_caja_chica_custodio_form" model="ir.ui.view">
+            <field name="name">eliterp.caja.chica.custodio.form</field>
+            <field name="model">petty.cash.custodian</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                            <field name="account_id" string="Cuenta Contable"/>
+                            <field name="amount"/>
+                            <field name="petty_cash_id" readonly="1" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="eliterp_reposicion_caja_chica_form" model="ir.ui.view">
+            <field name="name">eliterp.reposicion.caja.chica.form</field>
+            <field name="model">petty.cash.replacement</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="aperturar_caja"
+                                states="draft"
+                                type="object"
+                                string="Aperturar Caja"
+                                class="oe_highlight"/>
+                        <button name="para_aprobar"
+                                states="open"
+                                type="object"
+                                string="Solicitar Aprobación"
+                                class="oe_highlight"/>
+                        <button name="aprobado"
+                                states="para_aprobrar"
+                                type="object"
+                                string="Aprobar"
+                                class="oe_highlight"/>
+                        <button name="liquidar_caja"
+                                states="aprobado"
+                                type="object"
+                                string="Liquidar Caja"
+                                class="oe_highlight"/>
+                        <button name="imprimir_reposicion_caja_chica"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="date" required="1"/>
+                            <field name="custodian_id" string="Custodio" options="{'no_create': True}"/>
+                            <field name="monto_asignado" readonly="1"/>
+                            <field name="monto_vale_factura" readonly="1"/>
+                            <field name="saldo" readonly="1"/>
+                            <field name="move_id" string="Asiento Contable" readonly="1"/>
+                            <field name="journal_id" readonly="1" invisible="1"/>
+                        </group>
+                        <group string="Líneas Vale/Factura" col="1">
+                            <group attrs="{'invisible':[('state','=','closed')]}">
+                                <button name="cargar_valor"
+                                        string="Cargar Monto"
+                                        class="oe_highlight"
+                                        type="object"/>
+                            </group>
+                            <field name="lineas_vale_factura" nolabel="1" attrs="{'readonly':[('state','=','closed')]}">
+                                <tree editable="bottom" create="false">
+                                    <field name="date" readonly="1"/>
+                                    <field name="type_voucher" readonly="1" string="Tipo Documento"/>
+                                    <field name="detalle" readonly="1"/>
+                                    <field name="amount_total" readonly="1" string="Monto"/>
+                                    <field name="check_reposicion"
+                                           attrs="{'readonly':[('state_reposicion','==','pagado')]}"/>
+                                    <field name="state_reposicion" readonly="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_registro_vale_caja_chica_form" model="ir.ui.view">
+            <field name="name">eliterp.registro.vale.caja.chica.form</field>
+            <field name="model">petty.cash.voucher</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="imprimir_vale_caja"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button name="confirm_voucher"
+                                string="Confirmar"
+                                states="draft"
+                                class="oe_highlight"
+                                type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="invoice_caja_chica"
+                                string="Crear Factura"
+                                type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('type_voucher','=','vale'),('have_factura','=',True)]}"/>
+                        <button name="revisar_factura"
+                                string="Ver Factura"
+                                type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible':['|',('type_voucher','=','vale'),('have_factura','=',False)]}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="have_factura" invisible="1"/>
+                            <field name="journal_id" string="Diario" invisible="1"/>
+                            <group>
+                                <field name="date" required="1"/>
+                                <field name="beneficiario"/>
+                                <field name="amount_total" string="Total" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="type_voucher" widget="radio" string="Tipo de Documento"/>
+                                <field name="detalle" string="Concepto" required="1"/>
+                                <field name="custodian_id" string="Custodio" required="1"
+                                       options="{'no_create': True}"/>
+                            </group>
+                        </group>
+                        <group string="Líneas de Cuentas" attrs="{'invisible':[('type_voucher','!=','vale')]}">
+                            <field name="line_petty_cash_voucher" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="account_id" string="Cuenta"/>
+                                    <field name="amount" string="Monto"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_registro_vale_caja_chica_tree" model="ir.ui.view">
+            <field name="name">eliterp.registro.vale.caja.chica.tree</field>
+            <field name="model">petty.cash.voucher</field>
+            <field name="arch" type="xml">
+                <tree string="Registro"
+                      decoration-info="state=='draft'"
+                      colors="blue:state=='open'"
+                      default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="date" string="Fecha Registro"/>
+                    <field name="type_voucher" string="Tipo Documento"/>
+                    <field name="beneficiario" string="Beneficiario"/>
+                    <field name="amount_total" string="Total"/>
+                    <field name="petty_cash_replacement_id" string="Referencia"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_caja_chica_admin_tree" model="ir.ui.view">
+            <field name="name">eliterp.caja.chica.admin.tree</field>
+            <field name="model">petty.cash.replacement</field>
+            <field name="arch" type="xml">
+                <tree string="Administración"
+                      decoration-info="state=='draft'"
+                      colors="blue:state=='closed'"
+                      default_order='create_date desc'>
+                    <field name="custodian_id" string="Custodio"/>
+                    <field name="name" string="No. Caja"/>
+                    <!--MARZ-->
+                    <field name="monto_vale_factura" string="Monto Vale/Factura"/>
+                    <field name="date_apertura"/>
+                    <field name="date_reposicion"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

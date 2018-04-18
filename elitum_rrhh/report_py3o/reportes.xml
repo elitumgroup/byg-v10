@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_reporte_empleados_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.empleados.wizard</field>
+            <field name="model">reporte.empleados</field>
+            <field name="arch" type="xml">
+                <form string="Reporte Empleados">
+                    <group col="4">
+                        <field name="fecha_inicio" required="1"/>
+                        <field name="fecha_fin" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_empleados_xls"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_empleados_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_reporte_107_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.107.wizard</field>
+            <field name="model">reporte.107</field>
+            <field name="arch" type="xml">
+                <form string="Reporte 107">
+                    <group>
+                        <group>
+                            <field name="empresa" string="Empresa"/>
+                            <field name="empleado" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="ejercicio_fiscal" string="Ejercicio Fiscal"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_107"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_ausencias_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.ausencias.wizard</field>
+            <field name="model">reporte.ausencias</field>
+            <field name="arch" type="xml">
+                <form string="Reporte Ausencias">
+                    <group>
+                        <group>
+                            <field name="filtro_ausencia"
+                                   widget="radio"
+                                   options="{'horizontal': true}"
+                                   string="Tipo de Ausencia"/>
+                            <field string="Ausencia" name="ausencias" options="{'no_create':True}"
+                                   attrs="{'invisible':[('filtro_ausencia','!=','ausencia')]}"/>
+                            <field name="fecha_inicio" required="1"/>
+                            <field name="state_laboral" attrs="{'invisible':[('filtro_empleado','=','empleado')]}"/>
+                        </group>
+                        <group>
+                            <field name="filtro_empleado"
+                                   widget="radio"
+                                   options="{'horizontal': true}"
+                                   string="Tipo de Empleado"/>
+                            <field string="Empleado" name="empleados" options="{'no_create':True}"
+                                   attrs="{'invisible':[('filtro_empleado','!=','empleado')]}"/>
+                            <field name="fecha_fin" required="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_ausencias_xls"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_ausencias_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_vacaciones_personal_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.vacaciones.personal.wizard</field>
+            <field name="model">reporte.vacaciones.personal</field>
+            <field name="arch" type="xml">
+                <form string="Reporte Vacaciones del Personal">
+                    <group>
+                        <group>
+                            <field name="filtro_empleado"
+                                   widget="radio"
+                                   options="{'horizontal': true}"
+                                   string="Tipo de Empleado"/>
+                            <field name="state_laboral" attrs="{'invisible':[('filtro_empleado','=','empleado')]}"/>
+                        </group>
+                        <group>
+                            <field string="Empleado" name="empleados" options="{'no_create':True}"
+                                   attrs="{'invisible':[('filtro_empleado','!=','empleado')]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_vacaciones_personal_xls"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_vacaciones_personal_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_107_consolidado_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.107.consolidado.wizard</field>
+            <field name="model">reporte.107.consolidado</field>
+            <field name="arch" type="xml">
+                <form string="Reporte de Impuesto a la Renta">
+                    <group>
+                        <group>
+                            <field name="empresa" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="ejercicio_fiscal" readonly="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_107_consolidado"
+                                type="object"
+                                class="oe_highlight"
+                                string="Generar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

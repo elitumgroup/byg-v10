@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--&lt;!&ndash;Elimina Modulo Nómina&ndash;&gt;-->
+        <!--&lt;!&ndash;Elimina menu de opcion de Asistencias&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_root" />-->
+        <!--&lt;!&ndash;Elimina menu de opcion de Informes&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_report" />-->
+        <!--&lt;!&ndash;Elimina menu de opcion de Configuración de asistencias&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_config" />-->
+        <!--&lt;!&ndash;Elimina menu de opcion de Configuración de Hoja de registro&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_config" />-->
+        <!--&lt;!&ndash;Elimina menu de opcion de Ausencias&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_department_leave_approve" />-->
+        <!--<delete model="ir.ui.menu" id="resource.menu_view_resource_calendar_leaves_search" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_my_leaves" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_department_leave_allocation_approve" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.hr_holidays.menu_hr_holidays_approvals" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_employee_leave" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_available_holidays_report_tree" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_account_central_journal" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_company_allocation" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_ask_holidays_new" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_approvals" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_root" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_dashboard" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_open_allocation_holidays" />-->
+        <!--<delete model="ir.ui.menu" id="hr_holidays.menu_hr_holidays_configuration" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet_sheet.menu_act_hr_timesheet_sheet_form_my_current" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet_sheet.menu_act_hr_timesheet_sheet_my_timesheets" />-->
+        <!--<delete model="ir.ui.menu" id="crm.crm_opportunity_report_menu" />-->
+        <!--<delete model="ir.ui.menu" id="crm.crm_activity_report_menu" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet_sheet.menu_act_hr_timesheet_sheet_form" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_open_view_attendance" />-->
+        <!--&lt;!&ndash;Eliminar Empleados&ndash;&gt;-->
+        <!--<delete model="ir.ui.menu" id="hr.menu_hr_department_tree" />-->
+        <!--<delete model="ir.ui.menu" id="hr.menu_open_view_employee_list_my" />-->
+        <!--<delete model="ir.ui.menu" id="hr_contract.hr_menu_contract" />-->
+        <!--<delete model="ir.ui.menu" id="hr_contract.hr_menu_contract_type" />-->
+        <!--<delete model="ir.ui.menu" id="hr.menu_view_employee_category_form" />-->
+        <!--<delete model="ir.ui.menu" id="hr_gamification.gamification_goal_menu_hr" />-->
+        <!--<delete model="ir.ui.menu" id="hr_gamification.gamification_challenge_menu_hr" />-->
+        <!--<delete model="ir.ui.menu" id="hr_gamification.gamification_badge_menu_hr" />-->
+        <!--<delete model="ir.ui.menu" id="hr_gamification.menu_hr_gamification" />-->
+        <!--<delete model="ir.ui.menu" id="hr.menu_hr_root" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_my_attendances" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_manage_attendances" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_view_attendances" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_view_employees_kanban" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_kiosk_mode" />-->
+        <!--<delete model="ir.ui.menu" id="hr_attendance.menu_hr_attendance_settings" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet.menu_hr_time_tracking" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet.menu_timesheets_reports" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet.menu_hr_working_hours" />-->
+        <!--<delete model="ir.ui.menu" id="hr_timesheet.menu_hr_activity_analysis" />&ndash;&gt;-->
+    </data>
+</openerp>

@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_saldo_cobro_form" model="ir.ui.view">
+            <field name="name">eliterp.saldo.cobro.form</field>
+            <field name="model">account.voucher.saldo.eliterp</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="4">
+                            <field name="saldo" string="Saldo Pendiente"/>
+                            <field name="account_saldo" string="Cuenta a Depositar"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="confirm_saldo"
+                                type="object"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_cuentas_cobrar_tree_form" model="ir.ui.view">
+            <field name="name">eliterp.cuentas.cobrar.tree.view.form</field>
+            <field name="model">account.voucher</field>
+            <field name="arch" type="xml">
+                <tree string="Comprobante de Ingreso"
+                      decoration-info="state=='draft'"
+                      colors="red:state=='cancel';blue:state=='posted'"
+                      default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="partner_id" string="Cliente"/>
+                    <field name="date" string="Fecha de Emisión"/>
+                    <field name="total" string="Total" sum="Total"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_cuentas_pagar_tree_form" model="ir.ui.view">
+            <field name="name">eliterp.cuentas.pagar.tree.view.form</field>
+            <field name="model">account.voucher</field>
+            <field name="arch" type="xml">
+                <tree string="Comprobante de Egreso"
+                      decoration-info="state=='draft'"
+                      colors="red:state=='cancel';blue:state=='posted'"
+                      default_order='date desc'>
+                    <field name="date" string="Fecha Emisión"/>
+                    <field name="name" string="Forma de Pago"/>
+                    <field name="banco" string="Banco"/>
+                    <field name="beneficiario" string="Beneficiario"/>
+                    <field name="cantidad" string="Total" sum="Total"/>
+                    <field name="concepto_pago" string="Concepto"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_cuentas_cobrar_view_form1" model="ir.ui.view">
+            <field name="name">eliterp.cuentas.cobrar.view.form1</field>
+            <field name="model">account.voucher</field>
+            <field name="inherit_id" ref="account_voucher.view_sale_receipt_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='cancel_voucher']" position="replace">
+                    <!---->
+                </xpath>
+                <xpath expr="//button[@name='cancel_voucher']" position="attributes">
+                    <attribute name="string">Anular</attribute>
+                    <attribute name="states">posted</attribute>
+                    <attribute name="confirm">Desea anular Comprobante de Ingreso?</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel_draft']" position="replace">
+                    <!---->
+                </xpath>
+                <xpath expr="//button[@name='cancel_voucher']" position="before">
+                    <button name="imprimir_comprobante_ingreso"
+                            type="object"
+                            class="oe_highlight"
+                            string="Imprimir"/>
+                </xpath>
+                <xpath expr="//label[@for='number']" position="replace">
+                    <!---->
+                </xpath>
+                <xpath expr="//field[@name='name']" position="replace"/>
+                <xpath expr="//field[@name='number']" position="replace">
+                    <field name="name" readonly="1"/>
+                </xpath>
+                <field name="date_due" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="pay_now" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="journal_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="account_id" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+                <field name="voucher_type" position="replace">
+                    <field name="voucher_type" invisible="1"/>
+                </field>
+                <button name="proforma_voucher" position="replace">
+                    <button name="validar_voucher_eliterp" string="Contabilizar" states="draft" class="oe_highlight"
+                            type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                </button>
+                <field name="date" position="after">
+                    <field name="account_saldo" string="Cuenta de Saldo"
+                           attrs="{'invisible':[('mostrar_cuenta','==',False)]}"/>
+                    <field name="mostrar_cuenta" invisible="1"/>
+                </field>
+                <xpath expr="//notebook/page" position="before">
+                    <page name="lineas_cuentas_cobrar" string="Detalle">
+                        <separator string="Recaudación"/>
+                        <group>
+                            <button name="cargar_monto"
+                                    attrs="{'invisible':[('state','==','posted')]}"
+                                    type="object"
+                                    string="Aplicar Valores"
+                                    class="oe_highlight"/>
+                        </group>
+                        <field name="lineas_tipos_pagos" attrs="{'readonly':[('state','==','posted')]}">
+                            <tree editable="bottom" class="linea_cuentas_cobrar_css">
+                                <field name="tipo_de_pagos"
+                                       required="1"
+                                       string="Medios de Cobro"/>
+                                <field name="time_type"
+                                       attrs="{'readonly': [('tipo_de_pagos', '==', 'cash')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="date_created_eliterp"
+                                       attrs="{'readonly': [('time_type', '==', 'corriente')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="date_due"
+                                       attrs="{'readonly': [('time_type', '==', 'corriente')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="banco"
+                                       attrs="{'readonly': [('tipo_de_pagos', '==', 'cash')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="numero_cuenta"
+                                       string="No. Cuenta"
+                                       attrs="{'readonly': [('tipo_de_pagos', '==', 'cash')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="numero_cheque"
+                                       string="No. Cheque"
+                                       attrs="{'readonly': [('tipo_de_pagos', '==', 'cash')], 'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="name_girador"
+                                       string="Girador"
+                                       attrs="{'readonly': [('tipo_de_pagos', '==', 'cash')]}"/>
+                                <field name="cuenta" attrs="{'required': [('tipo_de_pagos', '==', 'bank')]}"/>
+                                <field name="amount" sum="Total"/>
+                                <field name="asiento_contable" string="Asiento Contable"/>
+                            </tree>
+                        </field>
+                        <separator string="Facturas de Cliente"/>
+                        <group>
+                            <button name="cargar_facturas"
+                                    attrs="{'invisible':[('state','==','posted')]}"
+                                    type="object"
+                                    string="Cargar Facturas"
+                                    class="oe_highlight"/>
+                        </group>
+                        <field name="lineas_cobros_facturas" required="1"
+                               attrs="{'readonly':[('state','==','posted')]}">
+                            <tree editable="bottom">
+                                <field name="invoice_id"/>
+                                <field name="fecha_vencimiento_factura"/>
+                                <field name="valor_factura" sum="Total Factura"/>
+                                <field name="monto_adeudado" sum="Total Adeudado"/>
+                                <field name="monto_pago" string="Monto a Aplicar" sum="Total"/>
+                                <field name="journal_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook/page[2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[last()]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <field name="partner_id" position="after">
+                    <field name="concepto_pago" string="Concepto"/>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_voucher_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.voucher.cancel.reason.view.wizard</field>
+            <field name="model">account.voucher.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razón">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="confirm_cancel_reason"
+                                type="object"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_cuentas_pagar_view_form_new" model="ir.ui.view">
+            <field name="name">eliterp.cuentas.pagar.view.form.new</field>
+            <field name="model">account.voucher</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                        <button name="imprimir_comprobante_egreso"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button name="action_vocher_cancel_reason" string="Anular" states="posted"
+                                type="object"/>
+                        <button name="validar_voucher_eliterp" string="Contabilizar" states="draft" class="oe_highlight"
+                                type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="forma_de_pago" attrs="{'readonly':[('state','not in', ('draft'))]}"/><!--MARZ-->
+                            <field name="beneficiario_proveedor" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="partner_id"
+                                   string="Proveedor"
+                                   domain="[('supplier', '=', True)]"
+                                   attrs="{'invisible':[('beneficiario_proveedor','!=','supplier')], 'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="custodian_id"
+                                   string="Custodio Caja Chica"
+                                   attrs="{'invisible':[('beneficiario_proveedor','!=','caja_chica')], 'readonly':[('state','not in', ('draft'))], 'required':[('beneficiario_proveedor','=','caja_chica')]}"/>
+                            <!--MARZ-->
+                            <field name="solicitud_id"
+                                   string="Titular"
+                                   options="{'no_create': True}"
+                                   domain="[('state', 'in', ('approved', 'paid'))]"
+                                   attrs="{'invisible':[('beneficiario_proveedor','!=','solicitud_pago')], 'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="viatico_id"
+                                   string="Titular"
+                                   options="{'no_create': True}"
+                                   domain="[('con_sin_solicitud', '=', 'con_solicitud'), ('state', '=', 'approved')]"
+                                   attrs="{'invisible':[('beneficiario_proveedor','!=','viaticos')], 'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="beneficiario" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="banco" attrs="{'invisible':[('forma_de_pago', '=', 'cash')], 'required':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"
+                                   domain="[('type_action', '=', 'payments')]"/>
+                            <field name="numero_cheque" attrs="{'invisible':[('forma_de_pago', '!=', 'bank')], 'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="date" string="Fecha Emisión"/>
+                            <field name="post_date" attrs="{'invisible':[('forma_de_pago', '=', 'cash')], 'required':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"
+                                   string="Fecha Che./Tran."/>
+                            <field name="concepto_pago" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="cantidad" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="account_id" required="1" attrs="{'invisible':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"/><!--Visible para forma de pago Efectivo-->
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="Detalle"
+                                      attrs="{'invisible':[('beneficiario_proveedor', '=', 'viaticos')]}">
+                                    <group string="Líneas de Cuentas" col="1">
+                                        <group col="6">
+                                            <button name="cargar_monto"
+                                                    attrs="{'invisible':['|',('state','==','posted'),('beneficiario_proveedor','not in',('supplier','caja_chica'))]}"
+                                                    type="object"
+                                                    string="Aplicar Valores"
+                                                    class="oe_highlight"/>
+                                            <button name="aplicar_monto"
+                                                    attrs="{'invisible':['|',('state','==','posted'),('beneficiario_proveedor','!=','beneficiario')]}"
+                                                    type="object"
+                                                    string="Cargar Valores"
+                                                    class="oe_highlight"/>
+                                            <button name="cargar_valores"
+                                                    attrs="{'invisible':['|',('state','==','posted'),('beneficiario_proveedor','!=', 'caja_chica')]}"
+                                                    type="object"
+                                                    string="Cargar Valores"
+                                                    class="oe_highlight"/>
+                                        </group>
+                                        <field name="lineas_pagos_proveedores" nolabel="1"
+                                               attrs="{'readonly':[('state','not in', ('draft'))]}">
+                                            <tree editable="bottom">
+                                                <field name="account_id"/>
+                                                <field name="monto_pago"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <group string="Facturas de Proveedor" col="1"
+                                           attrs="{'invisible':[('beneficiario_proveedor','!=','supplier')], 'readonly':[('state','not in', ('draft'))]}">
+                                        <group>
+                                            <button name="cargar_facturas"
+                                                    attrs="{'invisible':[('state','==','posted')]}"
+                                                    type="object"
+                                                    string="Cargar Facturas y Notas de Crédito"
+                                                    class="oe_highlight"/>
+                                        </group>
+                                        <field name="lineas_pagos_facturas" nolabel="1" required="1"
+                                               attrs="{'readonly':[('state','not in', ('draft'))]}">
+                                            <tree editable="bottom">
+                                                <field name="name"/>
+                                                <field name="fecha_vencimiento_factura"/>
+                                                <field name="valor_factura" sum="Total Factura"/>
+                                                <field name="monto_adeudado" sum="Total Adeudado"/>
+                                                <!--<field name="valor_aprobado_pago" string="Valor Programado"
+                                                       sum="Total Programado"/>-->
+                                                <field name="monto_pago" string="Monto a Aplicar" sum="Total"/>
+                                                <field name="journal_id" invisible="1"/>
+                                            </tree>
+                                        </field>
+                                        <separator string="Notas de Crédito"/>
+                                        <group>
+                                            <button name="aplicar_notas"
+                                                    attrs="{'invisible':[('state','==','posted')]}"
+                                                    type="object"
+                                                    string="Aplicar Notas de Crédito"
+                                                    class="oe_highlight"/>
+                                        </group>
+                                        <field name="lineas_notas_credito" nolabel="1" required="1"
+                                               attrs="{'readonly':[('state','not in', ('draft'))]}">
+                                            <tree editable="bottom">
+                                                <field name="name" string="Nota de Crédito"/>
+                                                <field name="fecha_vencimiento_factura"/>
+                                                <field name="valor_nota" sum="Total Nota"/>
+                                                <field name="facturas_afectar" options="{'no_create':True}"
+                                                       domain="[('voucher_id', '=', voucher_id)]"/>
+                                                <field name="journal_id" invisible="1"/>
+                                                <field name="voucher_id" invisible="1"/>
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </page>
+                                <page string="Asientos Contables">
+                                    <group>
+                                        <field name="move_id" string="Asiento Contable" readonly="1"/>
+                                    </group>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+

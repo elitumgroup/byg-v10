@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="open_module_tree_department_eliterp" model="ir.actions.act_window">
+            <field name="name">Estructura</field>
+            <field name="res_model">hr.department</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="search_view_id" ref="hr.view_department_filter"/>
+        </record>
+
+
+        <record id="eliterp_hr_estructura_salarial_form_views" model="ir.ui.view">
+            <field name="name">eliterp.hr.estructura.salarial.form.views</field>
+            <field name="model">hr.payroll.structure</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_employee_grade_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

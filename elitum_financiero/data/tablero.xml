@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="tesoreria.tablero" id="eliterp_tablero_tesoreria_facturas">
+            <field name="name">Facturas de Compras</field>
+            <field name="type">bar_stacked</field>
+        </record>
+        <record model="tesoreria.tablero" id="eliterp_tablero_tesoreria_lineas_facturas">
+            <field name="name">Facturas de Ventas</field>
+            <field name="type">bar_stacked</field>
+        </record>
+    </data>
+</odoo>

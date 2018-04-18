@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--MARZ-->
+        <record id="eliterp_type_document_form_view" model="ir.ui.view">
+            <field name="name">eliterp.type.document.form.view</field>
+            <field name="model">eliterp.type.document</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="sustento_ids" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="code"/>
+                                <field name="status" string="Activo?"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_type_document_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.type.document.tree.view</field>
+            <field name="model">eliterp.type.document</field>
+            <field name="arch" type="xml">
+                <tree default_order='code asc'>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="status" string="Activo?"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_tabla_impuesto_renta_form_view" model="ir.ui.view">
+            <field name="name">eliterp.tabla.impuesto.renta.form.view</field>
+            <field name="model">eliterp.tabla.impuesto.renta</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="fraccion_basica" string="Fracción Básica"/>
+                                <field name="impuesto_fraccion_basica" string="Impuesto Fracción Básica"/>
+                                <field name="status" string="Activo?"/>
+                            </group>
+                            <group>
+                                <field name="exceso_hasta" string="Exceso Hasta"/>
+                                <field name="impuesto_fraccion_excedente" string="Impuesto Fracción Excedente (%)"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_tabla_impuesto_renta_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.tabla.impuesto.renta.tree.view</field>
+            <field name="model">eliterp.tabla.impuesto.renta</field>
+            <field name="arch" type="xml">
+                <tree default_order='fraccion_basica asc'>
+                    <field name="fraccion_basica" string="Fracción Básica"/>
+                    <field name="exceso_hasta" string="Exceso Hasta"/>
+                    <field name="impuesto_fraccion_basica" string="Impuesto Fracción Básica"/>
+                    <field name="impuesto_fraccion_excedente" string="Impuesto Fracción Excedente (%)"/>
+                    <field name="status" string="Activo?"/>
+                </tree>
+            </field>
+        </record>
+        <record id="elitum_autorizacion_comprobante_view_form" model="ir.ui.view">
+            <field name="name">elitum.autorizacion.comprobante.view.form</field>
+            <field name="model">autorizacion.sri</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <group col="4">
+                            <field name="tipo_comprobante"/>
+                            <field name="numero_autorizacion"/>
+                        </group>
+                        <group col="4">
+                            <field name="numero_establecimiento"/>
+                            <field name="punto_emision"/>
+                            <field name="secuencial_inico"/>
+                            <field name="secuencial_fin"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="elitum_autorizacion_comprobante_view_tree" model="ir.ui.view">
+            <field name="name">elitum.autorizacion.comprobante.view.tree</field>
+            <field name="model">autorizacion.sri</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="tipo_comprobante"/>
+                    <field name="numero_autorizacion"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="elitum_credito_tributario_view_form" model="ir.ui.view">
+            <field name="name">elitum.credito.tributario.view.form</field>
+            <field name="model">credito.tributario</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="4">
+                            <field name="ano_contable" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="period_id" options="{'no_open': True, 'no_create': True}"
+                                   domain="[('periodo_id','=', ano_contable)]"/>
+                            <field name="valor"/>
+                            <field name="valor_renta"/>
+                            <field name="novedades"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="elitum_credito_tributario_view_tree" model="ir.ui.view">
+            <field name="name">elitum.credito.tributario.view.tree</field>
+            <field name="model">credito.tributario</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="period_id"/>
+                    <field name="valor"/>
+                    <field name="valor_renta"/>
+                    <field name="novedades"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

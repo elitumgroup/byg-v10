@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Menú Ventas-->
+        <!--Quitar Facturas de Cliente -->
+        <delete model="ir.ui.menu" id="account.menu_action_invoice_tree1"/>
+        <!--Quitar Recibo de Ventas -->
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_sale_receipt"/>
+        <!--Quitar Opción de Pagos -->
+        <delete model="ir.ui.menu" id="account.menu_action_account_payments_receivable"/>
+        <!--Quitar Opción de Clientes -->
+        <delete model="ir.ui.menu" id="account.menu_account_customer"/>
+        <!--Quitar Opcion de Productos Para Ventas -->
+        <delete model="ir.ui.menu" id="account.menu_product_template_action"/>
+        <!--Quitar Menu Ventas -->
+        <delete model="ir.ui.menu" id="account.menu_finance_receivables" />
+        <!--Menú Compras-->
+        <!--Quitar Opcion de Facturas de Proveedor -->
+        <delete model="ir.ui.menu" id="account.menu_action_invoice_tree2"/>
+        <!--Quitar Opcion de Recibos de Compras -->
+        <delete model="ir.ui.menu" id="account_voucher.menu_action_purchase_receipt"/>
+        <!--Quitar Opcion de Pagos -->
+        <delete model="ir.ui.menu" id="account.menu_action_account_payments_payable"/>
+        <!--Quitar Opcion de Productos Comprables -->
+        <delete model="ir.ui.menu" id="purchase.menu_product_normal_action_puchased"/>
+        <!--Quitar Menu Compras -->
+        <delete model="ir.ui.menu" id="account.menu_finance_payables"/>
+        <!--Quitar Tablero de Contabilidad -->
+        <delete model="ir.ui.menu" id="account.menu_board_journal_1"/>
+        <!--Eliminar Menu Reportes-->
+        <!--Quitar Tablero de Control-->
+        <delete model="ir.ui.menu" id="account.account_reports_business_intelligence_menu"/>
+        <!--Quitar Facturas-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_invoice_report_all"/>
+        <!--Quitar Informes PDF-->
+        <delete model="ir.ui.menu" id="account.menu_finance_legal_statement"/>
+        <!--Quitar Diario de Ventas/Compras-->
+        <delete model="ir.ui.menu" id="account.menu_print_journal"/>
+        <!--Quitar Libro Mayor de Compras-->
+        <delete model="ir.ui.menu" id="account.menu_partner_ledger"/>
+        <!--Quitar Libro Mayor-->
+        <delete model="ir.ui.menu" id="account.menu_general_ledger"/>
+        <!--Quitar Balance General de Sumas y Saldos-->
+        <delete model="ir.ui.menu" id="account.menu_general_Balance_report"/>
+        <!--Quitar Balance General-->
+        <delete model="ir.ui.menu" id="account.menu_account_report_bs"/>
+        <!--Quitar Perdidas y Ganancias-->
+        <delete model="ir.ui.menu" id="account.menu_account_report_pl"/>
+        <!--Quitar Saldos Vencidos de Empresa-->
+        <delete model="ir.ui.menu" id="account.menu_aged_trial_balance"/>
+        <!--Quitar Reporte Financiero-->
+        <delete model="ir.ui.menu" id="account.menu_account_report"/>
+        <!--Quitar Menu Proveedores-->
+        <delete model="ir.ui.menu" id="account.menu_account_supplier"/>
+        <!--Quitar Menu Plan Contable-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_form"/>
+        <!--Quitar Menu Lineas de Asientos Contables-->
+        <delete model="ir.ui.menu" id="account.menu_action_move_journal_line_form"/>
+        <!--Quitar Menu Asientos Contables-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_moves_all"/>
+        <!--Quitar Menu Reconcilacion Manual de Pagos-->
+        <delete model="ir.ui.menu" id="account.menu_action_manual_reconciliation"/>
+        <!--Quitar Menu Ajuste de Impuestosc-->
+        <delete model="ir.ui.menu" id="account.menu_action_tax_adjustment"/>
+        <!--Quitar Menu Impuestos-->
+        <delete model="ir.ui.menu" id="account.menu_action_tax_form"/>
+        <!--Quitar Posiciones Fiscales-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_fiscal_position_form"/>
+        <!--Quitar Cuentas Bancarias-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_bank_journal_form"/>
+        <!--Quitar Diarios-->
+        <delete model="ir.ui.menu" id="account.menu_action_account_journal_form"/>
+        <!--Quitar Etiqueta de Cuentas-->
+        <delete model="ir.ui.menu" id="account.account_tag_menu"/>
+        <!--Términdos de pago-->
+        <delete model="ir.ui.menu" id="account.menu_action_payment_term_form"/>
+        <!--Quitar Configuración/Administración-->
+        <delete model="ir.ui.menu" id="account.account_management_menu"/>
+    </data>
+</odoo>

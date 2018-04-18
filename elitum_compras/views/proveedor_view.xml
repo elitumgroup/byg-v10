@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="elitum_proveedor_view_form" model="ir.ui.view">
+            <field name="name">elitum.proveedor.view.form</field>
+            <field name='model'>res.partner</field>
+            <field name='inherit_id' ref='base.view_partner_form'/>
+            <field name='arch' type='xml'>
+                <!--MARZ-->
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="placeholder">Razón Social</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='config_fiscal']" position="after">
+                    <group col="1">
+                        <group col="2">
+                            <group name="conf_rise" string="Configuración Rise" attrs="{'invisible':[('supplier','=', False )]}">
+                                <field name="rise_activity"
+                                       string="Actividad"
+                                       options="{'no_create': True}"
+                                       help="Configurar si la posición fiscal del proveedor es RISE" />
+                                <field name="rise_category"
+                                       string="Categoría"
+                                       options="{'no_create': True}"
+                                       help="Configurar si la posición fiscal del proveedor es RISE" />
+                                <field name="max_amount"
+                                       string="Monto Máximo"/>
+                            </group>
+                            <group name="conf_tipo_compra" string="Configuración Tipo de Compra" attrs="{'invisible':[('supplier','=', False )]}">
+                                <field name="purchase_type"
+                                       string="Tipo de Compra"
+                                       widget="many2many_tags"/>
+                            </group>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//group[@name='acc_purchase']" position="replace">
+                    <group name="acc_purchase" attrs="{'invisible':[('supplier','=', False )]}" col="2">
+                        <group>
+                            <field name="payment_conditions"/>
+                            <field name="property_supplier_payment_term_id" attrs="{'invisible':[('payment_conditions','!=', 'credit' )]}"/>
+                            <field name="credit_limit"/>
+                            <field name="way_to_pay" />
+                            <field name="bank_id" attrs="{'invisible':[('way_to_pay','!=', 'transfer' )]}"/>
+                            <field name="type_bank_account" attrs="{'invisible':[('way_to_pay','!=', 'transfer' )]}"/>
+                            <field name="number_bank" attrs="{'invisible':[('way_to_pay','!=', 'transfer' )]}"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button class="oe_stat_button" name="%(purchase.act_res_partner_2_supplier_invoices)d" type="action"
+                            attrs="{'invisible': [('supplier', '=', False)]}" icon="fa-pencil-square-o">
+                        <field string="Facturado" name="supplier_invoice_count" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" name="saldo_pendiente"
+                            attrs="{'invisible': [('supplier', '=', False)]}" icon="fa-pencil-square-o">
+                        <field string="Saldo" name="saldo_pendiente" widget="statinfo"/>
+                    </button>
+                    <button class="oe_stat_button" name="%(purchase.act_res_partner_2_purchase_order)d" type="action"
+                            attrs="{'invisible': [('supplier', '=', False)]}" icon="fa-shopping-cart">
+                        <field string="Compras" name="purchase_order_count" widget="statinfo"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+        <record id="elitum_proveedor_view_form_herencia_purchase" model="ir.ui.view">
+            <field name="name">elitum.proveedor.view.form.herencia.purchase</field>
+            <field name='model'>res.partner</field>
+            <field name='inherit_id' ref='purchase.res_partner_view_purchase_account_buttons'/>
+            <field name='arch' type='xml'>
+                <field name="supplier_invoice_count" position="attributes">
+                    <attribute name="string">Facturado</attribute>
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

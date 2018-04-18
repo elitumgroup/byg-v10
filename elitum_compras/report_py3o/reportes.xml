@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="elitumgroup_reporte_compras_wizard" model="ir.ui.view">
+            <field name="name">elitumgroup.reporte.compras.wizard</field>
+            <field name="model">elitumgroup.report.purchases</field>
+            <field name="arch" type="xml">
+                <form string="Reporte - Compras">
+                    <group col="4">
+                        <field name="tipo_reporte"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="proveedor"
+                               domain="[('supplier','=',True)]"
+                               attrs="{'invisible':[('tipo_reporte','!=','proveedor')]}"
+                               options="{'no_create':True, 'no_open': True}"/>
+                        <field name="fecha_inicio" required="1"/>
+                        <field name="fecha_fin" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_compras_xls"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_compras_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="elitumgroup_reporte_tipo_compra_wizard" model="ir.ui.view">
+            <field name="name">elitumgroup.reporte.tipo.compra.wizard</field>
+            <field name="model">elitumgroup.report.purchase.type</field>
+            <field name="arch" type="xml">
+                <form string="Reporte - Tipo de Compra">
+                    <group col="4">
+                        <field name="tipo_reporte"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="cuenta"
+                               attrs="{'invisible':[('tipo_reporte','!=','cuenta')]}"
+                               options="{'no_create':True, 'no_open': True}"/>
+                        <field name="fecha_inicio" required="1"/>
+                        <field name="fecha_fin" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_tipo_compra_xls"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_tipo_compra_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

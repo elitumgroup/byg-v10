@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_ingresos_form" model="ir.ui.view">
+            <field name="name">eliterp.ingresos.form</field>
+            <field name='model'>stock.picking</field>
+            <field name='inherit_id' ref='stock.view_picking_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="statusbar_visible">draft,done</attribute>
+                </xpath>
+                <xpath expr="//button[@name='do_new_transfer']" position="attributes">
+                    <attribute name="string">Confirmar</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="string">Procesar</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="after">
+                    <button name="imprimir_control_inventario"
+                            string="Imprimir"
+                            class="btn-primary"
+                            type="object"/>
+                </xpath>
+                <field name="picking_type_id" position="replace"/>
+                <field name="origin" position="after">
+                    <field name="analytic_account_id" style="width:200px"/>
+                    <field name="project_id"
+                           options="{'no_create': True}"
+                           style="width:200px"/>
+                    <field name="picking_type_id" string="Operacion" invisible="1"/>
+                    <field name="tipo_operacion" string="Tipo Operacion" invisible="1"/>
+                </field>
+                <xpath expr="//page[@name='extra']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_id']" position="replace">
+                    <field name="responsable_bodega_id_origin"
+                           attrs="{'invisible': [('picking_type_id', '!=', 5)],'required': [('picking_type_id', '==', 5)]}"
+                           string="Responsable"/>
+                    <field name="location_id"/>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="replace">
+                    <field name="responsable_bodega_id_destino"
+                           attrs="{'invisible': [('picking_type_id', '!=', 5)],'required': [('picking_type_id', '==', 5)]}"
+                           string="Responsable"/>
+                    <field name="location_dest_id"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="replace">
+                    <!--
+                    <field name="proveedor_id"
+                           attrs="{'invisible': [('picking_type_id', '!=', 1)],'required': [('picking_type_id', '==', 1)]}"
+                           domanin="[('supplier','=',True)]"
+                           string="Proveedor"/>
+                    -->
+                    <field name="partner_id"
+                           attrs="{'invisible': [('picking_type_id', '!=', 1)],'required': [('picking_type_id', '==', 1)]}"
+                           domanin="[('supplier','=',True)]"
+                           string="Proveedor"/>
+                    <field name="cliente_id"
+                           attrs="{'invisible': [('picking_type_id', '!=', 4)],'required': [('picking_type_id', '==', 4)]}"
+                           domanin="[('customer','=',True)]"
+                           string="Cliente"/>
+                </xpath>
+                <!--
+                    <xpath expr="//field[@name='partner_id']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                -->
+                <xpath expr="//field[@name='min_date']" position="attributes">
+                    <attribute name="string">Fecha de Ingreso</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[2]" position="attributes">
+                    <attribute name="string"></attribute>
+                </xpath>
+                <xpath expr="//field[@name='move_lines']/kanban" position="after">
+                    <tree>
+                        <field name="product_id"/>
+                        <field name="product_uom_qty" string="Unidades de Medida"/>
+                        <field name="product_uom"/>
+                        <field name="state"/>
+                    </tree>
+                </xpath>
+            </field>
+        </record>
+        <!--MARZ - Eliminar botones Imprimir, Devolver, Desecho-->
+        <record id="elitumgroup_stock_picking_form_view_20" model="ir.ui.view">
+            <field name="name">elitumgroup.stock.picking.form.view_20</field>
+            <field name='model'>stock.picking</field>
+            <field name='inherit_id' ref='stock.view_picking_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//button[@name='do_print_picking']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--<xpath expr="//button[@name='331']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='339']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>-->
+                <xpath expr="//button[@name='button_scrap']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

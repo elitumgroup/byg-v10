@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.actions.act_window" id="eliterp_solicitud_compra">
+            <field name="name">Solicitud de Compra</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_user_id":uid}</field>
+            <field name="search_view_id" ref="purchase_requisition.view_purchase_requisition_filter"/>
+        </record>
+        <record id="elitum_solicitu_compra_view_tree1" model="ir.ui.view">
+            <field name="name">elitum.solicitu.compra.view.tree1</field>
+            <field name='model'>purchase.requisition</field>
+            <field name='inherit_id' ref='purchase_requisition.view_purchase_requisition_tree'/>
+            <field name='arch' type='xml'>
+                <tree position="replace">
+                    <tree decoration-info="state == 'draft'"
+                          colors="red:state == 'cancel';blue:state == 'done'"
+                          decoration-muted="state == 'cancel'"
+                          decoration-danger="date_end and date_end&lt;current_date" string="Purchase Agreements">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="No. Documento"/>
+                        <field name="user_id"/>
+                        <!--<field name="type_requisition"/>-->
+                        <field name="stock_warehouse_id"/>
+                        <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                        <field name="ordering_date" string="Fecha De Solicitud"/>
+                        <field name="date_end" invisible="1"/>
+                        <field name="state"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="elitum_presupuesto_compra_form1" model="ir.ui.view">
+            <field name="name">elitum.presupuesto.compra.form1</field>
+            <field name='model'>purchase.order</field>
+            <field name='inherit_id' ref='purchase.purchase_order_form'/>
+            <field name='arch' type='xml'>
+                <!--MARZ, Crear desde SC-->
+                <xpath expr='//form' position='attributes'>
+                    <attribute name="create">false</attribute>
+                </xpath>
+                <xpath expr="//div[@class='oe_title']/label" position="replace"/>
+                <xpath expr="//div[@class='oe_title']/label" position="replace"/>
+                <xpath expr="//button[@name='button_done']" position="replace">
+                    <button name="imprimir_orden_compra"
+                            string="Imprimir"
+                            class="btn-primary"
+                            type="object"/>
+                    <button name="enviar_solicitud_compra"
+                            string="Enviar por Correo"
+                            class="btn-primary"
+                            type="object"/>
+                </xpath>
+                <field name="state" position="replace"> <!--Cambiar botón para envío de solicitud-->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,purchase" readonly="1"/>
+                </field>
+                <xpath expr="//div/field[@name='date_planned']" position="attributes">
+                    <attribute name="modifiers">{}</attribute>
+                    <attribute name="required">0</attribute>
+                    <attribute name="required">False</attribute>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//div[@class='oe_button_box']/button[@name='action_view_picking']" position="attributes">
+                    <attribute name="icon">fa-sign-in</attribute>
+                </xpath>
+                <xpath expr="//field[@name='picking_count']" position="attributes">
+                    <attribute name="string">Ingresos</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_count']" position="attributes">
+                    <attribute name="string">Facturas</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="attributes">
+                    <attribute name="string">Documento Fuente</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree" position="replace">
+                    <tree string="Líneas de Productos" editable="bottom">
+                        <field name="state" invisible="1"/>
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_id"
+                               attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}"
+                               context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}"/>
+                        <field name="name"/>
+                        <field name="product_qty"/>
+                        <field name="qty_received" string="Cantidad Recibida"/>
+                        <field name="qty_invoiced"/>
+                        <field name="product_uom" string="Unidad de Medida"
+                               attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"/>
+                        <field name="price_unit" string="Precio"/>
+                        <field name="descuento"/>
+                        <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]"
+                               context="{'default_type_tax_use': 'purchase'}"/>
+                        <field name="price_subtotal" widget="monetary"/>
+                        <field name="date_planned" invisible="1"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}"
+                               invisible="1"/>
+                        <field name="analytic_tag_ids" invisible="1" widget="many2many_tags"/>
+                    </tree>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//field[@name='notes']" position="replace">
+                    <group string="Términos y condiciones">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//field[@name='partner_ref']" position="attributes">
+                    <attribute name="string">Referencia</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_order']" position="after">
+                    <field name="analytic_account_id"
+                           attrs="{'readonly':[('state', '=', 'purchase')]}"
+                           options="{'no_create': True}"/>
+                    <field name="project_id"
+                           attrs="{'readonly':[('state', '=', 'purchase')]}"
+                           options="{'no_create': True}"/>
+                    <field name="quitar_confirmar_orden" invisible="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_rfq_send']" position="replace"/>
+                <xpath expr="//button[@name='action_rfq_send']" position="replace"/>
+                <xpath expr="//button[@name='action_rfq_send']" position="replace"/>
+                <xpath expr="//button[@name='print_quotation']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//button[@name='button_cancel']" position="attributes">
+                    <attribute name="string">Anular</attribute>
+                </xpath>
+                <!-- No necesario para flujo
+                <xpath expr="//button[@name='button_confirm']" position="attributes">
+                    <attribute name="class"></attribute>
+                    <attribute name="class">oe_highlight</attribute>
+                    <attribute name="string">Confirmar</attribute>
+                    <attribute name="states"></attribute>
+                    <attribute name="attrs">{'invisible':['|', ('state', 'not in', ('draft')),
+                        ('quitar_confirmar_orden',
+                        '=', True)]}
+                    </attribute>
+                </xpath>
+                -->
+                <xpath expr="//button[@name='button_confirm']" position="replace"/>
+            </field>
+        </record>
+        <record id="elitum_presupuesto_form1" model="ir.ui.view">
+            <field name="name">elitum.presupuesto.form1</field>
+            <field name='model'>purchase.order</field>
+            <field name='inherit_id' ref='purchase_requisition.purchase_order_form_inherit'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='requisition_id']" position="attributes">
+                    <attribute name="string">Origen (Solicitud de Compra)</attribute>
+                    <attribute name="readonly">1</attribute>
+                    <attribute name="attrs">{'invisible': [('requisition_id', '=', False)]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="elitum_solicitu_compra_view_form" model="ir.ui.view">
+            <field name="name">elitum.solicitu.compra.view_form</field>
+            <field name='model'>purchase.requisition</field>
+            <field name='inherit_id' ref='purchase_requisition.view_purchase_requisition_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='vendor_id']" position="replace">
+                    <!--<field name="type_requisition"/>
+                    <field name="mrp_production_id"
+                           attrs="{'invisible':[('type_requisition','!=','mrp_production')]}"/>
+                    <field name="stock_warehouse_id"
+                           attrs="{'invisible':[('type_requisition','!=','stock_warehouse')], 'required': [('type_requisition', '=', 'stock_warehouse')]}"/>
+                    <field name="partner_id" domain="[('customer', '=', True)]"/>-->
+                    <field name="stock_warehouse_id" required="1"/>
+                    <field name="partner_id" domain="[('customer', '=', True)]"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="string">No. Documento</attribute>
+                    <attribute name="required">0</attribute>
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='type_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='ordering_date']" position="attributes">
+                    <attribute name="string">Fecha de Solicitud</attribute>
+                </xpath>
+                <xpath expr="//field[@name='schedule_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='date_end']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//label[@for='name']" position="replace"/>
+                <!--
+                    <attribute name="string">Solicitud de Compra</attribute>
+                    </xpath>
+                -->
+                <xpath expr="//button[@name='action_cancel']" position="attributes">
+                    <attribute name="string">Anular</attribute>
+                </xpath>
+                <!--MARZ-->
+                <!--<xpath expr="//button[@name='492']" position="replace"/>-->
+                <xpath expr="//button[@name='action_cancel']" position="after">
+                    <button name="imprimir_solicitud_compra"
+                            string="Imprimir"
+                            class="btn-primary"
+                            type="object"/>
+                    <button name="imprimir_comparativo"
+                            string="Comparativo"
+                            class="btn-primary"
+                            attrs="{'invisible':[('order_count', '&lt;', 2)]}"
+                            type="object"/>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//button[@name='action_open']" position="replace">
+                    <button name="action_open"
+                            string="Validar"
+                            attrs="{'invisible':['|', ('order_count', '=', 0), ('state', '!=', 'in_progress')]}"
+                            type="object" class="btn-primary"/>
+                </xpath>
+                <xpath expr="//div[@class='oe_button_box']" position="replace">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(purchase_requisition.action_purchase_requisition_list)d" type="action"
+                                class="oe_stat_button"
+                                icon="fa-list-alt"
+                                attrs="{'invisible': ['|', ('state', '=', 'draft'), ('order_count', '=', 0)]}">
+                            <field name="order_count" widget="statinfo" string="Presupuestos"/>
+                        </button>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='account_analytic_id']" position="replace"/>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="account_analytic_id"
+                           options="{'no_create': True}"
+                           string="Centro de Costos"/>
+                    <field name="project_id"
+                           options="{'no_create': True}"
+                           string="Proyecto"/>
+                    <field name="ref_solicitud" invisible="1" string="Referencia"/><!--Por el momento-->
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="replace">
+                    <field name="line_ids"
+                           on_change="1"
+                           modifiers="{'readonly': [['state', 'in', ['done']]]}">
+                        <tree editable="bottom">
+                            <field name="product_id"
+                                   domain="[('purchase_ok', '=', True)]"/> <!--Soló para compra-->
+                            <field name="product_qty" required="1"/>
+                            <field name="description"/>
+                            <field name="product_uom_id" string="Unidad de Medida"/>
+                            <!--MARZ (MAEQ)-->
+                            <field name="price_unit" string="Precio Unitario Referencial"/>
+                        </tree>
+
+                    </field>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="after">
+                    <group string="Presupuesto/Cotizaciones" attrs="{'invisible':[('order_count', '=', 0)]}">
+                        <field name="lineas_presupuestos" nolabel="1">
+                            <tree editable="bottom"
+                                  colors="blue:state == 'purchase';"
+                                  decoration-info="state != 'purchase'"
+                                  create="false">
+                                <field name="name" string="No. Documento" readonly="1"/>
+                                <field name="partner_id" readonly="1"/>
+                                <field name="amount_total" readonly="1"/>
+                                <field name="selecionar_comparativo"/>
+                                <field name="state" invisible="1"/>
+                                <field name="selecionar_presupuesto"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="elitumgroup_presupuesto_tree_view" model="ir.ui.view">
+            <field name="name">elitumgroup.presupuesto.tree.view</field>
+            <field name='model'>purchase.order</field>
+            <field name='inherit_id' ref='purchase.purchase_order_tree'/>
+            <field name='arch' type='xml'>
+                <tree position="replace">
+                    <tree create="false" decoration-info="invoice_status == 'no'"
+                          colors="red:state == 'cancel';blue:invoice_status == 'invoiced'">
+                        <field name="message_unread" invisible="1"/>
+                        <field name="name" string="No. Documento"/>
+                        <field name="date_order"/>
+                        <field name="partner_id"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        <field name="date_planned" invisible="context.get('quotation_only', False)"/>
+                        <field name="origin" string="Documento Fuente"/>
+                        <field name="amount_untaxed" sum="Total Untaxed amount" string="Base Imponible"
+                               widget="monetary"/>
+                        <field name="amount_total" sum="Total amount" widget="monetary"/>
+                        <field name="state"/>
+                        <field name="invoice_status" invisible="not context.get('show_purchase', False)"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

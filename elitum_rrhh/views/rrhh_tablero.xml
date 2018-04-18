@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <!--Gráficas-->
+        <record id="tablero_kanban_rrhh" model="ir.ui.view">
+            <field name="name">tablero.kanban.rrhh</field>
+            <field name="model">rrhh.tablero</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="kanban_dashboard"/>
+                    <field name="tipo_tablero"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(0)}">
+                                <t t-value="JSON.parse(record.kanban_dashboard.raw_value)" t-set="dashboard"/>
+                                <t t-value="record.type.raw_value" t-set="dashboard_type"/>
+                                <t t-value="record.tipo_tablero.raw_value" t-set="tipo_tablero"/>
+                                <t t-call="TableroTop"/>
+                                <div class="container o_kanban_card_manage_pane o_invisible">
+                                    <t t-call="JournalManage"/>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <t t-call="BodyGraph"/>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="TableroTop">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_secondary" t-att-title="dashboard.title">
+                                        <!--MARZ-->
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">Más
+                                        <i class="fa fa-caret-down"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="BodyGraph">
+                            <div class="o_kanban_graph_section">
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar'"
+                                       t-att-graph_type="'bar'"
+                                       widget="dashboard_graph_rrhh"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'line'"
+                                       t-att-graph_type="'line'"
+                                       widget="dashboard_graph_rrhh"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'pie'"
+                                       t-att-graph_type="'pie'"
+                                       widget="dashboard_graph_rrhh"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar_stacked'"
+                                       t-att-graph_type="'bar_stacked'"
+                                       widget="dashboard_graph_rrhh"/>
+                            </div>
+                        </t>
+                        <t t-name="JournalManage">
+                            <!--Total de Gastos de Roles por Mes-->
+                            <t t-if="dashboard_type == 'bar' and tipo_tablero == 'gastos_nomina' ">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Mes</span>
+                                            </strong>
+                                        </div>
+                                        <t t-foreach="dashboard.nominas" t-as="mes">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="mes['mes']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Valor</span>
+                                        </div>
+                                        <t t-value="dashboard.nominas" t-set="valor"/>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'nominas', 'mes':-3}">
+                                                <span>
+                                                    <t t-esc="valor[0]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'nominas', 'mes':-2}">
+                                                <span>
+                                                    <t t-esc="valor[1]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'nominas', 'mes':-1}">
+                                                <span>
+                                                    <t t-esc="valor[2]['valor']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <!--Total de Ausencias por Mes-->
+                            <t t-if="dashboard_type == 'bar' and tipo_tablero == 'ausencias'">
+                                <div class="row">
+                                     <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Mes</span>
+                                            </strong>
+                                        </div>
+                                        <t t-value="dashboard.ausencias" t-set="data"/>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'ausencias','mes':-3}">
+                                                <span>
+                                                    <t t-esc="data[0]['label']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'ausencias','mes':-2}">
+                                                <span>
+                                                    <t t-esc="data[1]['label']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'ausencias','mes':-1}">
+                                                <span>
+                                                    <t t-esc="data[2]['label']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Cantidad</span>
+                                        </div>
+                                        <t t-foreach="dashboard.ausencias" t-as="ausencias">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="ausencias['value']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                            <!--No. Empleados por Mes-->
+                            <t t-if="dashboard_type == 'bar' and tipo_tablero == 'total_empleado' ">
+                                <div class="row">
+                                    <div class="col-xs-7 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <strong>
+                                                <span>Mes</span>
+                                            </strong>
+                                        </div>
+                                        <t t-value="dashboard.total_empleado" t-set="mes"/>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'total_empleado','mes':-3}">
+                                                <span>
+                                                    <t t-esc="mes[0]['mes']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'total_empleado','mes':-2}">
+                                                <span>
+                                                    <t t-esc="mes[1]['mes']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'tipo':'total_empleado','mes':-1}">
+                                                <span>
+                                                    <t t-esc="mes[2]['mes']"/>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs- o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>Cantidad</span>
+                                        </div>
+                                        <t t-foreach="dashboard.total_empleado" t-as="empleados">
+                                            <div>
+                                                <span>
+                                                    <t t-esc="empleados['empleados']"/>
+                                                </span>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <record id="open_tablero_rrhh" model="ir.actions.act_window">
+            <field name="name">Resumen de Rrhh</field>
+            <field name="res_model">rrhh.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_kanban_tablero_rrhh">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="tablero_kanban_rrhh"/>
+            <field name="act_window_id" ref="open_tablero_rrhh"/>
+        </record>
+        <record id="open_tablero_rrhh_config" model="ir.actions.act_window">
+            <field name="name">Resumen de RRHH</field>
+            <field name="res_model">rrhh.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="eliterp_open_action_nomina" model="ir.actions.act_window">
+            <field name="name">Nómina</field>
+            <field name="res_model">hr.payslip.run</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="eliterp_nomina_consolidado_tree_view"/>
+            <field name="search_view_id" ref="hr_payroll.hr_payslip_run_filter"/>
+        </record>
+        <record id="eliterp_open_action_nomina_aniticipo" model="ir.actions.act_window">
+            <field name="name">Anticipo</field>
+            <field name="res_model">salary.advanced.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_open_action_gastos_anuales" model="ir.actions.act_window">
+            <field name="name">Gastos Anuales</field>
+            <field name="res_model">gastos.anuales.ec</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--Módulo INICIO-->
+        <record id="eliterp_open_action_gastos_anuales_inicio" model="ir.actions.act_window">
+            <field name="name">Mis Gastos Anuales</field>
+            <field name="res_model">gastos.anuales.ec</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('create_uid','=',uid)]</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem name="RRHH"
+                  id="eliterp_menu_recursos_humanos_root"
+                  web_icon="elitum_rrhh,static/description/icon.png"
+                  sequence="6"/>
+        <menuitem id="menu_rrhh_tablero_eliterp"
+                  name="RRHH"
+                  action="open_tablero_rrhh"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence="-1"/>
+        <menuitem id="menu_empeleados"
+                  name="Empleados"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence='2'/>
+        <menuitem id="menu_empeleados_empleados"
+                  name="Registros"
+                  parent="menu_empeleados"
+                  action='hr.open_view_employee_list_my'
+                  sequence="1"/>
+        <menuitem id="menu_empeleados_contratos"
+                  name="Contratos"
+                  parent="menu_empeleados"
+                  action='hr_contract.action_hr_contract'
+                  sequence="2"/>
+        <menuitem id="menu_rrhh_gastos_anuales"
+                  name="Gastos Anuales"
+                  parent="menu_empeleados"
+                  action="eliterp_open_action_gastos_anuales"
+                  sequence='3'/>
+        <!--Módulo de INICIO-->
+        <menuitem id="menu_rrhh_gastos_anuales_inicio"
+                  name="Mis Gastos Anuales"
+                  action="eliterp_open_action_gastos_anuales_inicio"
+                  parent="elitum_compras.eltierp_requerimientos_root1"
+                  sequence="2"/>
+
+        <menuitem id="menu_novedades"
+                  name="Novedades del Personal"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence='3'/>
+
+        <menuitem id="menu_novedades_asistencias"
+                  name="Asistencias"
+                  parent="menu_novedades"
+                  action='hr_attendance.hr_attendance_action'
+                  sequence='1'/>
+
+
+        <record id="eliterp_action_ausencias" model="ir.actions.act_window">
+            <field name="name">Registro de Ausencias</field>
+            <field name="res_model">hr.holidays</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="context">{
+                'default_type': 'remove',
+                'needaction_menu_ref':
+                [
+                'hr_holidays.menu_open_company_allocation',
+                ]
+                }
+            </field>
+            <field name="domain">[('type','=','remove')]</field>
+            <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new leave request.
+                </p>
+                <p>
+                    Once you have recorded your leave request, it will be sent
+                    to a manager for validation. Be sure to set the right leave
+                    type (recuperation, legal holidays, sickness) and the exact
+                    number of open days related to your leave.
+                </p>
+            </field>
+        </record>
+
+        <record id="eliterp_action_ausencias_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="hr_holidays.view_holiday"/>
+            <field name="act_window_id" ref="eliterp_action_ausencias"/>
+        </record>
+
+        <record id="eliterp_action_ausencias_from" model="ir.actions.act_window.view">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="act_window_id" ref="eliterp_action_ausencias"/>
+        </record>
+
+        <record id="eliterp_action_ausencias_calendar" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="hr_holidays.view_holiday_new_calendar"/>
+            <field name="act_window_id" ref="eliterp_action_ausencias"/>
+        </record>
+
+
+        <menuitem id="menu_novedades_ausencias"
+                  name="Ausencias"
+                  parent="menu_novedades"
+                  action='eliterp_action_ausencias'
+                  sequence='2'/>
+
+        <record id="eliterp_action_finiquito" model="ir.actions.act_window">
+            <field name="name">Finiquito</field>
+            <field name="res_model">finiquito</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_nomina_config"
+                  name="Nómina"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence='4'/>
+        <menuitem id="menu_nomina_anticipo"
+                  name="Anticipo"
+                  parent="menu_nomina_config"
+                  action="eliterp_open_action_nomina_aniticipo"
+                  sequence='1'/>
+        <menuitem id="menu_nomica_config_calculo"
+                  name="Roles"
+                  parent="menu_nomina_config"
+                  action="hr_payroll.action_view_hr_payslip_form"
+                  sequence='2'/>
+        <menuitem id="menu_nomica_config_roles"
+                  name="Rol Consolidado"
+                  parent="menu_nomina_config"
+                  action="eliterp_open_action_nomina"
+                  sequence='3'/>
+        <menuitem id="menu_rrhh_reportes"
+                  name="Reportes"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence='5'/>
+        <record id="action_reporte_empleados_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Empleados</field>
+            <field name="res_model">reporte.empleados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_rrhh.eliterp_reporte_empleados_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_reporte_ausencias_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Ausencias</field>
+            <field name="res_model">reporte.ausencias</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_rrhh.eliterp_reporte_ausencias_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_reporte_vacaciones_personal_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Vacaciones del Personal</field>
+            <field name="res_model">reporte.vacaciones.personal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_rrhh.eliterp_reporte_vacaciones_personal_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_reporte_107_consolidado_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Impuesto a la Renta</field>
+            <field name="res_model">reporte.107.consolidado</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_rrhh.eliterp_reporte_107_consolidado_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_empleados_wizard"
+                  name="Empleados"
+                  action="action_reporte_empleados_wizard"
+                  parent="menu_rrhh_reportes"
+                  sequence="1"/>
+        <menuitem id="menu_rrhh_asistencias_novedades"
+                  name="Asistencias y Novedades"
+                  parent="menu_rrhh_reportes"
+                  sequence='2'/>
+        <menuitem id="menu_rrhh_reportes_ausencias"
+                  name="Ausencias"
+                  action="action_reporte_ausencias_wizard"
+                  parent="menu_rrhh_asistencias_novedades"
+                  sequence='1'/>
+        <menuitem id="menu_rrhh_reportes_vacaciones"
+                  name="Vacaciones del Personal"
+                  action="action_reporte_vacaciones_personal_wizard"
+                  parent="menu_rrhh_asistencias_novedades"
+                  sequence='2'/>
+        <menuitem id="menu_rrhh_reportes_impuesto_renta"
+                  name="Impuesto a la Renta"
+                  action="action_reporte_107_consolidado_wizard"
+                  parent="menu_rrhh_reportes"
+                  sequence='3'/>
+        <menuitem id="menu_rrhh_config"
+                  name="Configuración"
+                  parent="eliterp_menu_recursos_humanos_root"
+                  sequence='6'/>
+        <menuitem id="menu_rrhh_tablero_config"
+                  name="Configuración de Tablero"
+                  action="open_tablero_rrhh_config"
+                  parent="menu_rrhh_config"
+                  sequence="1"/>
+        <menuitem id="menu_rrhh_config_estructura"
+                  name="Organigrama"
+                  parent="menu_rrhh_config"
+                  action='open_module_tree_department_eliterp'
+                  sequence='1'/>
+        <menuitem id="menu_rrhh_config_tipo_contrato"
+                  name="Tipo de Contrato"
+                  parent="menu_rrhh_config"
+                  action='hr_contract.action_hr_contract_type'
+                  sequence='2'/>
+        <menuitem id="menu_rrhh_config_nomina"
+                  name="Nómina"
+                  parent="menu_rrhh_config"
+                  sequence='3'/>
+        <menuitem id="menu_rrhh_config_nomina_estructura"
+                  name="Estructura Salarial"
+                  parent="menu_rrhh_config_nomina"
+                  action="hr_payroll.action_view_hr_payroll_structure_list_form"
+                  sequence='1'/>
+        <menuitem id="menu_rrhh_config_nomina_categoria_reglas"
+                  name="Categoría de Reglas Salariales"
+                  parent="menu_rrhh_config_nomina"
+                  action="hr_payroll.action_hr_salary_rule_category"
+                  sequence='2'/>
+        <menuitem id="menu_rrhh_config_nomina_reglas_salariales"
+                  name="Reglas Salariales"
+                  parent="menu_rrhh_config_nomina"
+                  action="hr_payroll.action_salary_rule_form"
+                  sequence='3'/>
+        <menuitem id="menu_rrhh_config_novedades"
+                  name="Novedades"
+                  parent="menu_rrhh_config"
+                  sequence='4'/>
+        <menuitem id="menu_rrhh_config_empleado"
+                  name="Empleado"
+                  parent="menu_rrhh_config"
+                  sequence='5'/>
+        <record id="eliterp_open_action_tipo_historial" model="ir.actions.act_window">
+            <field name="name">Tipo de Historial</field>
+            <field name="res_model">hr.employee.tipo.notas</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_rrhh_config_empleado_tipo_notas"
+                  name="Tipo de Historial"
+                  parent="menu_rrhh_config_empleado"
+                  action="eliterp_open_action_tipo_historial"
+                  sequence='1'/>
+        <!--MARZ-->
+        <record id="eliterp_open_action_gastos_deducibles_empleado" model="ir.actions.act_window">
+            <field name="name">Gastos Deducibles Empleado</field>
+            <field name="res_model">eliterp.tabla.gastos.deducibles</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_rrhh_configuration_empleado_gastos_deducibles_empleado"
+                  name="Gastos Deducibles Empleado"
+                  parent="menu_rrhh_config_empleado"
+                  action="eliterp_open_action_gastos_deducibles_empleado"
+                  sequence='2'/>
+
+        <!-- No necesario, habilitar por grupos
+        <record id="eliterp_open_action_nivel_aprobacion" model="ir.actions.act_window">
+            <field name="name">Nivel de Aprobación</field>
+            <field name="res_model">rrhh.nivel.aprobacion</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_rrhh_config_permisos_aprobacion"
+                  name="Niveles de Aprobación"
+                  action="eliterp_open_action_nivel_aprobacion"
+                  parent="menu_rrhh_config"
+                  sequence='6'/>
+        -->
+        <record id="eliterp_open_action_tipos_ausencias" model="ir.actions.act_window">
+            <field name="name">Tipos De Ausencias</field>
+            <field name="res_model">hr.holidays.status</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record id="eliterp_open_action_etiquetas_empleado" model="ir.actions.act_window">
+            <field name="name">Etiquetas de Empleados</field>
+            <field name="res_model">hr.employee.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+
+        <menuitem id="menu_rrhh_config_novedades_tipo_ausencias"
+                  name="Tipo de Ausencias"
+                  parent="menu_rrhh_config_novedades"
+                  action="eliterp_open_action_tipos_ausencias"
+                  sequence='1'/>
+
+        <menuitem id="menu_rrhh_config_novedades_etiquetas_empleados"
+                  name="Etiquetas de Empleados"
+                  parent="menu_rrhh_config_novedades"
+                  action="eliterp_open_action_etiquetas_empleado"
+                  sequence='2'/>
+
+
+    </data>
+</openerp>

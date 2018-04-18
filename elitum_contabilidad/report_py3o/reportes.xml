@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Reporte Impuestos-->
+        <record id="eliterp_reporte_103_104_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.103.104.wizard</field>
+            <field name="model">reporte.103.104</field>
+            <field name="arch" type="xml">
+                <form string="Reporte 103-104">
+                    <group col="4">
+                        <field name="fecha_inicio" required="1"/>
+                        <field name="fecha_fin" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_103_104"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_reporte_ats_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.ats.wizard</field>
+            <field name="model">eliterp.reporte.ats</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Formulario de eliterp.reporte.ats">
+                    <field name="state" invisible="1"/>
+                    <group states="choose">
+                        <separator
+                                string="Se exportará la información de la empresa a la que pertenece el usuario actual."
+                                colspan="4"/>
+                        <group>
+                            <field name="ano_contable" required="1" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="period_id" required="1" options="{'no_open': True, 'no_create': True}"
+                                   domain="[('periodo_id','=', ano_contable)]"/>
+                            <field name="company_id" required="1" readonly="1" options="{'no_open': True}"/>
+                            <field name="no_validate"/>
+                            <field name="num_estab_ruc"/>
+                            <field name="pay_limit" readonly="1"/>
+                        </group>
+                    </group>
+                    <group states="export">
+                        <separator string="Archivo generado correctamente, guardelo en su ubicación de preferencia."
+                                   colspan="4"/>
+                        <group>
+                            <field name="fcname" invisible="1"/>
+                            <field name="data" filename="fcname" readonly="1"/>
+                        </group>
+                    </group>
+                    <group states="export_error">
+                        <separator string="Archivo generado incorrectamente, revise archivo de errores." colspan="4"/>
+                        <group>
+                            <field name="fcname_errores" invisible="1"/>
+                            <field name="error_data" filename="fcname_errores" readonly="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="report_ats" class="oe_highlight" string="Generar"
+                                attrs="{'invisible':[('state', '!=', 'choose')]}"
+                                type="object"/>
+                        <button class="oe_link" special="cancel" states="choose" string="Cancelar"/>
+                        <button states="export,export_error" string="Cerrar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_ats_wizard_plantilla" model="ir.ui.view">
+            <field name="name">eliterp.reporte.ats.wizard.plantilla</field>
+            <field name="model">eliterp.reporte.ats.plantilla</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Formulario de eliterp.reporte.ats.plantilla">
+                    <group>
+                        <separator
+                                string="Se exportará plantilla ATS con la información de la empresa a la que pertenece el usuario actual."
+                                colspan="4"/>
+                        <group>
+                            <field name="ano_contable" required="1" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="period_id" required="1" options="{'no_open': True, 'no_create': True}"
+                                   domain="[('periodo_id','=', ano_contable)]"/>
+                            <field name="company_id" required="1" readonly="1" options="{'no_open': True}"/>
+                            <field name="num_estab_ruc"/>
+                            <field name="pay_limit" readonly="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_ats" class="oe_highlight" string="Imprimir" type="object"/>
+                        <button class="oe_link" special="cancel" string="Cancelar"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

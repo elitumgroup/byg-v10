@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <!--Eliminar Tablero-->
+        <delete model="ir.ui.menu" id="sales_team.menu_sales_team_act" />
+
+
+        <!--Eliminar Cotizaciones-->
+        <delete model="ir.ui.menu" id="sale.menu_sale_quotations"/>
+
+        <!--Eliminar Clientes-->
+        <delete model="ir.ui.menu" id="sales_team.menu_partner_form"/>
+
+        <!--Eliminar Flujo de Ventas-->
+        <delete model="ir.ui.menu" id="crm.menu_crm_opportunities"/>
+
+        <!--Eliminar Próxima Actividades-->
+        <delete model="ir.ui.menu" id="crm.crm_lead_menu_activities"/>
+
+        <!--Eliminar Próxima Cotizaciones-->
+        <delete model="ir.ui.menu" id="sale.menu_sale_quotations"/>
+
+        <!--Eliminar Próxima Pedido de Ventas-->
+        <delete model="ir.ui.menu" id="sale.menu_sale_order"/>
+
+        <!--Eliminar Próxima Productos-->
+        <delete model="ir.ui.menu" id="sale.menu_product_template_action"/>
+
+        <!--Eliminar Menu Ventas-->
+        <delete model="ir.ui.menu" id="sales_team.menu_sales"/>
+
+        <!--Eliminar Ventas a Facturar-->
+        <delete model="ir.ui.menu" id="sale.menu_sale_order_invoice"/>
+
+        <!--Eliminar Nueva Facturas-->
+        <delete model="ir.ui.menu" id="sale.menu_sale_order_upselling"/>
+
+        <!--Eliminar Informe - Ventas -->
+        <delete model="ir.ui.menu" id="sale.menu_report_product_all"/>
+
+        <!--Eliminar Informe - Actividades -->
+        <delete model="ir.ui.menu" id="crm.crm_activity_report_menu"/>
+
+        <!--Eliminar Informe - Canal de Trabajo -->
+        <delete model="ir.ui.menu" id="crm.crm_opportunity_report_menu"/>
+
+        <!--Eliminar Menu Informe -->
+        <delete model="ir.ui.menu" id="sales_team.menu_sale_report"/>
+
+        <!--Eliminar Iniciativas y Oportunidades -->
+        <delete model="ir.ui.menu" id="crm.menu_crm_config_lead"/>
+
+        <!--Eliminar Actividades -->
+        <delete model="ir.ui.menu" id="crm.crm_activity_menu"/>
+
+        <!--Eliminar Fases -->
+        <delete model="ir.ui.menu" id="crm.menu_crm_lead_stage_act"/>
+
+        <!--Eliminar Etiquetas -->
+        <delete model="ir.ui.menu" id="crm.menu_crm_lead_categ"/>
+
+        <!--Eliminar Razones -->
+        <delete model="ir.ui.menu" id="crm.menu_crm_lost_reason"/>
+
+        <!--Eliminar Campañas -->
+        <delete model="ir.ui.menu" id="utm.menu_link_tracker_root"/>
+
+        <!--Eliminar Campañas UTM-->
+        <delete model="ir.ui.menu" id="utm.menu_utm_campaign_act"/>
+
+        <!--Eliminar Media UTM-->
+        <delete model="ir.ui.menu" id="utm.menu_utm_medium"/>
+
+        <!--Eliminar Origin UTM-->
+        <delete model="ir.ui.menu" id="utm.menu_utm_source"/>
+
+        <!--Eliminar UTM-->
+        <delete model="ir.ui.menu" id="utm.marketing_utm"/>
+
+    </data>
+</openerp>

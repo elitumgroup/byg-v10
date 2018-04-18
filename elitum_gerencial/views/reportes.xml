@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_reporte_panel_control_gerencial_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.panel.control.gerencial.wizard</field>
+            <field name="model">gerencial.reporte.panel.control.gerencial</field>
+            <field name="arch" type="xml">
+                <form string="Estado de Resultado">
+                    <group col="6">
+                        <field name="fecha_inicio"/>
+                        <field name="fecha_fin"/>
+                        <field name="estado"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_panel_control"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF" />
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

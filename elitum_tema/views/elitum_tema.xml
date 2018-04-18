@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="web.menu_leftbar_eliterp">
+            <!--<a class="oe_logo" t-att-href="'/web/?debug' if debug else '/web'">-->
+                <!--<span class="oe_logo_edit">Edit Company data</span>-->
+                <!--<img src='/web/binary/company_logo'/>-->
+            <!--</a>-->
+            <ul class="oe_application_menu_placeholder oe_lettbar_eliterp_css">
+                <li t-foreach="menu_data['children']" t-as="menu">
+                    <t t-call="web.menu_link"/>
+                </li>
+            </ul>
+        </template>
+
+        <template id="web.menu_nav_eliterp_secondary_cont">
+            <t t-call="web.menu_link"/>
+            <ul class="dropdown-menu sub_menu_elitum">
+                <t t-foreach="menu['children']" t-as="menu">
+                    <li>
+                        <t t-call="web.menu_link"/>
+                    </li>
+                </t>
+            </ul>
+        </template>
+
+        <template id="web.menu_nav_eliterp_secondary">
+            <li t-foreach="menu['children']" t-as="menu">
+                <t t-if="menu['children']"><t t-call="web.menu_nav_eliterp_secondary_cont"/></t>
+                <t t-if="not menu['children']" ><t t-call="web.menu_link"/></t>
+            </li>
+        </template>
+
+        <template id="web.menu_nav_eliterp">
+            <ul class="dropdown-menu" t-if="menu['children']">
+                <t t-call="web.menu_nav_eliterp_secondary"/>
+            </ul>
+        </template>
+        <template id="web.menu_eliterp">
+            <ul class="oe_secondary_menus_container">
+                <t t-foreach="menu_data['children']" t-as="menu">
+                    <div class="nav navbar-nav navbar-left oe_secondary_menu" style="display: none" t-att-data-menu-parent="menu['id']">
+                        <li class="dropdown" t-foreach="menu['children']" t-as="menu">
+                            <t t-if="menu['children']">
+                                <a t-att-href="'#'" class="dropdown-toggle" data-toggle="dropdown"><t t-esc="menu['name']"/></a>
+                                <t t-call="web.menu_nav_eliterp"/>
+                            </t>
+                            <t t-if="not menu['children']"><t t-call="web.menu_link"/></t>
+                        </li>
+                    </div>
+                </t>
+            </ul>
+            <ul class="nav navbar-nav navbar-right oe_user_menu_placeholder" style="display: none;"/>
+            <ul class="nav navbar-nav navbar-right oe_systray" style="display: none;"/>
+        </template>
+
+        <!--CAMBIOS EN EL XML DE ODOO POR EL TEMA DE ELITERP-->
+
+        <template id="oe_leftbar_eliterp" name="oe_leftbar_eliterp assets" inherit_id="web.webclient_bootstrap">
+
+            <!--SE REMPLAZA LA BARRA LATERAL CON LOS MODULOS-->
+
+            <xpath expr="//div[@class='oe_leftbar']" position="replace">
+                <div class="oe_leftbar" style="display: flex;" groups="base.group_user,base.group_portal">
+                    <t t-call="web.menu_leftbar_eliterp"/>
+                </div>
+            </xpath>
+
+
+            <!--SE CAMBIA EL EL NAV CON LAS OPCIONES DEL MODULO-->
+
+            <xpath expr="//nav[@class='navbar navbar-inverse']" position="replace">
+                <nav id="oe_main_menu_navbar"
+                     class="navbar navbar-inverse"
+                     role="navigation"
+                     groups="base.group_user,base.group_portal">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div id="oe_main_menu_placeholder" class="navbar-collapse collapse">
+                        <t t-call="web.menu_eliterp"/>
+                    </div>
+                </nav>
+            </xpath>
+        </template>
+
+
+
+        <!--SE AÑADEN CSS Y JS -->
+
+        <template id="change_css_eliterp_1" name="elitum_tema assets" inherit_id="web.assets_common">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/elitum_tema/static/src/css/elitum_tema.css"/>
+            </xpath>
+        </template>
+
+        <template id="change_css_eliterp_1" name="elitum_tema assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/elitum_tema/static/src/css/elitum_tema.css"/>
+            </xpath>
+        </template>
+
+        <!--SE REMUEVE EL LOGO PARA TENER MAS ESPACIO-->
+
+        <template id="remove_logo" inherit_id="web.menu_secondary">
+            <xpath expr="//div[@class='oe_footer']" position="replace"/>
+        </template>
+
+        <!--SE REMUEVE EL CALCULO DE LOS DIV-->
+
+        <template id="remove_height_calc" name="mail assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/elitum_tema/static/src/js/elitum_tema.js"></script>
+            </xpath>
+        </template>
+
+
+
+        <template id="assets_backend" name="web assets" inherit_id="web.assets_backend">
+            <xpath expr="//script[@src='/web/static/src/js/menu.js']" position="replace">
+                <script type="text/javascript" src="/elitum_tema/static/src/js/menu_eliterp.js"></script>
+            </xpath>
+        </template>
+
+
+
+    </data>
+</openerp>

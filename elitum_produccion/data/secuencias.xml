@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.sequence" id="seq_eliterp_orden_produccion_id">
+            <field name="name">Orden de Produccion</field>
+            <field name="code">mrp.production</field>
+            <field name="prefix">ODP-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+
+
+        <!---->
+        <!--Diarios-->
+        <!---->
+        <record model="account.journal" id="diario_orden_produccion_eliterp">
+            <field name="name">Orden de Produccion</field>
+            <field name="type">general</field>
+            <field name="code">ODP</field>
+            <field name="sequence_id" ref="seq_eliterp_orden_produccion_id"/>
+        </record>
+    </data>
+</odoo>

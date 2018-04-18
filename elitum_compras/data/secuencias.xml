@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.sequence" id="seq_eliterp_requerimientos_id">
+            <field name="name">Requerimientos</field>
+            <field name="code">eliterp.request</field>
+            <field name="prefix">REQ-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_solicitud_compra_id">
+            <field name="name">Solicitud de Compra</field>
+            <field name="code">purchase.requisition.eliterp</field>
+            <field name="prefix">SDC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <!--MARZ-->
+        <record model="ir.sequence" id="seq_eliterp_solicitud_pago_id">
+            <field name="name">Secuencia de Solicitud de Pago</field>
+            <field name="code">eliterp.payment.request</field>
+            <field name="prefix">SPG-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="eliterp_seq_solicitud_viatico_id">
+            <field name="name">Secuencia de Solicitud de Viático</field>
+            <field name="code">eliterp.provision</field>
+            <field name="prefix">VTC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="eliterp_seq_documento_viatico_id">
+            <field name="name">Secuencia de Documento de Viático</field>
+            <field name="code">eliterp.provision.voucher</field>
+            <field name="prefix">RVC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="eliterp_seq_liquidate_provision_id">
+            <field name="name">Secuencia de Liquidación de Viático</field>
+            <field name="code">eliterp.provision.liquidate</field>
+            <field name="prefix">LIQ-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="elitum_seq_orden_compra_id">
+            <field name="name">Secuencia de Orden de Compra</field>
+            <field name="code">purchase.order.customize</field>
+            <field name="prefix">ODC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <!--Diarios-->
+        <record model="account.journal" id="diario_requerimientos_eliterp">
+            <field name="name">Requerimientos</field>
+            <field name="type">general</field>
+            <field name="code">REQ</field>
+            <field name="sequence_id" ref="seq_eliterp_requerimientos_id"/>
+        </record>
+        <record model="account.journal" id="diario_solicitud_compra_eliterp">
+            <field name="name">Solicitud de Compra</field>
+            <field name="type">general</field>
+            <field name="code">SDC</field>
+            <field name="sequence_id" ref="seq_eliterp_solicitud_compra_id"/>
+        </record>
+        <!--MARZ-->
+        <record model="account.journal" id="diario_solicitud_pago_eliterp">
+            <field name="name">Secuencia de Solicitud de Pago</field>
+            <field name="type">general</field>
+            <field name="code">SPG</field>
+            <field name="sequence_id" ref="seq_eliterp_solicitud_pago_id"/>
+        </record>
+        <record model="account.journal" id="eliterp_diario_solicitud_viatico">
+            <field name="name">Solicitud de Viático</field>
+            <field name="type">general</field>
+            <field name="code">VTC</field>
+            <field name="sequence_id" ref="eliterp_seq_solicitud_viatico_id"/>
+        </record>
+        <record model="account.journal" id="eliterp_diario_documento_viatico">
+            <field name="name">Documento de Viático</field>
+            <field name="type">general</field>
+            <field name="code">RVC</field>
+            <field name="sequence_id" ref="eliterp_seq_documento_viatico_id"/>
+        </record>
+        <record model="account.journal" id="eliterp_diario_liquidate_provision">
+            <field name="name">Liquidación de Viático</field>
+            <field name="type">general</field>
+            <field name="code">LIQ</field>
+            <field name="sequence_id" ref="eliterp_seq_liquidate_provision_id"/>
+        </record>
+    </data>
+</odoo>

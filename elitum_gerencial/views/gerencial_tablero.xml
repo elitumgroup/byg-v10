@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Búsqueda (Panel de Control)-->
+        <record id="view_panel_control_search" model="ir.ui.view">
+            <field name="name">view.panel.control.search</field>
+            <field name="model">linea.proceso.panel.control</field>
+            <field name="arch" type="xml">
+                <search string="Buscar en...">
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Departamento" name="departamento" domain="[]"
+                                context="{'group_by': 'departamento_panel'}"/>
+                        <filter string="Institución" name="institucion" domain="[]"
+                                context="{'group_by': 'name_panel'}"/>
+                        <filter string="Frecuencia" name="frecuencia" domain="[]" context="{'group_by': 'tipo_panel'}"/>
+                        <filter string="Fecha" domain="[]" context="{'group_by': 'fecha'}"/>
+                        <filter string="Estado" domain="[]" context="{'group_by': 'estado'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="eliterp_open_action_line_panel_control_gerencia" model="ir.actions.act_window">
+            <field name="name">Panel de Control</field>
+            <field name="res_model">linea.proceso.panel.control</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_panel_control_search"/>
+            <field name="context">
+                {'search_default_departamento':1,'search_default_institucion':1,'search_default_frecuencia':1}
+            </field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_panel_conrol">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_gerencial.eliterp_line_proceso_panel_control_tree"/>
+            <field name="act_window_id" ref="elitum_gerencial.eliterp_open_action_line_panel_control_gerencia"/>
+        </record>
+        <record id="eliterp_action_aprobaciones" model="ir.actions.act_window">
+            <field name="name">Aprobaciones</field>
+            <field name="res_model">aprobaciones.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="action_reporte_panel_control_gerencial" model="ir.actions.act_window">
+            <field name="name">Control de Obligaciones</field>
+            <field name="res_model">gerencial.reporte.panel.control.gerencial</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_gerencial.eliterp_reporte_panel_control_gerencial_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <!--Menú de Opciones-->
+        <menuitem id="eliterp_gerencial_root"
+                  name="Gerencial"
+                  web_icon="elitum_gerencial,static/description/icon.png"
+                  sequence="7"/>
+        <menuitem id="menu_gerencial_tablero"
+                  name="Gerencial"
+                  action="board.open_board_my_dash_action"
+                  parent="elitum_gerencial.eliterp_gerencial_root"
+                  sequence="-1"/>
+        <menuitem id="menu_gerencial_tablero_compras"
+                  name="Compras"
+                  action="elitum_compras.elitumgroup_open_dashboard_purchases"
+                  parent="elitum_gerencial.menu_gerencial_tablero"
+                  sequence="1"/>
+        <menuitem id="menu_gerencial_tablero_rrhh"
+                  name="RRHH"
+                  action="elitum_rrhh.open_tablero_rrhh"
+                  parent="elitum_gerencial.menu_gerencial_tablero"
+                  sequence="2"/>
+        <menuitem id="menu_gerencial_tablero_tesoreria"
+                  name="Tesorería"
+                  action="elitum_financiero.open_tablero_tesorera"
+                  parent="elitum_gerencial.menu_gerencial_tablero"
+                  sequence="3"/>
+        <menuitem id="menu_gerencial_tablero_ventas"
+                  name="Ventas"
+                  action="elitum_ventas.open_tablero_ventas"
+                  parent="elitum_gerencial.menu_gerencial_tablero"
+                  sequence="4"/>
+
+
+        <menuitem id="menu_gerencial_administracion"
+                  name="Administración"
+                  parent="elitum_gerencial.eliterp_gerencial_root"
+                  sequence="1"/>
+        <menuitem id="menu_gerencial_administracion_aprobaciones"
+                  name="Aprobaciones"
+                  parent="elitum_gerencial.menu_gerencial_administracion"
+                  sequence="1"/>
+        <!--Submenús - Aprobaciones-->
+        <record id="gerencial_factura_proveedor_action" model="ir.actions.act_window">
+            <field name="name">Facturas de Proveedor</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','in_invoice'),('line_approval','=','pendiente'), ('state', 'not in',
+                ('paid', 'cancel'))]
+            </field>
+            <field name="context">{'default_type': 'in_invoice', 'type': 'in_invoice', 'journal_type': 'purchase'}
+            </field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        </record>
+        <record id="gerencial_nota_venta_proveedor_action" model="ir.actions.act_window">
+            <field name="name">Notas de Venta Proveedor</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="domain">[('type','=','in_sale_note'),('line_approval','=','pendiente'), ('state', 'not in',
+                ('paid', 'cancel'))]
+            </field>
+            <field name="context">{'default_type': 'in_sale_note', 'type': 'in_sale_note', 'journal_type':
+                'purchase_sale_note', 'fields_invisible': True}
+            </field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        </record>
+        <menuitem id="menu_gerencial_administracion_aprobaciones_proveedores"
+                  name="Compras"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  sequence="3"/>
+        <menuitem id="menu_gerencial_administracion_aprobaciones_facturas"
+                  name="Facturas"
+                  parent="menu_gerencial_administracion_aprobaciones_proveedores"
+                  action="elitum_gerencial.gerencial_factura_proveedor_action"
+                  sequence="1"/>
+        <menuitem id="menu_gerencial_administracion_aprobaciones_notas_venta"
+                  name="Notas de Venta"
+                  parent="menu_gerencial_administracion_aprobaciones_proveedores"
+                  action="elitum_gerencial.gerencial_nota_venta_proveedor_action"
+                  sequence="2"/>
+        <record id="gerencial_open_action_nomina" model="ir.actions.act_window">
+            <field name="name">Roles de Empleados</field>
+            <field name="res_model">hr.payslip.run</field>
+            <field name="view_type">form</field>
+            <field name="domain">[('state','=','for_approval')]</field>
+            <field name="view_id" ref="elitum_rrhh.eliterp_nomina_consolidado_tree_view"/>
+            <field name="search_view_id" ref="hr_payroll.hr_payslip_run_filter"/>
+        </record>
+        <menuitem id="menu_gerencial_administracion_aprobaciones_roles"
+                  name="Roles de Empleados"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  action="elitum_gerencial.gerencial_open_action_nomina"
+                  sequence="5"/>
+        <!--MARZ-->
+        <record id="eliterp_open_solicitud_pago_tree_gerencial" model="ir.actions.act_window">
+            <field name="name">Solicitudes de Pago</field>
+            <field name="res_model">eliterp.payment.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','for_approved')]</field>
+        </record>
+        <record id="eliterp_open_solicitud_provision_tree_gerencial" model="ir.actions.act_window">
+            <field name="name">Solicitud de Viático</field>
+            <field name="res_model">eliterp.provision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','for_approved')]</field>
+        </record>
+        <record id="eliterp_open_provision_liquidate_tree_gerencial" model="ir.actions.act_window">
+            <field name="name">Liquidaciones de Viáticos</field>
+            <field name="res_model">eliterp.provision.liquidate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','for_approved')]</field>
+            <field name="context">{}</field>
+        </record>
+        <!--Fin MARZ-->
+        <menuitem id="menu_gerencial_administracion_solicitudes_pagos"
+                  name="Solicitudes de Pago"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  action="eliterp_open_solicitud_pago_tree_gerencial"
+                  sequence="6"/>
+        <record id="gerencial_action_caja_chica_reposicion" model="ir.actions.act_window">
+            <field name="name">Caja Chica</field>
+            <field name="res_model">petty.cash.replacement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','para_aprobar')]</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_gerencial_administracion_caja_chica"
+                  name="Caja Chica"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  action="elitum_gerencial.gerencial_action_caja_chica_reposicion"
+                  sequence="2"/>
+        <record id="gerencial_action_ausencias" model="ir.actions.act_window">
+            <field name="name">Ausencias</field>
+            <field name="res_model">hr.holidays</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="hr_holidays.edit_holiday_new"/>
+            <field name="context">{
+                'default_type': 'remove',
+                'needaction_menu_ref':
+                [
+                'hr_holidays.menu_open_company_allocation',
+                ]
+                }
+            </field>
+            <field name="domain">[('type','=','remove'),('state','=','confirm')]</field>
+            <field name="search_view_id" ref="hr_holidays.view_hr_holidays_filter"/>
+        </record>
+        <record id="gerencial_action_ausencias_tree" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="hr_holidays.view_holiday"/>
+            <field name="act_window_id" ref="gerencial_action_ausencias"/>
+        </record>
+        <menuitem id="menu_gerencial_administracion_ausencias"
+                  name="Ausencias"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  action="elitum_gerencial.gerencial_action_ausencias"
+                  sequence="1"/>
+        <record id="gerencial_open_requerimiento_action1" model="ir.actions.act_window">
+            <field name="name">Requerimientos</field>
+            <field name="res_model">eliterp.request</field>
+            <field name='domain'>
+                ['|','|',('create_uid','=',uid),('user_receiving','=',uid),('manager_receiving','=',uid),('state_approved','=','pending')]
+            </field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_gerencial_administracion_requerimiento"
+                  name="Requerimientos"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  action="elitum_gerencial.gerencial_open_requerimiento_action1"
+                  sequence="4"/>
+        <menuitem id="menu_gerencial_administracion_viaticos"
+                  name="Viáticos"
+                  parent="elitum_gerencial.menu_gerencial_administracion_aprobaciones"
+                  sequence="7"/>
+        <menuitem id="menu_gerencial_administracion_solicitudes_provisiones"
+                  name="Solicitudes"
+                  parent="menu_gerencial_administracion_viaticos"
+                  action="eliterp_open_solicitud_provision_tree_gerencial"
+                  sequence="1"/>
+        <menuitem id="eliterp_menu_gerencial_aprobaciones_provision_liquidate"
+                  name="Liquidaciones"
+                  parent="menu_gerencial_administracion_viaticos"
+                  action="elitum_gerencial.eliterp_open_provision_liquidate_tree_gerencial"
+                  sequence="2"/>
+        <menuitem id="menu_gerencial_control_obligaciones"
+                  name="Control de Obligaciones"
+                  parent="elitum_gerencial.eliterp_gerencial_root"
+                  sequence="2"/>
+        <menuitem id="menu_gerencial_control_obligaciones_panel_control"
+                  name="Panel de Control"
+                  parent="elitum_gerencial.menu_gerencial_control_obligaciones"
+                  action="elitum_gerencial.eliterp_open_action_line_panel_control_gerencia"
+                  sequence="1"/>
+        <menuitem id="menu_gerencial_reportes"
+                  name="Reportes"
+                  parent="elitum_gerencial.eliterp_gerencial_root"
+                  sequence="3"/>
+        <menuitem id="Registro de Ausencias"
+                  name="Control de Obligaciones"
+                  parent="elitum_gerencial.menu_gerencial_reportes"
+                  action="elitum_gerencial.action_reporte_panel_control_gerencial"
+                  sequence="1"/>
+        <record id="eliterp_open_action_line_panel_control_inicio" model="ir.actions.act_window">
+            <field name="name">Control de Obligaciones</field>
+            <field name="res_model">line.panel.control.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_panel_conrol_inicio">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_gerencial.eliterp_line_panel_control_tree"/>
+            <field name="act_window_id" ref="elitum_gerencial.eliterp_open_action_line_panel_control_inicio"/>
+        </record>
+        <menuitem id="menu_incio_config_control_obligaciones"
+                  name="Control de Obligaciones"
+                  action="elitum_gerencial.eliterp_open_action_line_panel_control_inicio"
+                  parent="elitum_inicio.eliterp_menu_root_inicio"
+                  sequence="4"/>
+    </data>
+</odoo>

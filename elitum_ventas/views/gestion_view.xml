@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="eliterp_gestion_actividades_form" model="ir.ui.view">
+            <field name="name">eliterp.gestion.actividades.form</field>
+            <field name="model">eliterp.sales.management</field>
+            <field name="arch" type="xml">
+                <form string="Actividades">
+                    <header>
+                        <button name="procesar_requerimiento"
+                                string="Procesar"
+                                class="btn-primary"
+                                type="object" />
+                        <field name="state" widget="statusbar" clickable="True" modifiers="{}"/>
+                    </header>
+                    <sheet>
+                        <button name="new_sale_order" string="Crear Cotizacion" class="btn-primary" type="object" attrs="{'invisible':[('if_sale_order','==',False)]}"/>
+                        <div class="oe_title">
+                            <label for="type_activity" class="oe_edit_only" string="Tipo"/>
+                            <h1>
+                                <field name="type_activity_id"
+                                       on_change="change_type(type_activity_id)"
+                                       options="{'no_create': True, 'no_open': True}"
+                                       style="width:400px"/>
+                            </h1>
+                            <label for="name" class="oe_edit_only" string="Detalle"/>
+                            <h1>
+                                <field name="name" modifiers="{'required': true}"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name='type_contact'
+                                           class="oe_edit_only"
+                                           widget="radio"
+                                           options="{'horizontal': true}"/>
+                                </h1>
+                            </div>
+                        </group>
+                        <group>
+
+                            <group name="contact/customer">
+                                <field name="contact_crm"
+                                       string="Prospecto"
+                                       on_change='change_contact_crm(contact_crm)'
+                                       attrs="{'invisible':[('type_contact','=','customer')]}">
+                                </field>
+
+                                <field name="customer_id"
+                                       domain="[('customer','=',True)]"
+                                       string="Cliente"
+                                       modifiers="{}"
+                                       on_change='change_client_crm(customer_id)'
+                                       options="{'no_create':True}"
+                                       attrs="{'invisible':[('type_contact','=','contact')]}"/>
+                            </group>
+                            <group>
+                            </group>
+                            <group>
+                                <label for="street" string="Direccion"/>
+                                <div class="o_address_format">
+                                    <field name="street" class="o_address_street" modifiers="{}"/>
+                                    <field name='city' placeholder="Ciudad" class="o_address_city"/>
+                                    <field name="state_id" class="o_address_state" placeholder="Provincia" options="{'no_open': True, 'no_create': True}" modifiers="{}"/>
+                                </div>
+                                <field name="referred" modifiers="{}"/>
+                            </group>
+                            <group>
+                                <field name="mobile" modifiers="{}"/>
+                                <field name="email" string="Correo" modifiers="{}"/>
+                                <field name="date_activity" string="Fecha" modifiers="{}"/>
+                            </group>
+                        </group>
+                        <notebook colspan="4">
+                            <page string="Notas Internas">
+                                <field name="description" modifiers="{}"/>
+                                <field name="if_sale_order" invisible="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="eliterp_gestion_actividades_tree" model="ir.ui.view">
+            <field name="name">eliterp.gestion.actividades.tree</field>
+            <field name="model">eliterp.sales.management</field>
+            <field name="arch" type="xml">
+                <tree string="Actividades" decoration-danger="date_activity and (date_activity &lt; current_date)" default_order="date_activity">
+                    <field name="type_activity_id" string="Tipo" />
+                    <field name="name" string="Actividad" />
+                    <field name="create_date" string="Fecha Creacion" />
+                    <field name="date_activity" string="Fecha ejecucion" />
+                    <field name="state" string="Estado" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="eliterp_crm_lead_search1" model="ir.ui.view">
+            <field name="name">eliterp.crm.lead.search1</field>
+            <field name="model">eliterp.sales.management</field>
+            <field name="arch" type="xml">
+                <search string="Search Opportunities">
+                    <field name="name" string="Opportunity" filter_domain="['|','|','|',('partner_id','ilike',self),('partner_name','ilike',self),('email_from','ilike',self),('name', 'ilike', self)]"/>
+                    <field name="user_id"/>
+                    <field name="customer_id" operator="child_of" string="Customer"/>
+                    <field name="contact_crm" />
+                    <field name="type_activity_id"/>
+                    <filter string="My Opportunities" name="assigned_to_me"
+                            domain="[('user_id', '=', uid)]"
+                            help="Opportunities that are assigned to me"/>
+                    <filter string="Unassigned" name="unassigned"
+                            domain="[('user_id','=', False)]" help="No salesperson"/>
+                    <separator/>
+                    <filter string="Today Activities" name="today"
+                            domain="[('date_action', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Week Activities" name="this_week"
+                            domain="['&amp;', ('date_action', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                                     ('date_action', '&lt;=', (context_today()+datetime.timedelta(days=7)).strftime('%Y-%m-%d'))
+                            ]"/>
+                    <filter string="Overdue Activities" name="overdue"
+                            domain="[('date_action', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter string="Follow-up" name="follow_up"
+                            domain="[('date_action', '&lt;=', context_today().strftime('%Y-%m-%d') )]"
+                            help="Show all opportunities for which the next action date is today or before"/>
+                    <separator/>
+                    <filter string="Unread Messages" name="message_needaction" domain="[('message_needaction','=',True)]"/>
+                    <filter string="Archived" domain="[('active', '=', False)]"/>
+                    <group expand="0" string="Group By" colspan="16">
+                        <filter name="elitum_group_state"
+                                string="Estado de Actividad"
+                                context="{'group_by':'state'}"/>
+                        <filter string="Salesperson" context="{'group_by':'user_id'}"/>
+                        <separator orientation="vertical" />
+                        <filter string="Creation Month" context="{'group_by':'create_date:month'}" name="month"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="elitum_crm_contact_form" model="ir.ui.view">
+            <field name="name">elitum.crm.contact.form</field>
+            <field name="model">contact.crm.activity</field>
+            <field name="arch" type="xml">
+                <form string="Contacto">
+                    <group col="4">
+                        <field name="name"/>
+                        <field name="company"/>
+                        <field name="address"/>
+                        <field name="mobile"/>
+                        <field name="email"/>
+                        <field name="referred"/>
+                        <field name="city"/>
+                        <field name="state_id"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_elitum_gestion_tipo_actividad" model="ir.actions.act_window">
+            <field name="name">Tipo de Actividad</field>
+            <field name="res_model">eliterp.type.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="open_eliterp_gestion_actividades" model="ir.actions.act_window">
+            <field name="name">Registro de Gestion</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">eliterp.sales.management</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="eliterp_crm_lead_search1"/>
+            <field name="view_ids"
+                   eval="[(5, 0, 0), (0, 0, {'view_mode': 'tree', 'view_id': ref('eliterp_gestion_actividades_tree')}),
+                      (0, 0, {'view_mode': 'form', 'view_id': ref('eliterp_gestion_actividades_form')}),
+                      (0, 0, {'view_mode': 'calendar'})]"/>
+            <field name="context">{
+                'default_user_id': uid,
+                'search_default_assigned_to_me': 1,
+                'search_default_elitum_group_state': 1,
+                }
+            </field>
+        </record>
+
+    </data>
+</odoo>

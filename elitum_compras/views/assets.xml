@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Elitum Compras Assets" inherit_id="web.assets_backend">
+            <xpath expr=".">
+                <link rel="stylesheet" href="/elitum_compras/static/src/less/elitum_compras.less"/>
+                <!--MARZ-->
+                <script type="text/javascript" src="/elitum_compras/static/src/js/purchases_dashboard.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

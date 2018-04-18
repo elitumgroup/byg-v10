@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_reporte_ventas_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.ventas.wizard</field>
+            <field name="model">reporte.ventas</field>
+            <field name="arch" type="xml">
+                <form string="Ventas">
+                    <group col="4">
+                        <field name="tipo_cliente"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="cliente"
+                               domain="[('customer','=',True)]"
+                               attrs="{'invisible':[('tipo_cliente','!=','cliente')]}"
+                               options="{'no_create':True}"/>
+                        <field name="tipo_asesor"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="asesor"
+                               options="{'no_create':True}"
+                               attrs="{'invisible':[('tipo_asesor','!=','asesor')]}"/>
+                        <field name="fecha_inicio" required="1"/>
+                        <field name="fecha_fin" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_ventas"
+                                type="object"
+                                class="oe_highlight"
+                                string="Excel"/>
+                        <button name="imprimir_reporte_ventas_pdf"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

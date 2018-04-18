@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="retencion_venta"
+                model="tax.withhold"
+                string="Retencion"
+                report_type="qweb-pdf"
+                name="elitum_financiero.reporte_retencion_venta"
+                file="elitum_financiero.reporte_retencion_venta"
+        />
+
+        <record id="paperformat_retencion_venta" model="report.paperformat">
+            <field name="name">Retencion</field>
+            <field name="default" eval="True" />
+            <field name="format">A5</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">24</field>
+            <field name="margin_bottom">38</field>
+            <field name="margin_left">2</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="elitum_financiero.retencion_venta" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="elitum_financiero.paperformat_retencion_venta" />
+        </record>
+
+        <template id="reporte_retencion_venta">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page" style="margin: 0px; padding:0px; padding-right:0px;">
+                        <style type="text/css">
+                        </style>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <table style="font-size: 10pt;border-collapse:separate; border-spacing: 15px;" >
+                                <tbody>
+                                    <tr style="padding-left:0px;padding-right:0px;">
+                                        <td class="text-left col-xs-1" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-6" style="padding-left:0px;padding-right:0px;" >
+                                            <span t-field="doc.partner_id.name"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-3" style="padding-left:70px;padding-right:0px;" >
+                                            <span t-field="doc.fecha"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-1" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-6" style="padding-left:0px;padding-right:0px;" >
+                                            <span t-field="doc.partner_id.vat_eliterp"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-3" style="padding-left:70px;padding-right:0px;">
+                                            <span>FACTURA</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-1" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-6" style="padding-left:0px;padding-right:0px;" >
+                                            <span t-field="doc.partner_id.street"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" style="padding-left:0px;padding-right:0px;" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-3" style="padding-left:70px;padding-right:0px;" >
+                                            <span t-field="doc.invoice_id.numero_factura_interno"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;" >
+                            <span>&amp;nbsp;</span>
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;" >
+                            <span>&amp;nbsp;</span>
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;" >
+                            <span>&amp;nbsp;</span>
+                            <span>&amp;nbsp;</span>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:00px;">
+                            <table style="font-size: 10pt;">
+                                <tbody>
+                                    <t t-foreach="doc.line_tax_withhold" t-as="line">
+                                        <tr>
+                                            <td style="padding-left:20px;" class="text-left col-xs-1">
+                                                <span t-esc='get_ano_fiscal(doc.fecha)'/>
+                                            </td>
+                                            <td class="text-left col-xs-5" >
+                                                <span t-field="line.retencion.name"/>
+                                            </td>
+                                            <td style="padding-right:20px;" class="text-center col-xs-2" >
+                                                <span t-field="line.tipo_retencion"/>
+                                            </td>
+                                            <td style="padding-right:20px;" class="text-center col-xs-1" >
+                                                <span t-esc='"%.2f" %line.base_imponible'/>
+                                            </td>
+                                            <td style="padding-right:50px;" class="text-center col-xs-2" >
+                                                <span t-esc='"%.2f" %line.retencion.amount'/>
+                                            </td>
+                                            <td style="padding-right:50px;" class="text-center col-xs-1" >
+                                                <span t-esc='"%.2f" %line.monto'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer" style="margin: 0px; padding:0px; padding-right:0px;" >
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:00px;">
+                            <div class="row col-xs-10" style="padding-left:0px;padding-right:0px">
+                                <span>&amp;nbsp;</span>
+                            </div>
+                            <div class="row col-xs-2 text-right" style="padding-left:50px;padding-right:0px">
+                                <span  class="text-right" t-esc='"%.2f" %get_total(doc.line_tax_withhold)'/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

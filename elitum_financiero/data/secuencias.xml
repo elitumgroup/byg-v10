@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.sequence" id="seq_eliterp_retencion_venta_id">
+            <field name="name">Retencion de Venta</field>
+            <field name="code">tax.withhold.sale</field>
+            <field name="prefix">RTV-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_retencion_compra_id">
+            <field name="name">Retencion de Compra</field>
+            <field name="code">tax.withhold.purchase</field>
+            <field name="prefix">RTC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_comprobante_ingreso_id">
+            <field name="name">Comprobante de Ingreso</field>
+            <field name="code">account.voucher.sale</field>
+            <field name="prefix">CDI-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_vale_caja_id">
+            <field name="name">Vale de Caja</field>
+            <field name="code">petty.cash.voucher</field>
+            <field name="prefix">VDC-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+         <record model="ir.sequence" id="seq_eliterp_caja_chica_id">
+            <field name="name">Caja</field>
+            <field name="code">petty.cash</field>
+            <field name="prefix">CJA-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_comprobante_egreso_id">
+            <field name="name">Comprobante de Egreso</field>
+            <field name="code">account.voucher.sale</field>
+            <field name="prefix">CDE-%(year)s-%(month)s-</field>
+            <field name="padding">5</field>
+        </record>
+        <!--Nuevas Formas de Pago, Comprobante de Egreso-->
+        <record model="ir.sequence" id="seq_eliterp_comprobante_egreso_efectivo_id">
+            <field name="name">Comprobante de Egreso (Efectivo)</field>
+            <field name="code">account.voucher.purchase.cash</field>
+            <field name="padding">7</field>
+        </record>
+        <record model="ir.sequence" id="seq_eliterp_comprobante_egreso_transferencia_id">
+            <field name="name">Comprobante de Egreso (Transferencia)</field>
+            <field name="code">account.voucher.purchase.transferencia</field>
+            <field name="padding">7</field>
+        </record>
+
+        <!---->
+        <!--Diarios-->
+        <!---->
+        <record model="account.journal" id="diario_retencion_venta_eliterp">
+            <field name="name">Retención Venta</field>
+            <field name="type">sale</field>
+            <field name="code">RTV</field>
+            <field name="sequence_id" ref="seq_eliterp_retencion_venta_id"/>
+        </record>
+        <record model="account.journal" id="diario_retencion_compra_eliterp">
+            <field name="name">Retención Compra</field>
+            <field name="type">purchase</field>
+            <field name="code">RTC</field>
+            <field name="sequence_id" ref="seq_eliterp_retencion_compra_id"/>
+        </record>
+        <record model="account.journal" id="diario_comprobante_egreso_eliterp">
+            <field name="name">Comprobante de Egreso</field>
+            <field name="type">sale</field>
+            <field name="code">CDE</field>
+            <field name="sequence_id" ref="seq_eliterp_comprobante_ingreso_id"/>
+        </record>
+        <record model="account.journal" id="diario_comprobante_ingreso_eliterp">
+            <field name="name">Comprobante de Ingreso</field>
+            <field name="type">sale</field>
+            <field name="code">CDI</field>
+            <field name="sequence_id" ref="seq_eliterp_comprobante_ingreso_id"/>
+        </record>
+        <record model="account.journal" id="diario_vale_caja_eliterp">
+            <field name="name">Vale Caja</field>
+            <field name="type">general</field>
+            <field name="code">VDC</field>
+            <field name="sequence_id" ref="seq_eliterp_vale_caja_id"/>
+        </record>
+        <record model="account.journal" id="diario_caja_chica_eliterp">
+            <field name="name">Caja Chica</field>
+            <field name="type">general</field>
+            <field name="code">CJA</field>
+            <field name="sequence_id" ref="seq_eliterp_caja_chica_id"/>
+        </record>
+    </data>
+</odoo>

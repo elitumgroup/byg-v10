@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="reporte_ventas"
+                model="reporte.ventas"
+                string="Reporte de Ventas"
+                report_type="py3o"
+                name="elitum_ventas.reporte_ventas"/>
+        <record id="elitum_ventas.reporte_ventas" model="ir.actions.report.xml">
+            <field name="module">elitum_ventas</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_ventas.ods</field>
+        </record>
+    </data>
+</odoo>

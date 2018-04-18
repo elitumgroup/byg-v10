@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <report id="reporte_cuentas_cobrar"
+                model="reporte.cuentas.cobrar"
+                string="Reporte Cuentas por Cobrar"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cuentas_cobrar"/>
+
+        <record id="elitum_financiero.reporte_cuentas_cobrar" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cuentas_cobrar.ods</field>
+        </record>
+
+
+        <report id="reporte_cuentas_cobrar_completo"
+                model="reporte.cuentas.cobrar"
+                string="Reporte Cuentas por Cobrar"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cuentas_cobrar_completo"/>
+
+        <record id="elitum_financiero.reporte_cuentas_cobrar_completo" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cuentas_cobrar_completo.ods</field>
+        </record>
+
+
+        <report id="reporte_cuentas_pagar"
+                model="reporte.cuentas.pagar"
+                string="Reporte Cuentas por Pagar"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cuentas_pagar"/>
+
+        <record id="elitum_financiero.reporte_cuentas_pagar" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cuentas_pagar.ods</field>
+        </record>
+
+        <report id="reporte_cuentas_pagar_completo"
+                model="reporte.cuentas.pagar"
+                string="Reporte Cuentas por Pagar"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cuentas_pagar_completo"/>
+
+        <record id="elitum_financiero.reporte_cuentas_pagar_completo" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cuentas_pagar_completo.ods</field>
+        </record>
+
+
+        <report id="reporte_cheques_recibidos"
+                model="reporte.cheques.recibidos"
+                string="Reporte Cheques Recibidos"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheques_recibidos"/>
+
+        <record id="elitum_financiero.reporte_cheques_recibidos" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheques_recibidos.ods</field>
+        </record>
+
+         <report id="reporte_cheques_emitidos"
+                model="reporte.cheques.emitidos"
+                string="Reporte Cheques Emitidos"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheques_emitidos"/>
+
+        <record id="elitum_financiero.reporte_cheques_emitidos" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheques_emitidos.ods</field>
+        </record>
+
+        <!--MARZ .ods-->
+        <report id="reporte_pagos_programados"
+                model="reporte.pagos.programados"
+                string="Reporte de Pagos Programados"
+                report_type="py3o"
+                name="elitum_financiero.reporte_pagos_programados"/>
+        <record id="elitum_financiero.reporte_pagos_programados" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_pagos_programados.ods</field>
+        </record>
+        <!--Fin MARZ-->
+    </data>
+</odoo>

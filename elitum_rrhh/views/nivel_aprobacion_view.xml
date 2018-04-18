@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_rrhh_nivel_aprobacion" model="ir.ui.view">
+            <field name="name">eliterp.rrhh.nivel.aprobacion</field>
+            <field name="model">rrhh.nivel.aprobacion</field>
+            <field name="arch" type="xml">
+                <form string="Formulario - Nivel de Aprobación">
+                    <sheet>
+                        <group col="6">
+                            <field name="nivel_1_nomina"/>
+                            <field name="nivel_2_nomina"/>
+                            <field name="tiempo_nomina"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_rrhh_nivel_aprobacion_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.rrhh.nivel.aprobacion.tree.view</field>
+            <field name="model">rrhh.nivel.aprobacion</field>
+            <field name="arch" type="xml">
+                <tree string="Listado - Nivel de Aprobación">
+                    <field name="nivel_1_nomina"/>
+                    <field name="nivel_2_nomina"/>
+                    <field name="tiempo_nomina"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

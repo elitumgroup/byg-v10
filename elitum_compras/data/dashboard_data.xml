@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="elitumgroup.purchases.dashboard" id="elitumgroup_dashboard_historical_bills">
+            <field name="name">Histórico de Facturación</field>
+            <field name="type">bar</field>
+            <field name="type_dashboard">meses</field>
+        </record>
+        <record model="elitumgroup.purchases.dashboard" id="eliterp_dashboard_expense_type">
+            <field name="name">Compras por Tipo de Gasto (Comparativo)</field>
+            <field name="type">bar_stacked</field>
+        </record>
+        <record model="elitumgroup.purchases.dashboard" id="eliterp_dashboard_billing_supplier">
+            <field name="name">Facturas por Proveedor (Acumulado)</field>
+            <field name="type">bar</field>
+            <field name="type_dashboard">proveedores</field>
+        </record>
+    </data>
+</odoo>

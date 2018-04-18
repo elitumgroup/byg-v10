@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="elitum_view_warehouse_form_inherit" model="ir.ui.view">
+            <field name="name">elitum.view.warehouse.form.inherit</field>
+            <field name='model'>stock.warehouse</field>
+            <field name='inherit_id' ref='stock.view_warehouse'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//div[@class='oe_button_box']" position="replace"/>
+                <xpath expr="//form/sheet/label[1]" position="replace"/>
+                <xpath expr="//field[@name='code']" position="attributes">
+                    <attribute name="string">Código</attribute>
+                </xpath>
+                <xpath expr="//form/sheet/group[1]/group[2]" position="after">
+                    <group string="Líneas de Responsables">
+                        <field name="lines_responsables" nolabel="1">
+                            <tree editable='bottom' default_order='prioridad desc'>
+                                <field name="employee_id"
+                                       options="{'no_create':True, 'no_open': True}"
+                                       domain="[('state_laboral','=','activo')]"/>
+                                <field name="departamento" options="{'no_open': True}" readonly="1"/>
+                                <field name="prioridad"/>
+                            </tree>
+                        </field>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

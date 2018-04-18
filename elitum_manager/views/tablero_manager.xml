@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <menuitem name="Aplicaciones"
+                  id="base.menu_management"
+                  web_icon="elitum_manager,static/description/apps.png"
+                  sequence="15"/>
+
+        <menuitem name="Configuraciones"
+                  id="base.menu_administration"
+                  web_icon="elitum_manager,static/description/config.png"
+                  sequence="15"/>
+
+
+        <record id="action_categoria_grupos" model="ir.actions.act_window">
+            <field name="name">Categoria</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">ir.module.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record id="action_manager_odoo" model="ir.actions.act_window">
+            <field name="name">Administracion</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">manager.object</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+
+        <menuitem name="Eliterp"
+                  id="eliterp_config"
+                  parent="base.menu_custom"
+                  sequence="100"/>
+
+        <menuitem id="menu_categoria_de_modelos"
+                  name="Categoria de Grupos"
+                  action="action_categoria_grupos"
+                  parent="eliterp_config"
+                  sequence="1"/>
+
+        <menuitem id="menu_administrador"
+                  name="Administrador"
+                  action="action_manager_odoo"
+                  parent="eliterp_config"
+                  sequence="2"/>
+
+    </data>
+</odoo>
+
+
+
+

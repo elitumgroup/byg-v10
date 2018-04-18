@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Gráficas del Tablero-->
+        <record id="tablero_kanban_tesoreria" model="ir.ui.view">
+            <field name="name">tablero.kanban.tesoreria</field>
+            <field name="model">tesoreria.tablero</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="type"/>
+                    <field name="kanban_dashboard"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(0)}">
+                                <t t-value="JSON.parse(record.kanban_dashboard.raw_value)" t-set="dashboard"/>
+                                <t t-value="record.type.raw_value" t-set="dashboard_type"/>
+                                <t t-value="record.name.raw_value" t-set="dashboard_name"/>
+                                <t t-call="TableroTop"/>
+                                <div class="container o_kanban_card_manage_pane o_invisible">
+                                    <t t-call="JournalManage"/>
+                                </div>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <t t-call="BodyGraph"/>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="TableroTop">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                    <div class="o_secondary" t-att-title="dashboard.title">
+                                        <!--<field name="type"/>-->
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">Más                                        <i class="fa fa-caret-down"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="JournalManage">
+                            <t t-if="dashboard_type == 'bar_stacked' and dashboard_name == 'Facturas de Compras'">
+                                <div class="row">
+                                    <div class="col-xs-3 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>Consultar</span>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree2','type_tablero':'a_pagar','tipo_factura':'compras'}">
+                                                Facturas por Pagar
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree2','type_tablero':'pagadas','tipo_factura':'compras'}">
+                                                Facturas Pagadas
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <span>Saldo Pendiente</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_p_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_p_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagadas_p_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.saldo_p_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_s_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_s_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagadas_s_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.saldo_s_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_t_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagar_t_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.pagadas_t_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.saldo_t_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-if="dashboard_type == 'bar_stacked' and dashboard_name == 'Facturas de Ventas'">
+                                <div class="row">
+                                    <div class="col-xs-3 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title">
+                                            <span>Consultar</span>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree1','type_tablero':'emitidas','tipo_factura':'ventas'}">
+                                                Facturas por Cobrar
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <a type="object"
+                                               name="open_action"
+                                               context="{'action_name': 'action_invoice_tree1','type_tablero':'pagadas','tipo_factura':'ventas'}">
+                                                Facturas Cobradas
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <span>Saldo Pendiente</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_p_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_emitido_p_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_pagado_p_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_saldo_p_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_s_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_emitido_s_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_pagado_s_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_saldo_s_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div class="o_kanban_card_manage_title text-center">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_t_mes_title"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_emitido_t_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_pagado_t_mes"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-xs-12 tex-right">
+                                            <span>
+                                                <t t-esc="dashboard.ventas_saldo_t_mes"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </t>
+                        <t t-name="BodyGraph">
+                            <div class="o_kanban_graph_section">
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar'"
+                                       t-att-graph_type="'bar'"
+                                       widget="dashboard_graph_tesoreria"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'line'"
+                                       t-att-graph_type="'line'"
+                                       widget="dashboard_graph_tesoreria"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'pie'"
+                                       t-att-graph_type="'pie'"
+                                       widget="dashboard_graph_tesoreria"/>
+                                <field name="kanban_dashboard_graph"
+                                       t-if="dashboard_type == 'bar_stacked'"
+                                       t-att-graph_type="'bar_stacked'"
+                                       widget="dashboard_graph_tesoreria"/>
+                            </div>
+                        </t>
+                        <t t-name="JournalBodySalePurchase">
+                            <div class="col-xs-6 o_kanban_primary_right">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <a type="object" name="open_action"
+                                           context="{'search_default_draft': '1', 'search_default_proforma': '1'}">
+                                            <span t-if="journal_type == 'sale'" title="Invoices to validate">
+                                                <t t-esc="dashboard.number_draft"/>
+                                                Invoices to validate
+                                            </span>
+                                            <span t-if="journal_type == 'purchase'" title="Draft bills">
+                                                <t t-esc="dashboard.number_draft"/>
+                                                Draft bills
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <!--<span>Total de Facturas <t t-esc="dashboard.sum_draft"/></span>-->
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <a type="object" name="open_action" context="{'search_default_unpaid': '1'}">
+                                            <span t-if="journal_type == 'sale'" title="Awaiting payments">
+                                                <t t-esc="dashboard.number_waiting"/>
+                                                Awaiting payments
+                                            </span>
+                                            <span t-if="journal_type == 'purchase'" title="Payments to do">
+                                                <t t-esc="dashboard.number_waiting"/>
+                                                Payments to do
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <!--<span>Saldo Pendiente <t t-esc="dashboard.sum_waiting"/></span>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+        <!--Acciones y Vistas-->
+        <record id="open_tablero_tesorera" model="ir.actions.act_window">
+            <field name="name">Resumen de Tesorería</field>
+            <field name="res_model">tesoreria.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_kanban_tablero_tesoreria">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="tablero_kanban_tesoreria"/>
+            <field name="act_window_id" ref="open_tablero_tesorera"/>
+        </record>
+        <record id="open_tablero_tesorera_config" model="ir.actions.act_window">
+            <field name="name">Resumen de Tesorería</field>
+            <field name="res_model">tesoreria.tablero</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="usage">menu</field>
+        </record>
+        <record id="eliterp_action_retencion_ventas" model="ir.actions.act_window">
+            <field name="name">Retención de Venta</field>
+            <field name="res_model">tax.withhold</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type', '=', 'sale')]</field>
+            <field name="context">{'default_type': 'sale', 'type': 'sale'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_retencion_venta">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_retenciones_view_tree_ventas"/>
+            <field name="act_window_id" ref="eliterp_action_retencion_ventas"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_retencion_venta">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_retenciones_view_form_ventas"/>
+            <field name="act_window_id" ref="eliterp_action_retencion_ventas"/>
+        </record>
+        <record id="eliterp_action_retencion_compras" model="ir.actions.act_window">
+            <field name="name">Retención de Compra</field>
+            <field name="res_model">tax.withhold</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type', '=', 'purchase')]</field>
+            <field name="context">{'default_type': 'purchase', 'type': 'purchase'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_retencion_compras">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_retenciones_view_tree_compras"/>
+            <field name="act_window_id" ref="eliterp_action_retencion_compras"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_retencion_compras">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_retenciones_view_form_compras"/>
+            <field name="act_window_id" ref="eliterp_action_retencion_compras"/>
+        </record>
+        <record id="eliterp_action_recibo_cobros1" model="ir.actions.act_window">
+            <field name="name">Comprobante de Ingreso</field>
+            <field name="res_model">account.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('voucher_type','=','sale')]</field>
+            <field name="context">{'default_voucher_type': 'sale', 'voucher_type': 'sale'}</field>
+            <field name="search_view_id" ref="account_voucher.view_voucher_filter_sale"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_recibo_cobros1">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_cuentas_cobrar_tree_form"/>
+            <field name="act_window_id" ref="elitum_financiero.eliterp_action_recibo_cobros1"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_recibo_cobros1">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_voucher.view_sale_receipt_form"/>
+            <field name="act_window_id" ref="elitum_financiero.eliterp_action_recibo_cobros1"/>
+        </record>
+        <record id="eliterp_action_recibo_pagos1" model="ir.actions.act_window">
+            <field name="name">Comprobante de Egreso</field>
+            <field name="res_model">account.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('voucher_type','=','purchase')]</field>
+            <field name="context">{'default_voucher_type': 'purchase', 'voucher_type': 'purchase'}</field>
+            <field name="search_view_id" ref="account_voucher.view_voucher_filter_sale"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_recibo_pagos1">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_cuentas_pagar_tree_form"/>
+            <field name="act_window_id" ref="elitum_financiero.eliterp_action_recibo_pagos1"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_recibo_pagos1">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_cuentas_pagar_view_form_new"/>
+            <field name="act_window_id" ref="elitum_financiero.eliterp_action_recibo_pagos1"/>
+        </record>
+        <record id="eliterp_action_caja_chica_registro_vale" model="ir.actions.act_window">
+            <field name="name">Registro</field>
+            <field name="res_model">petty.cash.voucher</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="eliterp_action_caja_chica_custodio" model="ir.actions.act_window">
+            <field name="name">Custodio de Caja Chica</field>
+            <field name="res_model">petty.cash.custodian</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="eliterp_action_caja_chica_reposicion" model="ir.actions.act_window">
+            <field name="name">Administración</field>
+            <field name="res_model">petty.cash.replacement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="eliterp_action_caja_chica_proveedor" model="ir.actions.act_window">
+            <field name="name">Proveedor de Caja Chica</field>
+            <field name="res_model">petty.cash.supplier</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="account.action_invoice_tree2" model="ir.actions.act_window">
+            <field name="name">Facturas Compras</field>
+            <field name="domain">[]</field>
+            <!--MARZ-->
+            <field name="domain">[('type','=','in_invoice'),('pago_caja_chica','!=',True), ('pago_provision','!=',True)]
+            </field>
+        </record>
+        <record id="account.action_invoice_tree1" model="ir.actions.act_window">
+            <field name="domain">[]</field>
+            <field name="domain">[('type','=','out_invoice')]</field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_action_open_finanzas_viatico_solicitudes" model="ir.actions.act_window">
+            <field name="name">Solicitudes de Viáticos</field>
+            <field name="res_model">eliterp.provision</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', 'in', ('approved', 'managed', 'liquidada')), ('con_sin_solicitud', '=', 'con_solicitud')]</field>
+        </record>
+        <record id="eliterp_action_open_finanzas_viatico_liquidaciones" model="ir.actions.act_window">
+            <field name="name">Liquidaciones de Viáticos</field>
+            <field name="res_model">eliterp.provision.liquidate</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', 'in', ('for_approved', 'approved', 'validate', 'liquidada'))]</field>
+        </record>
+        <menuitem name="Tesorería"
+                  id="eliterp_menu_root_financiero"
+                  web_icon="elitum_financiero,static/description/icon.png"
+                  sequence="9"/>
+        <!--MARZ-->
+        <record id="eliterp_open_solicitud_pago_tree_finanzas" model="ir.actions.act_window">
+            <field name="name">Solicitud de Pago</field>
+            <field name="res_model">eliterp.payment.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','in', ('approved', 'paid'))]</field>
+        </record>
+        <!--Menús-->
+        <menuitem id="menu_contabilidad_tablero_prueba"
+                  name="Tesorería"
+                  action="open_tablero_tesorera"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="-1"/>
+        <menuitem id="menu_cuentas_por_cobrar"
+                  name="Cuentas Por Cobrar"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="1"/>
+        <menuitem id="menu_cobrar_facturas_tablero"
+                  name="Facturas Ventas"
+                  action="account.action_invoice_tree1"
+                  parent="elitum_financiero.menu_cuentas_por_cobrar"
+                  sequence="1"/>
+        <menuitem id="menu_cobrar_cobros_tablero"
+                  name="Cobros"
+                  action="elitum_financiero.eliterp_action_recibo_cobros1"
+                  parent="elitum_financiero.menu_cuentas_por_cobrar"
+                  sequence="2"/>
+        <menuitem id="menu_cobrar_retencion_venta"
+                  name="Retención en Venta"
+                  action="eliterp_action_retencion_ventas"
+                  parent="elitum_financiero.menu_cuentas_por_cobrar"
+                  sequence="2"/>
+        <menuitem id="menu_cuentas_por_pagar"
+                  name="Cuentas Por Pagar"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="2"/>
+        <menuitem id="menu_pagar_facturas_tablero"
+                  name="Facturas Compras"
+                  action="account.action_invoice_tree2"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="1"/>
+        <menuitem id="etierp_menu_pagar_notas_venta"
+                  name="Notas de Venta"
+                  action="elitum_compras.action_invoice_nota_venta_pending"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="2"/>
+        <menuitem id="menu_pagar_pagos_tablero"
+                  name="Pagos"
+                  action="eliterp_action_recibo_pagos1"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="3"/>
+        <menuitem id="menu_pagar_retencion_venta"
+                  name="Retención en Compra"
+                  action="eliterp_action_retencion_compras"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="4"/>
+        <!--MARZ-->
+        <menuitem id="menu_finanzas_solicitudes_pagos"
+                  name="Solicitud de Pago"
+                  action="eliterp_open_solicitud_pago_tree_finanzas"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="5"/>
+        <menuitem id="eiterp_menu_finanzas_viaticos"
+                  name="Viáticos"
+                  parent="elitum_financiero.menu_cuentas_por_pagar"
+                  sequence="6"/>
+        <menuitem id="eiterp_menu_finanzas_viaticos_solicitudes"
+                  name="Solicitudes"
+                  action="eliterp_action_open_finanzas_viatico_solicitudes"
+                  parent="eiterp_menu_finanzas_viaticos"
+                  sequence="1"/>
+        <menuitem id="eiterp_menu_finanzas_viaticos_liquidaciones"
+                  name="Liquidaciones"
+                  action="eliterp_action_open_finanzas_viatico_liquidaciones"
+                  parent="eiterp_menu_finanzas_viaticos"
+                  sequence="2"/>
+        <menuitem id="menu_caja_chica"
+                  name="Caja Chica"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="3"/>
+        <menuitem id="menu_caja_chica_reposicion"
+                  name="Administración"
+                  action="eliterp_action_caja_chica_reposicion"
+                  parent="menu_caja_chica"
+                  sequence="1"/>
+        <menuitem id="menu_caja_chica_registro_vale"
+                  name="Registro"
+                  action="eliterp_action_caja_chica_registro_vale"
+                  parent="menu_caja_chica"
+                  sequence="2"/>
+        <menuitem id="menu_reportes_financiero"
+                  name="Reportes"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="6"/>
+        <record id="action_reporte_cuentas_cobrar_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Cuentas por Cobrar</field>
+            <field name="res_model">reporte.cuentas.cobrar</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_financiero.eliterp_reporte_cuentas_cobrar_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_cuentas_cobrar_wizard"
+                  name="Cuentas Por Cobrar"
+                  action="action_reporte_cuentas_cobrar_wizard"
+                  parent="menu_reportes_financiero"
+                  sequence="1"/>
+        <record id="action_reporte_cuentas_pagar_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Cuentas por Pagar</field>
+            <field name="res_model">reporte.cuentas.pagar</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_financiero.eliterp_reporte_cuentas_pagar_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_cuentas_pagar_wizard"
+                  name="Cuentas Por Pagar"
+                  action="action_reporte_cuentas_pagar_wizard"
+                  parent="menu_reportes_financiero"
+                  sequence="2"/>
+        <record id="action_reporte_cheques_recibidos_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Cheques Recibidos</field>
+            <field name="res_model">reporte.cheques.recibidos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_financiero.eliterp_reporte_cheques_recibidos_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_cheques_recibidos_wizard"
+                  name="Cheques Recibidos"
+                  action="action_reporte_cheques_recibidos_wizard"
+                  parent="menu_reportes_financiero"
+                  sequence="3"/>
+        <record id="action_reporte_cheques_emitidos_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Cheques Emitidos</field>
+            <field name="res_model">reporte.cheques.emitidos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_financiero.eliterp_reporte_cheques_emitidos_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_cheques_emitidos_wizard"
+                  name="Cheques Emitidos"
+                  action="action_reporte_cheques_emitidos_wizard"
+                  parent="menu_reportes_financiero"
+                  sequence="4"/>
+        <!--MARZ-->
+        <record id="action_reporte_pagos_programados_wizard" model="ir.actions.act_window">
+            <field name="name">Reporte de Pagos Programados</field>
+            <field name="res_model">reporte.pagos.programados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_financiero.eliterp_reporte_pagos_programados_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="reporte_pagos_programados_wizard"
+                  name="Pagos Programados"
+                  action="action_reporte_pagos_programados_wizard"
+                  parent="menu_reportes_financiero"
+                  sequence="5"/>
+        <record id="eliterp_action_pago_programado" model="ir.actions.act_window">
+            <field name="name">Pago Programado</field>
+            <field name="res_model">account.invoice.payment.scheduled</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+        </record>
+        <!--Fin MARZ-->
+        <menuitem id="menu_tesoreria_reportes_control_cheques"
+                  name="Consulta Cheques"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="5"/>
+        <menuitem id="menu_tesoreria_reportes_control_cheques_recibidos"
+                  name="Recibidos"
+                  parent="menu_tesoreria_reportes_control_cheques"
+                  action="elitum_contabilidad.action_cheques_eliterp_recibidos"
+                  sequence="1"/>
+        <menuitem id="menu_tesoreria_reportes_control_cheques_emitidos"
+                  name="Emitidos"
+                  parent="menu_tesoreria_reportes_control_cheques"
+                  action="elitum_contabilidad.action_cheques_eliterp_emitidos"
+                  sequence="2"/>
+        <record id="eliterp_action_reporte_flujo_caja" model="ir.actions.act_window">
+            <field name="name">Flujo de Caja</field>
+            <field name="res_model">account.reporte.flujo.caja</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <menuitem id="menu_tesoreria_config"
+                  name="Configuración"
+                  parent="elitum_financiero.eliterp_menu_root_financiero"
+                  sequence="7"/>
+        <menuitem id="menu_tesoreia_tablero_config"
+                  name="Configuración de Tablero"
+                  action="open_tablero_tesorera_config"
+                  parent="menu_tesoreria_config"
+                  sequence="1"/>
+        <menuitem id="menu_caja_chica_config"
+                  name="Caja Chica"
+                  parent="menu_tesoreria_config"
+                  sequence="2"/>
+        <menuitem id="menu_caja_chica_custodio_config"
+                  name="Custodio Caja Chica"
+                  action="eliterp_action_caja_chica_custodio"
+                  parent="menu_tesoreria_config"
+                  sequence="1"/>
+        <!--
+        MARZ
+        <menuitem id="menu_contabilidad_reportes_caja_chica"
+                  name="Control Caja Chica"
+                  parent="account.menu_finance_reports"
+                  sequence="2"/>
+        <menuitem id="menu_contabilidad_reportes_control_caja_chica"
+                  name="Caja Chica"
+                  parent="menu_contabilidad_reportes_caja_chica"
+                  action="eliterp_action_caja_chica_reposicion"
+                  sequence="1"/>
+        -->
+    </data>
+</odoo>

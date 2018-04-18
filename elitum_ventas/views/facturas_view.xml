@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="eliterp_account_invoice_form">
+            <field name="name">Account Invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='user_id']" position="attributes">
+                        <attribute name="string">Asesor</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='payment_term_id']" position="before">
+                        <field name="payment_metod_ec"/>
+                    </xpath>
+                    <xpath expr="//field[@name='payment_term_id']" position="after">
+                        <label for="descuento_global" string="Descuento Global"/>
+                        <div class="o_address_format">
+                            <field name="descuento_global" class="o_address_city"/>
+                            <field name="descuento_global_amount"
+                                   attrs="{'invisible':[('descuento_global','=',False)]}"
+                                   placeholder="Descuento"
+                                   style="width: 50px;"
+                                   class="o_address_city"/>(%)
+                            <button name="aplicar_descuento_global"
+                                    type="object"
+                                    attrs="{'invisible':[('descuento_global','=',False)]}"
+                                    class="btn-primary"
+                                    string="Aplicar"/>
+                        </div>
+                        <!--MARZ - Anticipo de Pedido-->
+                        <field name="is_anticipo"
+                               attrs="{'invisible': ['|', ('type', '=', 'in_refund'), ('origin', '!=', False)]}"/>
+                        <field name="pedido_relacionado"
+                               options="{'no_create': True}"
+                               attrs="{'invisible': [('is_anticipo', '=', False)], 'required':[('is_anticipo', '=', True)]}"
+                               domain="[('state_pedido_eliterp','in', ('order', 'invoice_parcial')), ('partner_id','=', partner_id)]"/>
+                        <field name="porcentaje_anticipo"
+                               attrs="{'invisible': [('is_anticipo', '=', False)], 'required':[('is_anticipo', '=', True)]}"/>
+                        <field name="operaciones_pedido" invisible="1"/>
+                        <field name="saldo_pendiente_pedido"
+                               attrs="{'invisible': ['|', ('is_anticipo', '=', False), ('saldo_pendiente_pedido', '=', 0)]}"/>
+                    </xpath>
+                    <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                        <attribute name="string">Condición de Pago</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_untaxed']" position="before">
+                        <field name="base_cero_iva"/>
+                        <field name="base_gravada"/>
+                        <field name="total_discount"/>
+                    </xpath>
+                    <xpath expr="//field[@name='amount_untaxed']" position="attributes">
+                        <attribute name="string">Subtotal</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_id']"
+                           position="attributes">
+                        <attribute name="options">{'no_create': True}</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_id']"
+                           position="attributes">
+                        <attribute name="options">{'no_create': True}</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='invoice_line_ids']/tree" position="replace">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="name"/>
+                            <field name="price_unit" string="Precio Unitario"/>
+                            <field name="discount"/>
+                            <field name="invoice_line_tax_ids"
+                                   widget="many2many_tags"
+                                   context="{'type':parent.type}"
+                                   domain="[('type_tax_use','=','sale'),('tipo_impuesto','=','iva'),('company_id', '=', parent.company_id)]"
+                                   options="{'no_create': True}"/>
+                            <field name="price_subtotal" string="Subtotal"/>
+                            <field name="sequence" widget="handle"/>
+                            <field name="origin" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="account_id"
+                                   invisible="1"
+                                   domain="[('company_id', '=', parent.company_id), ('internal_type', '=', 'other')]"/>
+                            <field name="account_analytic_id" invisible="1"
+                                   domain="[('company_id', '=', parent.company_id)]"/>
+                            <field name="analytic_tag_ids" invisible="1"/>
+                            <field name="uom_id" invisible="1"/>
+                            <field name="currency_id" invisible="1"/>
+                        </tree>
+                    </xpath>
+                    <field name="date_due" position="replace"/>
+                    <xpath expr="//field[@name='date_invoice']" position="after">
+                        <field name="date_due" string="Fecha Vencimiento"
+                               modifiers="{'readonly': [['state', 'not in', ['draft']]]}"/>
+                    </xpath>
+                    <field name="fiscal_position_id" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </field>
+                    <xpath expr="//page[@name='other_info']/group/group/field[@name='name']" position="attributes">
+                        <attribute name="modifiers"></attribute>
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        <record id="eliterp_factura_view_form_proveedor" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.form.proveedor</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_due']" position="after">
+                    <field name="payment_metod_ec" string="Forma de Pago"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

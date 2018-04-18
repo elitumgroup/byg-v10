@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <menuitem id="stock.menu_stock_root"
+                  name="Inventario"
+                  web_icon="elitum_inventario,static/description/icon.png"
+                  sequence="4"/>
+        <menuitem id="menu_inventario_tablero"
+                  name="Inventario"
+                  action="board.open_board_my_dash_action"
+                  parent="stock.menu_stock_root"
+                  sequence="-1"/>
+        <record id="eliterp_ingresos_tree" model="ir.ui.view">
+            <field name="name">eliterp.ingresos.tree</field>
+            <field name='model'>stock.picking</field>
+            <field name='arch' type='xml'>
+                <tree decoration-info="state == 'draft'"
+                      decoration-danger="state not in ('cancel', 'done') and min_date &lt; current_date"
+                      string="Ingresos">
+                    <field name="name"/>
+                    <field name="min_date" string="Fecha"/>
+                    <field name="origin" string="Documento Origen"/>
+                    <field name="cliente_id" invisible="1"/>
+                    <field name="partner_id" string="Proveedor"/>
+                    <field name="location_dest_id"/>
+                    <field name="date" invisible="1"/>
+                    <field name="group_id" invisible="1"/>
+                    <field name="backorder_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="priority" invisible="1"/>
+                    <field name="picking_type_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_ingreso_inventario_eliterp" model="ir.actions.act_window">
+            <field name="name">Ingresos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_picking_type_id':1,'default_tipo_operacion':'ingreso'}</field>
+            <field name="domain">[('tipo_operacion','=','ingreso')]</field>
+        </record>
+        <record id="open_ingresos_eliterp_tree_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_inventario.eliterp_ingresos_tree"/>
+            <field name="act_window_id" ref="action_ingreso_inventario_eliterp"/>
+        </record>
+        <record id="open_ingresos_eliterp_form_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_picking_form"/>
+            <field name="act_window_id" ref="action_ingreso_inventario_eliterp"/>
+        </record>
+        <menuitem id="menu_ingresos_eliterp"
+                  name="Ingresos"
+                  action="action_ingreso_inventario_eliterp"
+                  parent="stock.menu_stock_inventory_control"
+                  sequence="6"/>
+        <record id="eliterp_egresos_tree" model="ir.ui.view">
+            <field name="name">eliterp.egresos.tree</field>
+            <field name='model'>stock.picking</field>
+            <field name='arch' type='xml'>
+                <tree decoration-info="state == 'draft'"
+                      decoration-muted="state == 'cancel'"
+                      decoration-danger="state not in ('cancel', 'done') and min_date &lt; current_date"
+                      string="Egresos">
+                    <field name="name"/>
+                    <field name="min_date" string="Fecha"/>
+                    <field name="origin" string="Documento Origen"/>
+                    <field name="cliente_id" string="Cliente"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="location_dest_id"/>
+                    <field name="date" invisible="1"/>
+                    <field name="group_id" invisible="1"/>
+                    <field name="backorder_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="priority" invisible="1"/>
+                    <field name="picking_type_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_egresos_inventario_eliterp" model="ir.actions.act_window">
+            <field name="name">Egresos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_picking_type_id':4,'default_tipo_operacion':'egreso'}</field>
+            <field name="domain">[('tipo_operacion','=','egreso')]</field>
+        </record>
+        <record id="open_egresos_eliterp_tree_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_inventario.eliterp_egresos_tree"/>
+            <field name="act_window_id" ref="action_egresos_inventario_eliterp"/>
+        </record>
+        <record id="open_egresos_eliterp_form_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_picking_form"/>
+            <field name="act_window_id" ref="action_egresos_inventario_eliterp"/>
+        </record>
+        <menuitem id="menu_egresos_eliterp"
+                  name="Egresos"
+                  action="action_egresos_inventario_eliterp"
+                  parent="stock.menu_stock_inventory_control"
+                  sequence="7"/>
+        <record id="eliterp_transferencias_tree" model="ir.ui.view">
+            <field name="name">eliterp.transferencias.tree</field>
+            <field name='model'>stock.picking</field>
+            <field name='arch' type='xml'>
+                <tree decoration-info="state == 'draft'"
+                      decoration-muted="state == 'cancel'"
+                      decoration-danger="state not in ('cancel', 'done') and min_date &lt; current_date"
+                      string="Transferencias">
+                    <field name="name"/>
+                    <field name="min_date" string="Fecha"/>
+                    <field name="origin" string="Documento Origen"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="responsable_bodega_id_origin"/>
+                    <field name="location_id"/>
+                    <field name="responsable_bodega_id_destino"/>
+                    <field name="location_dest_id"/>
+                    <field name="date" invisible="1"/>
+                    <field name="group_id" invisible="1"/>
+                    <field name="backorder_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="priority" invisible="1"/>
+                    <field name="picking_type_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_transferencias_inventario_eliterp" model="ir.actions.act_window">
+            <field name="name">Transferencias</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_picking_type_id':5,'default_tipo_operacion':'transferencia'}</field>
+            <field name="domain">[('tipo_operacion','=','transferencia')]</field>
+        </record>
+        <record id="open_transferencias_eliterp_tree_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="0"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_inventario.eliterp_transferencias_tree"/>
+            <field name="act_window_id" ref="action_transferencias_inventario_eliterp"/>
+        </record>
+        <record id="open_transferencias_eliterp_form_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="stock.view_picking_form"/>
+            <field name="act_window_id" ref="action_transferencias_inventario_eliterp"/>
+        </record>
+        <menuitem id="menu_transferencias_eliterp"
+                  name="Transferencias"
+                  action="action_transferencias_inventario_eliterp"
+                  parent="stock.menu_stock_inventory_control"
+                  sequence="9"/>
+        <!-- No relevante
+            <menuitem id="menu_rutas_eliterp"
+                  name="Rutas"
+                  action="stock.action_routes_form"
+                  parent="stock.menu_stock_config_settings"
+                  sequence="6"/>
+        -->
+        <menuitem id="menu_unidades_medida_eliterp"
+                  name="Unidades de Medida"
+                  action="product.product_uom_form_action"
+                  parent="stock.menu_product_in_config_stock"
+                  sequence="10"/>
+        <!--Se repite al activar locaciones
+            <menuitem id="menu_tipo_operaciones_eliterp"
+                      name="Tipos de Operaciones"
+                      action="stock.action_picking_type_list"
+                      parent="stock.menu_stock_config_settings"
+                      sequence="8"/>
+        -->
+        <record id="action_codigo_producto_eliterp" model="ir.actions.act_window">
+            <field name="name">Código de Productos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">codigo.producto.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="menu_codigo_producto_eliterp"
+                  name="Código de Productos"
+                  action="action_codigo_producto_eliterp"
+                  parent="stock.menu_stock_config_settings"
+                  sequence="30"/>
+    </data>
+</odoo>

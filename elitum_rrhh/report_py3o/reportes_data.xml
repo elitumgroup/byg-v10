@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="reporte_empleados"
+                model="reporte.empleados"
+                string="Reporte Empleados"
+                report_type="py3o"
+                name="elitum_rrhh.reporte_empleados"/>
+        <record id="elitum_rrhh.reporte_empleados" model="ir.actions.report.xml">
+            <field name="module">elitum_rrhh</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_empleados.ods</field>
+        </record>
+        <!--MARZ-->
+        <report id="reporte_107"
+                model="reporte.107"
+                string="Reporte del Formulario 107"
+                report_type="py3o"
+                name="elitum_rrhh.reporte_107"/>
+        <record id="elitum_rrhh.reporte_107" model="ir.actions.report.xml">
+            <field name="module">elitum_rrhh</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_107.ods</field>
+        </record>
+        <report id="reporte_ausencias"
+                model="reporte.ausencias"
+                string="Reporte Ausencias"
+                report_type="py3o"
+                name="elitum_rrhh.reporte_ausencias"/>
+        <record id="elitum_rrhh.reporte_ausencias" model="ir.actions.report.xml">
+            <field name="module">elitum_rrhh</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_ausencias.ods</field>
+        </record>
+        <report id="reporte_vacaciones_personal"
+                model="reporte.vacaciones.personal"
+                string="Reporte Vacaciones Personal"
+                report_type="py3o"
+                name="elitum_rrhh.reporte_vacaciones_personal"/>
+        <record id="elitum_rrhh.reporte_vacaciones_personal" model="ir.actions.report.xml">
+            <field name="module">elitum_rrhh</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_vacaciones_personal.ods</field>
+        </record>
+        <report id="reporte_107_consolidado"
+                model="reporte.107.consolidado"
+                string="Reporte de Impuesto a la Renta"
+                report_type="py3o"
+                name="elitum_rrhh.reporte_107_consolidado"/>
+        <record id="elitum_rrhh.reporte_107_consolidado" model="ir.actions.report.xml">
+            <field name="module">elitum_rrhh</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_107_consolidado.ods</field>
+        </record>
+    </data>
+</odoo>

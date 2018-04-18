@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!--eliterp.tabla.impuesto.renta-->
+        <record id="eliterp_data_tabla_impuesto_renta_1" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">0</field>
+            <field name="exceso_hasta">11290</field>
+            <field name="impuesto_fraccion_basica">0</field>
+            <field name="impuesto_fraccion_excedente">0</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_2" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">11290</field>
+            <field name="exceso_hasta">14390</field>
+            <field name="impuesto_fraccion_basica">0</field>
+            <field name="impuesto_fraccion_excedente">5</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_3" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">14390</field>
+            <field name="exceso_hasta">17990</field>
+            <field name="impuesto_fraccion_basica">155</field>
+            <field name="impuesto_fraccion_excedente">10</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_4" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">17990</field>
+            <field name="exceso_hasta">21600</field>
+            <field name="impuesto_fraccion_basica">515</field>
+            <field name="impuesto_fraccion_excedente">12</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_5" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">21600</field>
+            <field name="exceso_hasta">43190</field>
+            <field name="impuesto_fraccion_basica">948</field>
+            <field name="impuesto_fraccion_excedente">15</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_6" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">43190</field>
+            <field name="exceso_hasta">64770</field>
+            <field name="impuesto_fraccion_basica">4187</field>
+            <field name="impuesto_fraccion_excedente">20</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_7" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">64770</field>
+            <field name="exceso_hasta">86370</field>
+            <field name="impuesto_fraccion_basica">8503</field>
+            <field name="impuesto_fraccion_excedente">25</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_8" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">86370</field>
+            <field name="exceso_hasta">115140</field>
+            <field name="impuesto_fraccion_basica">13903</field>
+            <field name="impuesto_fraccion_excedente">30</field>
+        </record>
+        <record id="eliterp_data_tabla_impuesto_renta_9" model="eliterp.tabla.impuesto.renta">
+            <field name="fraccion_basica">115140</field>
+            <field name="exceso_hasta">0</field>
+            <field name="impuesto_fraccion_basica">22534</field>
+            <field name="impuesto_fraccion_excedente">35</field>
+        </record>
+        <!--rise.category-->
+        <record id="eliterp_data_rise_category_1" model="rise.category">
+            <field name="name">1</field>
+            <field name="min_amount">0</field>
+            <field name="max_amount">5000</field>
+        </record>
+        <record id="eliterp_data_rise_category_2" model="rise.category">
+            <field name="name">2</field>
+            <field name="min_amount">5001</field>
+            <field name="max_amount">10000</field>
+        </record>
+        <record id="eliterp_data_rise_category_3" model="rise.category">
+            <field name="name">3</field>
+            <field name="min_amount">10001</field>
+            <field name="max_amount">20000</field>
+        </record>
+        <record id="eliterp_data_rise_category_4" model="rise.category">
+            <field name="name">4</field>
+            <field name="min_amount">20001</field>
+            <field name="max_amount">30000</field>
+        </record>
+        <record id="eliterp_data_rise_category_5" model="rise.category">
+            <field name="name">5</field>
+            <field name="min_amount">30001</field>
+            <field name="max_amount">40000</field>
+        </record>
+        <record id="eliterp_data_rise_category_6" model="rise.category">
+            <field name="name">6</field>
+            <field name="min_amount">40001</field>
+            <field name="max_amount">50000</field>
+        </record>
+        <record id="eliterp_data_rise_category_7" model="rise.category">
+            <field name="name">7</field>
+            <field name="min_amount">50001</field>
+            <field name="max_amount">60000</field>
+        </record>
+        <!--rise.activity-->
+        <record id="eliterp_data_rise_activity_1" model="rise.activity">
+            <field name="name">Comercio</field>
+        </record>
+        <record id="eliterp_data_rise_activity_2" model="rise.activity">
+            <field name="name">Hoteles y Restaurantes</field>
+        </record>
+        <record id="eliterp_data_rise_activity_3" model="rise.activity">
+            <field name="name">Servicio</field>
+        </record>
+        <record id="eliterp_data_rise_activity_4" model="rise.activity">
+            <field name="name">Manufactura</field>
+        </record>
+        <record id="eliterp_data_rise_activity_5" model="rise.activity">
+            <field name="name">Transporte</field>
+        </record>
+        <record id="eliterp_data_rise_activity_6" model="rise.activity">
+            <field name="name">Construcción</field>
+        </record>
+        <record id="eliterp_data_rise_activity_7" model="rise.activity">
+            <field name="name">Agrícolas</field>
+        </record>
+        <record id="eliterp_data_rise_activity_8" model="rise.activity">
+            <field name="name">Minas y Canteras</field>
+        </record>
+        <!--rise.category.activity-->
+        <!--1-->
+        <record id="eliterp_data_rise_category_activity_1_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">150</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">150</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">400</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">400</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">400</field>
+        </record>
+        <!--2-->
+        <record id="eliterp_data_rise_category_activity_2_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">150</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_2_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">150</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_2_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_2_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_2_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">400</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_2_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_2"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">400</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_1_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_1"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">400</field>
+        </record>
+        <!--3-->
+        <record id="eliterp_data_rise_category_activity_3_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_3_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_3"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">600</field>
+        </record>
+        <!--4-->
+        <record id="eliterp_data_rise_category_activity_4_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_4_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_4"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">600</field>
+        </record>
+        <!--5-->
+        <record id="eliterp_data_rise_category_activity_5_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">200</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">350</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">600</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_5_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_5"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">600</field>
+        </record>
+        <!--6-->
+        <record id="eliterp_data_rise_category_activity_6_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">1000</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">1000</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_6_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_6"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">1000</field>
+        </record>
+        <!--7-->
+        <record id="eliterp_data_rise_category_activity_7_1" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_1"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_2" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_2"/>
+            <field name="max_amount">250</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_3" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_3"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_4" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_4"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_5" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_5"/>
+            <field name="max_amount">450</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_6" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_6"/>
+            <field name="max_amount">1000</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_7" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_7"/>
+            <field name="max_amount">1000</field>
+        </record>
+        <record id="eliterp_data_rise_category_activity_7_8" model="rise.category.activity">
+            <field name="category_id" ref="eliterp_data_rise_category_7"/>
+            <field name="activity_id" ref="eliterp_data_rise_activity_8"/>
+            <field name="max_amount">1000</field>
+        </record>
+    </data>
+</odoo>

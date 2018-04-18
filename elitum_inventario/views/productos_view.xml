@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="codigo_producto_eliterp_form" model="ir.ui.view">
+            <field name="name">eliterp.producto.eliterp.form</field>
+            <field name="model">codigo.producto.eliterp</field>
+            <field name="arch" type="xml">
+                <form string="Codigo de Productos" create="false">
+                    <sheet>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="sequence_id" readonly="1"/>
+                        </group>
+                        <group string="Línea de Productos">
+                            <field name="lines_productos_ids" readonly="1" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="codigo_producto_eliterp_tree" model="ir.ui.view">
+            <field name="name">eliterp.producto.eliterp.tree</field>
+            <field name="model">codigo.producto.eliterp</field>
+            <field name="arch" type="xml">
+                <tree create="false">
+                    <field name="name" string="Secuencia"/>
+                    <field name="cantidad"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_producto_reabastecimiento_view_form" model="ir.ui.view">
+            <field name="name">eliterp.producto.reabastecimiento.view.form</field>
+            <field name='model'>stock.warehouse.orderpoint</field>
+            <field name='inherit_id' ref='stock.view_warehouse_orderpoint_form'/>
+            <field name='arch' type='xml'>
+                <field name="product_id" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_producto_tree_form_1" model="ir.ui.view">
+            <field name="name">eliterp.producto.tree.form.1</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='stock.view_stock_product_template_tree'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='qty_available']" position="attributes">
+                    <attribute name="string">Stock</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='virtual_available']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_producto_tree_form" model="ir.ui.view">
+            <field name="name">eliterp.producto.tree.form</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='product.product_template_tree_view'/>
+            <field name='arch' type='xml'>
+                <tree position="replace">
+                    <tree string="Product">
+                        <field name="sequence" widget="handle"/>
+                        <field name="default_code" string="Código de Producto"/>
+                        <field name="name"/>
+                        <field name="type" string="Tipo de Producto"/>
+                        <field name="categ_id" string="Categoría"/>
+                        <field name="uom_id" options="{'no_open': True, 'no_create': True}"/>
+                        <field name="standard_price"/>
+                        <field name="active" invisible="1"/>
+                        <field name="list_price" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_template_form1" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.template.form</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='product.product_template_form_view'/>
+            <field name='arch' type='xml'>
+                <field name="list_price" position="before">
+                    <!-- Producción-->
+                    <label for="weight" invisible="1"/>
+                    <div name="weight" invisible="1">
+                        <field name="weight" style="width:10%"/>
+                    </div>
+                    <label for="volume" invisible="1"/>
+                    <div class="o_row" name="volume" invisible="1">
+                        <field name="volume" style="width:10%" string="Volumen" modifiers="{}"/>
+                    </div>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_template_form" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.template.form</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='product.product_template_only_form_view'/>
+            <field name='arch' type='xml'>
+                <!--MARZ - Primero reemplazamos-->
+                <xpath expr="//field[@name='taxes_id']" position="replace"/>
+                <xpath expr="//field[@name='supplier_taxes_id']" position="replace"/>
+                <field name="route_ids" position="attributes">
+                    <attribute name="string">Origen Abastecimiento</attribute>
+                </field>
+                <page name="notes" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
+                <xpath expr="//notebook/page[1]" position="attributes">
+                    <attribute name="string">Información General</attribute>
+                </xpath>
+                <xpath expr="//page[@name='general_information']/group" position="after">
+                    <separator string="Descripción"/>
+                    <group>
+                        <field name="description" nolabel="1"/>
+                    </group>
+                </xpath>
+                <field name="default_code" position="replace"/>
+                <group name="group_lots_and_weight" position="replace"/>
+                <field name="categ_id" position="replace"/>
+                <field name="barcode" position="replace">
+                    <field name="categ_id" string="Categoría"
+                           on_change="1"
+                           can_create="true"
+                           can_write="true"
+                           modifiers="{'required': true}"/>
+                    <field name="linea_producto_id" context="{'default_level_upper':categ_id}"
+                           domain="[('level_upper', '=', categ_id)]"/>
+                    <field name="sub_linea_producto_id" context="{'default_level_upper':linea_producto_id}"
+                           domain="[('level_upper', '=', linea_producto_id)]"/>
+                    <field name="default_code"
+                           attrs="{'invisible': [('product_variant_count', '&gt;', 1)]}"
+                           string="Código de Producto" placeholder="Autogenerado"
+                           modifiers="{'invisible': [['product_variant_count', '&gt;', 1]]}"/>
+                    <field name="barcode" invisible="1"/>
+                    <!--MARZ-->
+                    <field name="taxes_id"
+                           widget="many2many_tags"
+                           string="Impuestos de Venta"
+                           domain="[('type_tax_use','=','sale')]"
+                           attrs="{'invisible': [('sale_ok','=', False)]}"/>
+                    <field name="supplier_taxes_id"
+                           widget="many2many_tags"
+                           string="Impuestos de Compra"
+                           domain="[('type_tax_use','=','purchase'),('tipo_impuesto','=','iva')]"
+                           attrs="{'invisible': [('purchase_ok','=', False)], 'readonly':[('purchase_ok','=',0)]}"/>
+
+                </field>
+                <page name="sales" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
+                <page name="invoicing" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </page>
+                <xpath expr="//notebook/page[2]/group[@name='inventory']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[2]" position="attributes">
+                    <attribute name="string">Proveedores</attribute>
+                </xpath>
+                <field name="seller_ids" position="replace">
+                    <field name="seller_ids"
+                           context="{'default_product_tmpl_id': context.get('product_tmpl_id', active_id)}"
+                           modifiers="{}">
+                        <tree>
+                            <field name="name"/>
+                            <field name="min_qty" string="Cantidad Mínima"/>
+                            <field name="price"/>
+                            <field name="delay" string="Tiempo de Entrega"/>
+                        </tree>
+                    </field>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_template_form10" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.template.form10</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='purchase.view_product_supplier_inherit'/>
+            <field name='arch' type='xml'>
+                <field name="purchase_method" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_category_form10" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.category.form10</field>
+            <field name='model'>product.category</field>
+            <field name='inherit_id' ref='stock_account.view_category_property_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//group/group" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <group name="account_stock_property" position="attributes">
+                    <attribute name="string">Propiedades Cta. De Inventario</attribute>
+                </group>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_category_form11" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.category.form11</field>
+            <field name='model'>product.category</field>
+            <field name='inherit_id' ref='purchase.view_category_property_form'/>
+            <field name='arch' type='xml'>
+                <field name="property_account_creditor_price_difference_categ" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </field>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_categoria_form" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.categoria.form</field>
+            <field name='model'>product.category</field>
+            <field name='inherit_id' ref='product.product_category_form_view'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//group[@name='first']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//sheet/group[1]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_categoria_producto_view_form" model="ir.ui.view">
+            <field name="name">eliterp.categoria.producto.view.form</field>
+            <field name='model'>product.category</field>
+            <field name='inherit_id' ref='account.view_category_property_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//group[@name='account_property']" position="attributes">
+                    <attribute name="groups"></attribute>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_prodcuto_categoria_form1" model="ir.ui.view">
+            <field name="name">eliterp.prodcuto.categoria.form1</field>
+            <field name='model'>product.category</field>
+            <field name='inherit_id' ref='stock.product_category_form_view_inherit'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//group[2]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <!--MARZ-->
+        <record id="elitum_producto_template_form_view_100" model="ir.ui.view">
+            <field name="name">elitum.producto.template.form.view.100</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='product.product_template_form_view'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//field[@name='list_price']" position="attributes">
+                    <attribute name="string">Precio Venta Referencial</attribute>
+                    <attribute name="attrs">{'invisible':[('sale_ok','=', False )]}</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="elitum_producto_botones_production"
+                model="ir.ui.view"> <!--Eliminamos botones de MRP, por el momento-->
+            <field name="name">elitum.producto.botones.production</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='mrp.product_template_form_view_bom_button'/>
+            <field name='arch' type='xml'>
+                <button name="%(mrp.template_open_bom)d" position="replace"/>
+                <button name="action_view_mos" position="replace"/>
+            </field>
+        </record>
+        <record id="elitum_product_template_view_form_20" model="ir.ui.view">
+            <field name="name">elitum.product.template.view.form.20</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='product.product_template_form_view'/>
+            <field name='arch' type='xml'>
+                <!--xpath expr="//field[@name='standard_price']" position="attributes">
+                    <attribute name="string">Precio Compra Referencial</attribute>
+                    <attribute name="attrs">{'invisible':[('purchase_ok','=', False )]}</attribute>
+                </xpath>-->
+                <xpath expr="//div[@class='oe_title']/label" position="replace"/>
+                <field name="company_id" position="before"> <!--Campo invisible-->
+                    <field name="presentation"
+                           attrs="{'invisible':['|', ('type', '=', 'service'), ('product_variant_count', '&gt;', 1)]}"/>
+                    <field name="category_uom_id"
+                           attrs="{'invisible':['|', ('type', '=', 'service'), ('product_variant_count', '&gt;', 1)],
+                           'required':[('type', 'in', ('consu', 'product'))]}"/>
+
+                </field>
+                <xpath expr="//field[@name='uom_id']" position="attributes"> <!--Venta-->
+                    <attribute name="domain">[('category_id', '=', category_uom_id)]</attribute>
+                    <attribute name="attrs">{'invisible':['|', ('sale_ok','=', False ), ('type', '=', 'service')]}
+                    </attribute>
+                </xpath>
+                <xpath expr="//field[@name='uom_po_id']" position="attributes"> <!--Compra-->
+                    <attribute name="string">Unidad de Medida (Compra)</attribute>
+                    <attribute name="domain">[('category_id', '=', category_uom_id)]</attribute>
+                    <attribute name="attrs">{'invisible':['|', ('purchase_ok','=', False ), ('type', '=', 'service')]}
+                    </attribute>
+                </xpath>
+                <field name="uom_id" position="before">
+                    <field name="medida_producto"
+                           attrs="{'invisible':['|', ('type', '=', 'service'), ('product_variant_count', '&gt;', 1)]}"/>
+                </field>
+            </field>
+        </record>
+        <!--<record id="elitum_product_botones_compras_form_10" model="ir.ui.view">
+            <field name="name">elitum.product.botones.compras.form.10</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='purchase.view_product_template_purchase_buttons_from'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//button[@name='440']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('purchase_ok','=', False )]}</attribute>
+                </xpath>
+            </field>
+        </record>-->
+        <record id="elitum_product_botones_ventas_form_10" model="ir.ui.view">
+            <field name="name">elitum.product.botones.ventas.form.10</field>
+            <field name='model'>product.template</field>
+            <field name='inherit_id' ref='sale.product_template_form_view_sale_order_button'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//button[@name='action_view_sales']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('sale_ok','=', False )]}</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

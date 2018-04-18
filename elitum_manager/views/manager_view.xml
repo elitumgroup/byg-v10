@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="harry_manager_form_view" model="ir.ui.view">
+            <field name="name">harry.manager.form.view</field>
+            <field name="model">manager.object</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="reparar_facturas" type="object" string="Reparar Facturas"/>
+                        <button name="estado_financiero" type="object" string="Estado Financiero"/>
+                    </header>
+                    <sheet>
+                        <group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+    </data>
+</openerp>

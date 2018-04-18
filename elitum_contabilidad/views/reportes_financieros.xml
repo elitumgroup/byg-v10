@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_reporte_libro_mayor_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.libro.mayor.wizard</field>
+            <field name="model">account.reporte.libro.mayor</field>
+            <field name="arch" type="xml">
+                <form string="Libro Mayor">
+                    <group>
+                        <group>
+                            <field name="tipo_reporte"
+                                   widget="radio"
+                                   string="Cuentas"
+                                   options="{'horizontal': true}"/>
+                            <field name="fecha_inicio"/>
+                        </group>
+                        <group>
+                            <field name="cuenta"
+                                   attrs="{'invisible':[('tipo_reporte', '!=', 'one')]}"
+                                   options="{'no_create':True}"/>
+                            <field name="fecha_fin"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_libro_mayor"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_estado_resultado_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.estado.resultado.wizard</field>
+            <field name="model">account.reporte.estado.resultado</field>
+            <field name="arch" type="xml">
+                <form string="Estado de Resultado">
+                    <group col ="4">
+                        <field name="tipo_proyecto"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="project_id"
+                               attrs="{'invisible':[('tipo_proyecto', '!=', 'one')], 'required':[('tipo_proyecto', '==','one')] }"
+                               options="{'no_create':True}"/>
+                         <field name="tipo_centro_costo"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="analytic_account_id"
+                               attrs="{'invisible':[('tipo_centro_costo', '!=', 'one')], 'required':[('tipo_centro_costo', '==','one')] }"
+                               options="{'no_create':True}"/>
+                        <field name="fecha_inicio"/>
+                        <field name="fecha_fin"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_estado_resultado"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_estado_financiero_wizard" model="ir.ui.view">
+            <field name="name">eliterp.reporte.estado.financiero.wizard</field>
+            <field name="model">account.reportes.financieros</field>
+            <field name="arch" type="xml">
+                <form string="Estado de Situacion Financiera">
+                     <group col="4">
+                         <field name="tipo_proyecto"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="project_id"
+                               attrs="{'invisible':[('tipo_proyecto', '!=', 'one')], 'required':[('tipo_proyecto', '==','one')] }"
+                               options="{'no_create':True}"/>
+                         <field name="tipo_centro_costo"
+                               widget="radio"
+                               options="{'horizontal': true}"/>
+                        <field name="analytic_account_id"
+                               attrs="{'invisible':[('tipo_centro_costo', '!=', 'one')], 'required':[('tipo_centro_costo', '==','one')] }"
+                               options="{'no_create':True}"/>
+                        <field name="fecha_inicio"/>
+                        <field name="fecha_fin"/>
+                    </group>
+                    <footer>
+                        <button name="imprimir_reporte_estado_situacion_financiero"
+                                type="object"
+                                class="oe_highlight"
+                                string="PDF"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_config_reporte_flujo_caja_tree" model="ir.ui.view">
+            <field name="name">eliterp.config.reporte.flujo.caja.tee</field>
+            <field name="model">account.config.reporte.flujo.caja</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="valor_mensualizado"/>
+                    <field name="tipo"/>
+                    <field name="flujo_caja_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_config_reporte_flujo_caja" model="ir.ui.view">
+            <field name="name">eliterp.config.reporte.flujo.caja</field>
+            <field name="model">account.config.reporte.flujo.caja</field>
+            <field name="arch" type="xml">
+                <form string="Flujo de Caja">
+                    <sheet>
+                        <group col="4">
+                            <field name="name"/>
+                            <field name="valor_mensualizado"/>
+                            <field name="tipo"/>
+                            <field name="flujo_caja_id"/>
+                        </group>
+                        <group col="1">
+                            <field name="lines_account_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="account_id" options="{'no_create':True}"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_reporte_flujo_caja" model="ir.ui.view">
+            <field name="name">eliterp.reporte.flujo.caja</field>
+            <field name="model">account.reporte.flujo.caja</field>
+            <field name="arch" type="xml">
+                <form string="Flujo de Caja">
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="open_reporte" type="object" string="Iniciar" class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group col="2">
+                            <field name="name" style="width:20%" options="{'no_create':True}" required="1"/>
+                        </group>
+                        <group col="1">
+                            <separator string="INGRESOS"/>
+                            <field name="linea_ingresos" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="rubro"/>
+                                    <field name="enero" string="Enero Estimado"/>
+                                    <field name="enero" string="Enero Real"/>
+                                    <field name="febrero" string="Febrero Estimado"/>
+                                    <field name="febrero" string="Febrero Real"/>
+                                    <field name="marzo"/>
+                                    <field name="abril"/>
+                                    <field name="mayo"/>
+                                    <field name="junio"/>
+                                    <field name="julio"/>
+                                    <field name="agosto"/>
+                                    <field name="septiembre"/>
+                                    <field name="octubre"/>
+                                    <field name="noviembre"/>
+                                    <field name="diciembre"/>
+                                    <field name="total_elementos"/>
+                                </tree>
+                            </field>
+                            <field name="linea_totales_ingresos" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="enero"/>
+                                    <field name="febrero"/>
+                                    <field name="marzo"/>
+                                    <field name="abril"/>
+                                    <field name="mayo"/>
+                                    <field name="junio"/>
+                                    <field name="julio"/>
+                                    <field name="agosto"/>
+                                    <field name="septiembre"/>
+                                    <field name="octubre"/>
+                                    <field name="noviembre"/>
+                                    <field name="diciembre"/>
+                                    <field name="total_elementos"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group col="1">
+                            <separator string="EGRESOS"/>
+                            <field name="linea_egresos" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="rubro"/>
+                                    <field name="enero"/>
+                                    <field name="febrero"/>
+                                    <field name="marzo"/>
+                                    <field name="abril"/>
+                                    <field name="mayo"/>
+                                    <field name="junio"/>
+                                    <field name="julio"/>
+                                    <field name="agosto"/>
+                                    <field name="septiembre"/>
+                                    <field name="octubre"/>
+                                    <field name="noviembre"/>
+                                    <field name="diciembre"/>
+                                    <field name="total_elementos"/>
+                                </tree>
+                            </field>
+                            <field name="linea_totales_egresos" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="enero"/>
+                                    <field name="febrero"/>
+                                    <field name="marzo"/>
+                                    <field name="abril"/>
+                                    <field name="mayo"/>
+                                    <field name="junio"/>
+                                    <field name="julio"/>
+                                    <field name="agosto"/>
+                                    <field name="septiembre"/>
+                                    <field name="octubre"/>
+                                    <field name="noviembre"/>
+                                    <field name="diciembre"/>
+                                    <field name="total_elementos"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="eliterp_denied_sale_order_wizard" model="ir.ui.view">
+            <field name="name">eliterp.denied.sale.order.wizard</field>
+            <field name="model">denied.sale_order.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razon">
+                    <sheet>
+                        <group>
+                            <field name="type_denied"/>
+                        </group>
+                        <group>
+                            <field name="notas"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="save" string="Confirmar" class="oe_highlight"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="open_eliterp_vigencia" model="ir.actions.act_window">
+            <field name="name">Vigencia</field>
+            <field name="res_model">eliterp.validity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="eliterp_line_partial_wizard" model="ir.ui.view">
+            <field name="name">eliterp.line.partial.wizard</field>
+            <field name="model">eliterp.sale.order.line.partial</field>
+            <field name="arch" type="xml">
+                <form string="Prueba">
+                    <group col="1">
+                        <group>
+                            <div>
+                                <field name="lines_partial" widget="many2many_kanban">
+                                    <kanban>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <field name="name"/>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </div>
+                        </group>
+                    </group>
+                    <footer>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="elitum1_cotizacion_form1" model="ir.ui.view">
+            <field name="name">elitum1.cotizacion.form1</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <button name="print_quotation" states="draft" position="replace">
+                    <button name="imprimir_cotizacion"
+                            string="Imprimir"
+                            class="btn-primary"
+                            type="object"/>
+                </button>
+                <button name="print_quotation" states="sent,sale" position="replace">
+                </button>
+                <!--MARZ-->
+                <xpath expr="//button[@name='action_quotation_send']" position="replace"/>
+                <xpath expr="//button[@name='action_quotation_send']" position="replace"/>
+                <button name="action_view_invoice" position="after">
+                    <button name="action_view_pedido_ventas"
+                            type="object"
+                            class="oe_stat_button"
+                            attrs="{'invisible': [('have_pedidos_ventas','==',False)]}"
+                            icon="fa-pencil-square-o">
+                        <field name="pedidos_count" widget="statinfo" string="Pedidos"/>
+                    </button>
+                    <button name="action_view_orden_produccion"
+                            string="Orden de Produccion"
+                            type="object"
+                            class="oe_stat_button"
+                            attrs="{'invisible': [('have_orden_produccion','==',False)]}"
+                            icon="fa-pencil-square-o">
+                    </button>
+                </button>
+                <button name="%(sale.action_view_sale_advance_payment_inv)d" position="replace">
+                    <button name="make_invoice_eliterp"
+                            string="Crear Factura"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', '|', ('type_eliterp', '==','draft' ),('state_pedido_eliterp','in',('done','invoice')), ('have_anticipo', '==', True)]}"/>
+                    <!---
+                        MARZ
+                        <button name="action_new_orden_produccion"
+                            string="Crear Orden de Produccion"
+                            type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|',('type_eliterp', '==','draft' ),('state_pedido_eliterp','in',('done','mrp'))]}"/>
+                    -->
+                    <button name="action_aprobar"
+                            class="btn-primary"
+                            string="Aprobar"
+                            confrim="Desea Aprobar la Cotización?"
+                            attrs="{'invisible': [('state_cotizacion_eliterp', '!=','draft' )]}"
+                            type="object"/>
+                    <button name="action_negar"
+                            string="Negar"
+                            confrim="Desea Negar la Cotización?"
+                            attrs="{'invisible': [('state_cotizacion_eliterp', '!=', 'draft')]}"
+                            type="object"/>
+                    <button name="action_new_pedido_venta"
+                            class="btn-primary"
+                            string="Crear Pedido de Venta"
+                            attrs="{'invisible': [('can_create_new_sale_order','==',False)]}"
+                            type="object"/>
+                    <!--Cambio a botón principal-->
+                    <button name="sent_quotation_customer"
+                            type="object"
+                            attrs="{'invisible': ['|', ('state_cotizacion_eliterp', '!=', 'done'), ('state_pedido_eliterp', '!=', 'order')]}"
+                            string="Enviar por Correo"
+                            confirm="Desea enviar Cotización/Pedido de Venta por correo electrónico?"/>
+                </button>
+                <xpath expr="//field[@name='state']" position="replace"/>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('is_contact','=',False),('customer','=',True)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="contact_id"
+                           string="Contacto"
+                           domain="[('parent_id','=',partner_id)]"/>
+                    <!--MARZ (MAEQ)-->
+                    <field name="project_id" invisible="1"/>
+                    <field name="centro_costos" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="proyecto_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="state"
+                           on_change="1"
+                           invisible="1"/>
+                    <field name="type_eliterp"
+                           invisible="1"/>
+                    <field name="can_create_new_sale_order" invisible="1"/>
+                    <field name="have_pedidos_ventas" invisible="1"/>
+                    <field name="have_orden_produccion" invisible="1"/>
+                    <field name="have_factura" invisible="1"/>
+                    <field name="razon_negado"
+                           style="color: red;"
+                           attrs="{'invisible': [('state_cotizacion_eliterp', '!=', 'denied')]}"/>
+                    <field name="have_anticipo" invisible="1"/>
+                </xpath>
+                <xpath expr="//header/button[last()]" position="after">
+                    <field name="state_cotizacion_eliterp"
+                           widget="statusbar"
+                           statusbar_visible="draft,sale_partial,done"
+                           attrs="{'invisible': [('type_eliterp', '==', 'pedido_venta')]}"
+                           modifiers="{'readonly': true}"/>
+                    <!--MARZ-->
+                    <field name="state_pedido_eliterp"
+                           attrs="{'invisible': [('type_eliterp', '==', 'draft')]}"
+                           widget="statusbar"
+                           statusbar_visible="order,invoice_parcial,invoice"
+                           modifiers="{'readonly': true}"/>
+                </xpath>
+                <field name="validity_date" position="replace">
+                    <field name="date_created"/>
+                    <field name="validity_date" invisible="1"/>
+                </field>
+                <xpath expr="//field[@name='date_order']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='confirmation_date']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='sale_pay']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//group[@name='technical']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                    <attribute name="string">Condición de Pago</attribute>
+                </xpath>
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="order_id_eliterp"
+                           attrs="{'invisible':[('state_cotizacion_eliterp','!=','sale_order')]}"/>
+                    <label for="descuento_global" string="Descuento Global"/>
+                    <div class="o_address_format">
+                        <field name="descuento_global" class="o_address_city"/>
+                        <field name="descuento_global_amount"
+                               attrs="{'invisible':[('descuento_global','=',False)]}"
+                               placeholder="Descuento"
+                               style="width: 50px;"
+                               class="o_address_city"/>(%)
+                        <button name="aplicar_descuento_global"
+                                type="object"
+                                attrs="{'invisible':[('descuento_global','=',False)]}"
+                                class="btn-primary"
+                                string="Aplicar"/>
+                    </div>
+                    <field name="consultant_sale_id" string="Asesor" options="{'no_create':True}"/>
+                </xpath>
+                <button name="action_confirm"
+                        states="sent"
+                        type="object"
+                        position="replace"/>
+                <button name="action_confirm" states="draft" type="object" position="replace">
+                    <button name="action_confirm"
+                            invisible="1"
+                            string="Confirmar"
+                            type="object"
+                            context="{'show_sale': True}"/>
+                </button>
+                <field name="payment_term_id" position="before">
+                    <field name="validity_id"
+                           options="{'no_create': True, 'no_open': True}"/>
+                </field>
+                <xpath expr="//notebook/page[last()]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--MARZ (MAEQ)-->
+                <xpath expr="//notebook/page[1]" position="attributes">
+                    <attribute name="string">Líneas de Pedido</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[1]" position="after">
+                    <page string="Notas" attrs="{'invisible':[('type_eliterp','=', ('pedido_venta'))]}">
+                        <group>
+                            <field name="type_register"/>
+                        </group>
+                        <group string="Notas y comentarios">
+                            <field name="notes" nolabel="1"
+                                   placeholder="Registrar notas o comentarios relacionados a la transacción"/>
+                        </group>
+                    </page>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='order_line']/tree" position="replace">
+                    <tree string="Líneas del Pedido"
+                          editable="bottom"
+                          attrs="{'readonly':[('state_pedido_eliterp','=', 'invoice')]}"
+                          colors="red:line_approval=='denied';blue:line_approval in ('sale_order', 'facturado')">
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_id"
+                               attrs="{'readonly': ['|', ('qty_invoiced', '&gt;', 0), ('procurement_ids', '!=', [])]}"
+                               options="{'no_create': True}"
+                               context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                        />
+                        <field name="product_uom_qty"
+                               string="Cantidad"
+                               context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom, 'company_id': parent.company_id}"
+                        />
+                        <field name="name"/>
+                        <field name="qty_delivered" invisible="1"/>
+                        <field name="qty_invoiced"
+                               invisible="1"/>
+                        <field name="qty_to_invoice" invisible="1"/>
+                        <field name="product_uom"
+                               attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}"
+                               context="{'company_id': parent.company_id}"
+                               groups="product.group_uom" options='{"no_open": True}'/>
+                        <field name="price_unit"
+                               attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"
+                               string="Valor Unitario"/>
+                        <field name="discount" string="Descuento (%)"/>
+                        <field name="tax_id"
+                               widget="many2many_tags"
+                               required="1"
+                               domain="[('type_tax_use','=','sale'),('company_id','=',parent.company_id)]"
+                               options="{'no_create': True}"
+                               attrs="{'readonly': [('qty_invoiced', '&gt;', 0)]}"/>
+                        <field name="qty_delivered_updateable" invisible="1"/>
+                        <field name="procurement_ids" invisible="1"/>
+                        <field name="state" invisible="1"/>
+                        <field name="invoice_status" invisible="1"/>
+                        <field name="customer_lead" invisible="1"/>
+                        <button name='line_accepted'
+                                type='object'
+                                string="Aprobar"
+                                attrs="{'invisible': [('line_approval', '!=', 'pending')]}"
+                                icon='fa-thumbs-o-up'/>
+                        <button name="line_denied"
+                                type='object'
+                                string="Negar"
+                                attrs="{'invisible': [('line_approval', '!=', 'pending')]}"
+                                icon='fa-times-circle'/>
+                        <field name="line_approval" String="Estado" readonly="1"/>
+                        <field name="facturado"
+                               invisible="not context.get('show_sale', False)"
+                               attrs="{'readonly': [('line_approval', '!=', 'accepted')]}"/>
+                        <field name="razon_negado"
+                               invisible="context.get('show_sale', False)"
+                               attrs="{'invisible': [('line_approval', 'in', ('sale_order','pending','accepted'))]}"/>
+                    </tree>
+                </xpath>
+                <xpath expr="//group[@name='sales_person']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                    <group string="Información de Ventas" name="sales_person" col="4">
+                        <group col="1">
+                            <group>
+                                <div class="oe_title">
+                                    <field name='type_seller'
+                                           class="oe_edit_only"
+                                           widget="radio"
+                                           options="{'horizontal': true}"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="employee_id"
+                                       options="{'no_create':True}"
+                                       attrs="{'invisible':[('type_seller','=','freelance')]}"/>
+                                <field name="team_id"
+                                       options="{'no_create': True}"
+                                       can_create="true"
+                                       can_write="true"
+                                       attrs="{'invisible':[('type_seller','=','freelance')]}"
+                                       modifiers="{}"/>
+                                <field name="freelance_id"
+                                       attrs="{'invisible':[('type_seller','=','consultant')]}"/>/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="user_id"
+                                   context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice', 'base.group_sale_salesman_all_leads']}"
+                                   can_create="true"
+                                   can_write="true"
+                                   invisible="1" modifiers="{}"/>
+                            <field name="tag_ids"
+                                   widget="many2many_tags"
+                                   invisible="1"
+                                   can_create="true"
+                                   can_write="true"
+                                   modifiers="{'invisible': true}"/>
+                            <field name="client_order_ref"
+                                   invisible="1"
+                                   modifiers="{}"/>
+                            <field name="company_id"
+                                   options="{'no_create': True}"
+                                   can_create="true"
+                                   can_write="true"
+                                   invisible="1"
+                                   modifiers="{'invisible': true}"/>
+                        </group>
+                    </group>
+                </xpath>
+                <xpath expr="//button[@name='action_cancel']" position="replace">
+                    <button name="action_cancel"
+                            type="object"
+                            confirm="Desea anular la Cotización de Venta?"
+                            string="Anular"
+                            attrs="{'invisible': ['|', ('state', 'not in', ('done', 'order')), ('state_cotizacion_eliterp', '!=','draft' )]}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_done']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed']" position="attributes">
+                    <attribute name="string">Subtotal</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed']" position="before">
+                    <field name="base_cero_iva"/>
+                    <field name="base_gravada"/>
+                    <field name="total_discount"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_untaxed']" position="attributes">
+                    <attribute name="string">Subtotal</attribute>
+                </xpath>
+                <xpath expr="//field[@name='currency_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='pricelist_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_cotizacion_tree" model="ir.ui.view">
+            <field name="name">eliterp.cotizacion.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+                <tree class="o_sale_order" position="replace">
+                    <tree string="Quotation" class="o_sale_order cotizaciones_css"
+                          decoration-info="state_cotizacion_eliterp == 'draft'"
+                          colors="red:state_cotizacion_eliterp in ('denied', 'cancel');blue:state_cotizacion_eliterp == 'done'">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="No. Documento"/>
+                        <field name="partner_id"/>
+                        <field name="date_order" invisible="1"/>
+                        <field name="date_created" string="Fecha de Emisión"/>
+                        <field name="amount_total" sum="Total con Impuestos" widget="monetary"/>
+                        <field name="consultant_sale_id" string="Asesor"/>
+                        <field name="state" invisible="1"/>
+                        <field name="state_cotizacion_eliterp" string="Estado"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_pedido_tree" model="ir.ui.view">
+            <field name="name">eliterp.pedido.tree</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Pedido De Ventas"
+                          class="pedido_de_venta_css"
+                          decoration-info="state_pedido_eliterp == 'order'"
+                          colors="red:state_pedido_eliterp == 'cancel';blue:state_pedido_eliterp == 'invoice'"
+                          decoration-muted="state_pedido_eliterp == 'cancel'">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="No.Documento"/>
+                        <field name="partner_id"/>
+                        <field name="date_order" invisible="1"/>
+                        <field name="date_created" string="Fecha de Emisión"/>
+                        <field name="amount_total" sum="Total con Impuestos" widget="monetary"/>
+                        <field name="consultant_sale_id" string="Asesor"/>
+                        <field name="invoice_status" invisible="1"/>
+                        <field name="state_pedido_eliterp" string="Estado"/>
+                        <field name="state" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_pedido_ventas_stock_form" model="ir.ui.view">
+            <field name="name">eliterp.pedido.ventas.stock.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
+            <field name="arch" type="xml">
+                <button name="action_view_delivery" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+            </field>
+        </record>
+    </data>
+</openerp>

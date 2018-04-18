@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="elitumgroup_group_purchases" model="res.groups">
+            <field name="name">Módulo Compras</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--Grupos de Tablero de Compras-->
+        <record id="elitumgroup_group_elitumgroup_purchases_dashboard_manager" model="res.groups">
+            <field name="name">Tablero de Compras (Administrador)</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--Grupos de opción Requerimiento-->
+        <record id="elitumgroup_group_eliterp_request_junior" model="res.groups">
+            <field name="name">Requerimiento (Junior)</field>
+        </record>
+        <record id="elitumgroup_group_eliterp_request_senior" model="res.groups">
+            <field name="name">Requerimiento (Senior)</field>
+        </record>
+        <record id="elitumgroup_group_eliterp_request_manager" model="res.groups">
+            <field name="name">Requerimiento (Administrador)</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--Grupo Tipos de Requerimientos-->
+        <record id="elitumgroup_group_eliterp_request_type_senior" model="res.groups">
+            <field name="name">Tipos de Requerimiento (Senior)</field>
+        </record>
+        <record id="elitumgroup_group_eliterp_request_type_manager" model="res.groups">
+            <field name="name">Tipos de Requerimiento (Administrador)</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--Aprobaciones/Negaciones-->
+        <record id="elitumgroup_group_approve_request_payment" model="res.groups">
+            <field name="name">Aprobar/Negar Solicitud de Pago</field>
+        </record>
+        <record id="elitumgroup_group_approve_request_provision" model="res.groups">
+            <field name="name">Aprobar/Negar Solicitud de Viáticos</field>
+        </record>
+        <record id="elitumgroup_group_request_liquidate_provision" model="res.groups">
+            <field name="name">Aprobar/Negar Liquidación de Viáticos</field>
+        </record>
+        <!--Otros Botones-->
+        <record id="elitumgroup_group_validate_liquidate_provision" model="res.groups">
+            <field name="name">Validar/Liquidar Liquidación de Viáticos</field>
+        </record>
+    </data>
+</odoo>

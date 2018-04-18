@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!--Acciones y Vistas-->
+        <!--Cheques Emitidos-->
+        <record id="action_cheques_eliterp_emitidos" model="ir.actions.act_window">
+            <field name="name">Cheques Emitidos</field>
+            <field name="res_model">cheques.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('tipo_cheque', '=', 'emitidos')]</field>
+            <field name="context">{'default_state': 'emitido', 'group_by': 'tipo_cheque_fecha'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_cheques_emitidos">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_cheques_emitidos_tree_view"/>
+            <field name="act_window_id" ref="action_cheques_eliterp_emitidos"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_cheques_emitidos">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_cheques_emitidos_view_form"/>
+            <field name="act_window_id" ref="action_cheques_eliterp_emitidos"/>
+        </record>
+        <!--Cheques Recibidos-->
+        <record id="action_cheques_eliterp_recibidos" model="ir.actions.act_window">
+            <field name="name">Cheques Recibidos</field>
+            <field name="res_model">cheques.eliterp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('tipo_cheque', '=', 'recibidos')]</field>
+            <field name="context">{'default_state': 'recibido', 'group_by': 'tipo_cheque_fecha'}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_cheques_recibidos">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_cheques_recibidos_tree_view"/>
+            <field name="act_window_id" ref="action_cheques_eliterp_recibidos"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_cheques_recibidos">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_cheques_recibidos_view_form"/>
+            <field name="act_window_id" ref="action_cheques_eliterp_recibidos"/>
+        </record>
+        <!--Depósitos-->
+        <record id="action_account_depositos_eliterp" model="ir.actions.act_window">
+            <field name="name">Depósitos</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'default_payment_type': 'inbound','default_payment_type_eliterp': 'deposit'}</field>
+            <field name="domain">[('payment_type_eliterp', '=', 'deposit')]</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_depositos">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_depositos_view_tree"/>
+            <field name="act_window_id" ref="elitum_contabilidad.action_account_depositos_eliterp"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_depositos">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_depositos_view_form"/>
+            <field name="act_window_id" ref="elitum_contabilidad.action_account_depositos_eliterp"/>
+        </record>
+        <!--Transferencias-->
+        <record id="action_account_transferencia_eliterp" model="ir.actions.act_window">
+            <field name="name">Transferencia</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{'default_payment_type': 'transfer', 'default_payment_type_eliterp':'transfer'}
+            </field>
+            <field name="domain">[('payment_type_eliterp', '=', 'transfer')]</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_transferencias">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_transferencias_view_tree"/>
+            <field name="act_window_id" ref="action_account_transferencia_eliterp"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_transferncias">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_transferencias_view_form"/>
+            <field name="act_window_id" ref="action_account_transferencia_eliterp"/>
+        </record>
+        <!--Código de Impuesto-->
+        <record id="open_eliterp_forma_pago_sri" model="ir.actions.act_window">
+            <field name="name">Forma de Pago</field>
+            <field name="res_model">account.journal.payment.method</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--Autorización de Comprobante-->
+        <record id="action_autorizacion_comprobante_eliterp" model="ir.actions.act_window">
+            <field name="name">Autorización de Comprobante</field>
+            <field name="res_model">autorizacion.sri</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--Sustento Tributario-->
+        <record id="action_sustento_tributario_eliterp" model="ir.actions.act_window">
+            <field name="name">Sustento Tributario</field>
+            <field name="res_model">sustento.tributario</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--Tipos de Documento-->
+        <record id="eliterp_action_type_document" model="ir.actions.act_window">
+            <field name="name">Tipos de Documento</field>
+            <field name="res_model">eliterp.type.document</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--Bancos-->
+        <record id="res_bank_form_eliterp_search" model="ir.ui.view">
+            <field name="name">res.bank.form.eliterp.search</field>
+            <field name="model">res.bank</field>
+            <field name="arch" type="xml">
+                <search string="Tipo de Bancos">
+                    <group expand="1" string="Group By...">
+                        <filter name="type_action" string="Tipo de Uso" icon="terp-personal" domain="[]"
+                                context="{'group_by':'type_action'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="action_res_bank_form_eliterp" model="ir.actions.act_window">
+            <field name="name">Bancos</field>
+            <field name="res_model">res.bank</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_type_action': 1}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click to create a new bank.
+                </p>
+                <p>
+                    Manage bank records you want to be used in the system.
+                </p>
+            </field>
+        </record>
+        <!--Centro de Costo-->
+        <record id="action_centro_costo_eliterp" model="ir.actions.act_window">
+            <field name="name">Centro de Costo</field>
+            <field name="res_model">account.analytic.account</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="action_project_eliterp" model="ir.actions.act_window">
+            <field name="name">Proyecto</field>
+            <field name="res_model">eliterp.project</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!--Período Contable-->
+        <record id="action_periodo_contable_eliterp" model="ir.actions.act_window">
+            <field name="name">Período Contable</field>
+            <field name="res_model">account.period</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!--RISE-->
+        <record id="action_rise_categoria_eliterp" model="ir.actions.act_window">
+            <field name="name">Categoría</field>
+            <field name="res_model">rise.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <record id="action_rise_actividad_eliterp" model="ir.actions.act_window">
+            <field name="name">Actividad</field>
+            <field name="res_model">rise.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_action_rise_category_activity" model="ir.actions.act_window">
+            <field name="name">Categoría - Actividad</field>
+            <field name="res_model">rise.category.activity</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+        </record>
+        <!--Nota de Crédito-->
+        <record id="action_eliterp_nota_credito_factura" model="ir.actions.act_window">
+            <field name="name">Nota de Crédito</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'nota_credito':True,'default_type':'in_refund'}</field>
+            <field name="domain">[('type', '=', 'in_refund')]</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_nota_debito_factura">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.invoice_supplier_tree"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_nota_debito_factura">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_supplier_form"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura"/>
+        </record>
+        <record id="action_eliterp_nota_credito_factura_ventas_conta" model="ir.actions.act_window">
+            <field name="name">Nota de Credito</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'nota_credito':True,'default_type':'out_refund'}</field>
+            <field name="domain">[('type', '=', 'out_refund')]</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_nota_debito_factura_ventas_conta">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="account.invoice_tree"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura_ventas_conta"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_nota_debito_factura_ventas_conta">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.invoice_form"/>
+            <field name="act_window_id" ref="action_eliterp_nota_credito_factura_ventas_conta"/>
+        </record>
+        <!--Reportes-->
+        <record id="action_reporte_estado_financiero" model="ir.actions.act_window">
+            <field name="name">Estado de Situación Financiera</field>
+            <field name="res_model">account.reportes.financieros</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_reporte_estado_financiero_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_reporte_libro_mayor" model="ir.actions.act_window">
+            <field name="name">Libro Mayor</field>
+            <field name="res_model">account.reporte.libro.mayor</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_reporte_libro_mayor_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="eliterp_action_config_flujo_caja1" model="ir.actions.act_window">
+            <field name="name">Config. Flujo de Caja</field>
+            <field name="res_model">account.config.reporte.flujo.caja</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_tree_reporte_flujo_caja1">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_config_reporte_flujo_caja_tree"/>
+            <field name="act_window_id" ref="eliterp_action_config_flujo_caja1"/>
+        </record>
+        <record model="ir.actions.act_window.view" id="action_form_reporte_flujo_caja1">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_config_reporte_flujo_caja"/>
+            <field name="act_window_id" ref="eliterp_action_config_flujo_caja1"/>
+        </record>
+        <record id="eliterp_action_reporte_estado_resultado" model="ir.actions.act_window">
+            <field name="name">Estado de Resultado</field>
+            <field name="res_model">account.reporte.estado.resultado</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_reporte_estado_resultado_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_reporte_103_104_wizard" model="ir.actions.act_window">
+            <field name="name">Impuestos</field>
+            <field name="res_model">reporte.103.104</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_reporte_103_104_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <!--MARZ-->
+        <record id="eliterp_action_reporte_ats_wizard" model="ir.actions.act_window">
+            <field name="name">ATS</field>
+            <field name="res_model">eliterp.reporte.ats</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_reporte_ats_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="eliterp_action_reporte_ats_wizard_plantilla" model="ir.actions.act_window">
+            <field name="name">Plantilla ATS</field>
+            <field name="res_model">eliterp.reporte.ats.plantilla</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_reporte_ats_wizard_plantilla"/>
+            <field name="target">new</field>
+        </record>
+        <!--Conciliación Bancaria-->
+        <record id="action_concilacion_bancaria_wizard" model="ir.actions.act_window">
+            <field name="name">Conciliación Bancaria</field>
+            <field name="res_model">concilacion.bancaria.wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="elitum_contabilidad.eliterp_concilacion_bancaria_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="action_concilacion_bancaria_eliterp" model="ir.actions.act_window">
+            <field name="name">Conciliación Bancaria</field>
+            <field name="res_model">concilacion.bancaria</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        <!--Menús-->
+        <menuitem id="account.menu_finance"
+                  name="Contabilidad"
+                  web_icon="elitum_contabilidad,static/description/icon.png"
+                  sequence="7"/>
+        <menuitem id="menu_contabilidad_tablero"
+                  name="Contabilidad"
+                  action="board.open_board_my_dash_action"
+                  parent="account.menu_finance"
+                  sequence="-1"/>
+        <!--Registros Bancarios-->
+        <menuitem id="menu_contabilidad_registros"
+                  name="Registros Bancarios"
+                  parent="account.menu_finance"
+                  sequence="1"/>
+        <menuitem id="menu_contabilidad_registros_depositos"
+                  name="Depósitos"
+                  action="action_account_depositos_eliterp"
+                  parent="menu_contabilidad_registros"
+                  sequence="1"/>
+        <menuitem id="menu_contabilidad_registros_notas_credito"
+                  name="Notas de Crédito"
+                  action="action_nota_credito_eliterp"
+                  parent="menu_contabilidad_registros"
+                  sequence="3"/>
+        <menuitem id="menu_contabilidad_registros_notas_debito"
+                  name="Notas de Débito"
+                  action="action_nota_debito_eliterp"
+                  parent="menu_contabilidad_registros"
+                  sequence="4"/>
+        <menuitem id="menu_contabilidad_registros_transferencia"
+                  name="Transferencias"
+                  action="action_account_transferencia_eliterp"
+                  parent="menu_contabilidad_registros"
+                  sequence="5"/>
+        <!--Movimientos-->
+        <menuitem id="menu_contabilidad_movimiento"
+                  name="Movimientos"
+                  parent="account.menu_finance"
+                  sequence="2"/>
+        <menuitem id="menu_config_asientos_contables_eliterp"
+                  name="Asientos Contables"
+                  action="action_account_move_eliterp"
+                  parent="menu_contabilidad_movimiento" sequence="1"/>
+        <menuitem id="menu_config_lineas_asiento_eliterp"
+                  name="Líneas de Asientos Contables"
+                  action="account.action_account_moves_all_a"
+                  parent="menu_contabilidad_movimiento" sequence="2"/>
+        <menuitem id="menu_config_concilacion_root"
+                  name="Conciliación Bancaria"
+                  parent="menu_contabilidad_movimiento" sequence="3"/>
+        <menuitem id="menu_config_concilacion_bancaria_wizard"
+                  name="Registro"
+                  action="elitum_contabilidad.action_concilacion_bancaria_wizard"
+                  parent="elitum_contabilidad.menu_config_concilacion_root" sequence="1"/>
+        <menuitem id="menu_config_concilacion_bancaria_eliterp"
+                  name="Consulta"
+                  action="elitum_contabilidad.action_concilacion_bancaria_eliterp"
+                  parent="elitum_contabilidad.menu_config_concilacion_root" sequence="2"/>
+        <!--Transacciones-->
+        <menuitem id="eliterp_menu_contabilidad_transacciones"
+                  name="Transacciones"
+                  parent="account.menu_finance"
+                  sequence="3"/>
+        <menuitem id="eliterp_menu_contabilidad_transacciones_caja_chica"
+                  name="Caja Chica"
+                  parent="eliterp_menu_contabilidad_transacciones"
+                  sequence="3"/>
+        <menuitem id="eliterp_menu_caja_chica_administrativo_contabilidad"
+                  name="Administración"
+                  action="elitum_financiero.eliterp_action_caja_chica_reposicion"
+                  parent="eliterp_menu_contabilidad_transacciones_caja_chica"
+                  sequence="1"/>
+        <menuitem id="eliterp_menu_caja_chica_registro_contabilidad"
+                  name="Registro"
+                  action="elitum_financiero.eliterp_action_caja_chica_registro_vale"
+                  parent="eliterp_menu_contabilidad_transacciones_caja_chica"
+                  sequence="2"/>
+        <menuitem id="eliterp_menu_contabilidad_transacciones_provision"
+                  name="Viáticos"
+                  parent="eliterp_menu_contabilidad_transacciones"
+                  sequence="3"/>
+        <menuitem id="eiterp_menu_viaticos_solicitudes_contabilidad"
+                  name="Solicitudes"
+                  action="elitum_financiero.eliterp_action_open_finanzas_viatico_solicitudes"
+                  parent="eliterp_menu_contabilidad_transacciones_provision"
+                  sequence="1"/>
+        <menuitem id="eiterp_menu_viaticos_liquidaciones_contabilidad"
+                  name="Liquidaciones"
+                  action="elitum_financiero.eliterp_action_open_finanzas_viatico_liquidaciones"
+                  parent="eliterp_menu_contabilidad_transacciones_provision"
+                  sequence="2"/>
+        <!--Reportes-->
+        <menuitem id="menu_contabilidad_reportes"
+                  name="Reportes"
+                  parent="account.menu_finance"
+                  sequence="5"/>
+        <menuitem id="menu_contabilidad_reportes_balance_general"
+                  name="Estado de Situación Financiera"
+                  parent="account.menu_finance_reports"
+                  action="action_reporte_estado_financiero"
+                  sequence="1"/>
+        <menuitem id="menu_contabilidad_reportes_libro_mayor"
+                  name="Libro Mayor"
+                  parent="account.menu_finance_reports"
+                  action="action_reporte_libro_mayor"
+                  sequence="2"/>
+        <menuitem id="menu_contabilidad_reportes_perdidas_ganancias"
+                  name="Estado de Resultados"
+                  parent="account.menu_finance_reports"
+                  action="eliterp_action_reporte_estado_resultado"
+                  sequence="3"/>
+        <menuitem id="elitum_menu_contabilidad_consultas"
+                  name="Consultas"
+                  parent="account.menu_finance"
+                  sequence="4"/>
+         <menuitem id="menu_contabilidad_reportes_facturas_notas_credito"
+                  name="NC Proveedores"
+                  parent="elitum_menu_contabilidad_consultas"
+                  action="action_eliterp_nota_credito_factura"
+                  sequence="1"/>
+        <menuitem id="menu_contabilidad_reportes_control_cheques"
+                  name="Control Cheques"
+                  parent="elitum_menu_contabilidad_consultas"
+                  sequence="2"/>
+        <menuitem id="menu_contabilidad_reportes_control_cheques_recibidos"
+                  name="Recibidos"
+                  parent="menu_contabilidad_reportes_control_cheques"
+                  action="action_cheques_eliterp_recibidos"
+                  sequence="1"/>
+        <menuitem id="menu_contabilidad_reportes_control_cheques_emitidos"
+                  name="Emitidos"
+                  parent="menu_contabilidad_reportes_control_cheques"
+                  action="action_cheques_eliterp_emitidos"
+                  sequence="2"/>
+        <!--MARZ-->
+        <menuitem id="menu_contabilidad_reportes_sri"
+                  name="SRI"
+                  parent="account.menu_finance_reports"
+                  sequence="4"/>
+        <menuitem id="reporte_103_104_wizard"
+                  name="Impuestos"
+                  parent="menu_contabilidad_reportes_sri"
+                  action="action_reporte_103_104_wizard"
+                  sequence="1"/>
+        <menuitem id="reporte_ats_wizard"
+                  name="ATS (.xml)"
+                  parent="menu_contabilidad_reportes_sri"
+                  action="eliterp_action_reporte_ats_wizard"
+                  sequence="2"/>
+        <menuitem id="reporte_ats_wizard_plantilla"
+                  name="ATS"
+                  parent="menu_contabilidad_reportes_sri"
+                  action="eliterp_action_reporte_ats_wizard_plantilla"
+                  sequence="3"/>
+        <menuitem id="menu_contabilidad_reportes_impuesto_renta"
+                  name="Impuesto a la Renta"
+                  action="elitum_rrhh.action_reporte_107_consolidado_wizard"
+                  parent="menu_contabilidad_reportes_sri"
+                  sequence='4'/>
+        <!--Configuración-->
+        <menuitem id="menu_sri_config" name="SRI"
+                  parent="account.account_account_menu" sequence="1"/>
+        <menuitem id="menu_forma_pago_sri"
+                  name="Forma de Pago"
+                  action="open_eliterp_forma_pago_sri"
+                  parent="menu_sri_config" sequence="1"/>
+        <menuitem id="eliterp_menu_config_type_document"
+                  name="Tipos de Documento"
+                  action="eliterp_action_type_document"
+                  parent="menu_sri_config" sequence="2"/>
+        <menuitem id="menu_config_autorizacion_sustento_tributario_eliterp"
+                  name="Sustento Tributario"
+                  action="action_sustento_tributario_eliterp"
+                  parent="menu_sri_config" sequence="3"/>
+        <menuitem id="menu_tax_code"
+                  name="Código de Impuesto"
+                  action="elitum_contabilidad.open_eliterp_tax_code"
+                  parent="menu_sri_config"
+                  sequence="4"/>
+        <menuitem id="menu_config_sri_impuestos"
+                  name="Impuestos"
+                  action="account.action_tax_form"
+                  parent="menu_sri_config" sequence="5"/>
+        <menuitem id="menu_config_autorizacion_comprobante"
+                  name="Autorización de Comprobante"
+                  action="action_autorizacion_comprobante_eliterp"
+                  parent="menu_sri_config" sequence="6"/>
+        <menuitem id="menu_contabilidad_config_contabilidad" name="Configuración"
+                  parent="account.account_account_menu" sequence="2"/>
+        <menuitem id="menu_contabilidad_config_tipo_cuenta_contable"
+                  name="Tipo Cuenta Contable"
+                  action="elitum_contabilidad.open_eliterp_tipo_contable"
+                  parent="menu_contabilidad_config_contabilidad" sequence="1"/>
+        <menuitem id="menu_contabilidad_config_tipo_posicion_fiscal"
+                  name="Posiciones Fiscales"
+                  action="account.action_account_fiscal_position_form"
+                  parent="menu_contabilidad_config_contabilidad" sequence="2"/>
+        <menuitem id="menu_contabilidad_config_cuentas_bancarias"
+                  name="Cuentas Bancarias"
+                  action="account.action_account_bank_journal_form"
+                  parent="menu_contabilidad_config_contabilidad" sequence="3"/>
+        <menuitem id="menu_contabilidad_config_diarios"
+                  name="Diarios"
+                  action="account.action_account_journal_form"
+                  parent="menu_contabilidad_config_contabilidad" sequence="4"/>
+        <menuitem id="menu_config_bancos_eliterp"
+                  name="Bancos"
+                  action="action_res_bank_form_eliterp"
+                  parent="menu_contabilidad_config_contabilidad" sequence="5"/>
+        <menuitem id="menu_periodo_contable"
+                  name="Período Contable"
+                  action="action_periodo_contable_eliterp"
+                  parent="menu_contabilidad_config_contabilidad"
+                  sequence="6"/>
+        <menuitem id="menu_config_plan_contable_eliterp"
+                  name="Plan Contable"
+                  action="account.action_account_form"
+                  parent="menu_contabilidad_config_contabilidad" sequence="7"/>
+        <!--MARZ-->
+        <record id="eliterp_action_open_tabla_impuesto_renta" model="ir.actions.act_window">
+            <field name="name">Tabla de Impuesto a la Renta</field>
+            <field name="res_model">eliterp.tabla.impuesto.renta</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="eliterp_action_saldos_beneficios_sociales" model="ir.actions.act_window">
+            <field name="name">Beneficios Sociales</field>
+            <field name="res_model">eliterp.saldos.beneficios.sociales</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="action_eliterp_credito_tributario" model="ir.actions.act_window">
+            <field name="name">Crédito Tributario</field>
+            <field name="res_model">credito.tributario</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <menuitem id="eliterp_menu_configuration_tabla_107"
+                  name="Tabla de Impuesto a la Renta"
+                  action="eliterp_action_open_tabla_impuesto_renta"
+                  parent="menu_contabilidad_config_contabilidad" sequence="8"/>
+        <menuitem id="eliterp_menu_configuration_saldos_iniciales" name="Saldos Iniciales"
+                  parent="menu_contabilidad_config_contabilidad" sequence="9"/>
+        <menuitem id="eliterp_menu_configuration_saldos_iniciales_beneficios"
+                  name="Beneficios Sociales"
+                  action="eliterp_action_saldos_beneficios_sociales"
+                  parent="eliterp_menu_configuration_saldos_iniciales"
+                  sequence="1"/>
+        <menuitem id="menu_config_credito_tributario"
+                  name="Crédito Tributario"
+                  action="action_eliterp_credito_tributario"
+                  parent="eliterp_menu_configuration_saldos_iniciales"
+                  sequence="2"/>
+        <!--Menú Administración-->
+        <menuitem id="menu_contabilidad_config_administracion" name="Administración"
+                  parent="account.account_account_menu" sequence="3"/>
+        <menuitem id="menu_open_centro_costo"
+                  name="Centro de Costo"
+                  action="action_centro_costo_eliterp"
+                  parent="menu_contabilidad_config_administracion"
+                  sequence="1"/>
+        <menuitem id="menu_open_project"
+                  name="Proyecto"
+                  action="action_project_eliterp"
+                  parent="menu_contabilidad_config_administracion"
+                  sequence="2"/>
+        <!--MARZ-->
+        <menuitem id="menu_contabilidad_config_viaticos"
+                  name="Viáticos"
+                  parent="menu_contabilidad_config_administracion"
+                  sequence="3"/>
+        <menuitem id="eliterp_menu_configuration_table_provision"
+                  name="Tabla de Conceptos"
+                  action="elitum_compras.eliterp_action_open_table_provision"
+                  parent="menu_contabilidad_config_viaticos"
+                  sequence="1"/>
+        <menuitem id="eliterp_menu_configuration_table_provision_destinos"
+                  name="Destinos"
+                  action="elitum_compras.eliterp_action_open_table_provision_destinos"
+                  parent="menu_contabilidad_config_viaticos"
+                  sequence="2"/>
+        <menuitem id="eliterp_menu_configuration_termino_pagos"
+                  name="Términos de Pago"
+                  action="account.action_payment_term_form"
+                  parent="menu_contabilidad_config_administracion"
+                  sequence="4"/>
+        <menuitem id="menu_root_config_rise"
+                  name="RISE"
+                  parent="account.account_account_menu"
+                  sequence="4"/>
+        <menuitem id="menu_root_config_rise_categoria"
+                  name="Categoría"
+                  action="action_rise_categoria_eliterp"
+                  parent="menu_root_config_rise"
+                  sequence="1"/>
+        <menuitem id="menu_root_config_rise_actividad"
+                  name="Actividad"
+                  action="action_rise_actividad_eliterp"
+                  parent="menu_root_config_rise"
+                  sequence="2"/>
+        <!--MARZ-->
+        <menuitem id="eliterp_menu_root_configuration_rise_category_activity"
+                  name="Categoría - Actividad"
+                  action="eliterp_action_rise_category_activity"
+                  parent="menu_root_config_rise"
+                  sequence="3"/>
+    </data>
+</odoo>

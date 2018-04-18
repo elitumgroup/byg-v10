@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Elitum Contabilidad Assets" inherit_id="web.assets_backend">
+            <xpath expr=".">
+                <link rel="stylesheet" href="/elitum_contabilidad/static/src/less/elitum_contabilidad.less"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

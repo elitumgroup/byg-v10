@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_tipos_ausencias_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.tipos.ausencias.tree.view</field>
+            <field name="model">hr.holidays.status</field>
+            <field name="inherit_id" ref="hr_holidays.view_holiday_status_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree>
+                        <field name="name" string="Nombre"/>
+                        <field name="description" string="Descripción"/>
+                        <field name="color_name" string="Color Asignado"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_asistencias_form_view" model="ir.ui.view">
+            <field name="name">eliterp.asistencias.form.view</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='check_in']" position="attributes">
+                        <attribute name="string">Ingreso</attribute>
+                    </xpath>
+                    <xpath expr="//field[@name='check_out']" position="attributes">
+                        <attribute name="string">Salida</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+        <record id='elitum_tipo_ausencias_form_view' model='ir.ui.view'>
+            <field name='name'>elitum.tipo.ausencias.form.view</field>
+            <field name='model'>hr.holidays.status</field>
+            <field name='inherit_id' ref='hr_holidays.edit_holiday_status_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//form" position="replace">
+                    <form string="Tipo de Ausencias">
+                        <sheet>
+                            <group col="4">
+                                <field name="name"/>
+                                <field name="description" string="Descripción"/>
+                                <field name="color_name"/>
+                                <field name="color" widget="color"/>
+                            </group>
+                        </sheet>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+        <record id='elitum_etiquetas_empleados_form_view' model='ir.ui.view'>
+            <field name='name'>elitum.etiquetas.empleados.form.view</field>
+            <field name='model'>hr.employee.category</field>
+            <field name='inherit_id' ref='hr.view_employee_category_form'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//form" position="replace">
+                    <form string="Tipo de Ausencias">
+                        <sheet>
+                            <group col="4">
+                                <field name="name"/>
+                                <field name="description"/>
+                            </group>
+                            <group>
+                                <field name="line_employe_category" nolabel="1">
+                                    <tree editable="bottom">
+                                        <field name="employee_id" options="{'no_create':True}"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </sheet>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+        <record id='elitum_registro_ausencias_tree_view' model='ir.ui.view'>
+            <field name='name'>elitum.registro.ausencias.tree.view</field>
+            <field name='model'>hr.holidays</field>
+            <field name='inherit_id' ref='hr_holidays.view_holiday'/>
+            <field name='arch' type='xml'>
+                <tree position="replace">
+                    <tree
+                            decoration-info="state == 'draft'"
+                            colors="red:state == 'refuse';blue:state == 'validate'">
+                        <field name="nombre" string="Nombre"/>
+                        <field name="holiday_type" string="Aplica"/>
+                        <field name="holiday_status_id" string="Tipo de Ausencia"/>
+                        <field name="name" string="Descripción"/>
+                        <field name="date_from" string="Fecha Inicial"/>
+                        <field name="date_to" string="Fecha Final"/>
+                        <field name="number_of_days_temp" string="Días"/>
+                        <field name="report_note" string="Comentario"/>
+                        <field name="state"/>
+                        <field name="payslip_status" invisible="1"/>
+                        <button name="toggle_payslip_status" invisible="1"/>
+                        <field name="category_id" invisible="1"/>
+                        <field name="department_id" invisible="1"/>
+                        <field name="manager_id" invisible="1"/>
+                        <field name="user_id" invisible="1"/>
+                        <field name="message_needaction" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id='elitum_registro_ausencias_form_view' model='ir.ui.view'>
+            <field name='name'>elitum.registro.ausencias.form.view</field>
+            <field name='model'>hr.holidays</field>
+            <field name='inherit_id' ref='hr_holidays.edit_holiday_new'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//form" position="replace">
+                    <form string="Registro de Ausencias">
+                        <field name="can_reset" invisible="1"/>
+                        <field name="type" invisible="1"/>
+                        <field name="color_name" invisible="1"/>
+                        <header>
+                            <!--MARZ-->
+                            <button string="Imprimir" name="print_solicitud" attrs="{'invisible':[('state', '!=', 'validate1'), ('vacaciones', '=', False)]}" type="object"
+                                    class="oe_highlight"/>
+                            <button string="Solicitar Aprobación" name="action_confirm" states="draft" type="object"
+                                    class="oe_highlight"/>
+                            <button string="Aprobar" name="action_approve" states="confirm" type="object"
+                                    class="oe_highlight"/>
+                            <button string="Negar" name="action_refuse" states="confirm" type="object"/>
+                            <button string="Validar" name="action_validate" states="validate1" type="object"
+                                    class="oe_highlight"/>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+                        </header>
+                        <sheet>
+                            <div class="oe_title">
+                                <h1>
+                                    <field name="nombre" readonly="1"/>
+                                </h1>
+                            </div>
+                            <group>
+                                <group>
+                                    <field name="holiday_type"
+                                           options="{'no_create':True}"
+                                           string="Aplica" context="{'employee_id':employee_id}"/>
+                                    <!--MARZ-->
+                                    <field name="employee_id"
+                                           options="{'no_create':True}"
+                                           domain="[('state_laboral','=','activo')]"
+                                           attrs="{'required':[('holiday_type','=','employee')],'invisible':[('holiday_type','=','category')]}"/>
+                                    <field name="category_id"
+                                           attrs="{'required':[('holiday_type','=','category')], 'readonly': [('state','not in', ('draft','confirm'))], 'invisible':[('holiday_type','=','employee')]}"/>
+                                    <label for="number_of_days_temp" string="Duración"/>
+                                    <div>
+                                        <div>
+                                            <field name="date_from" attrs="{'required':[('type', '=', 'remove')]}"
+                                                   class="oe_inline"/>
+                                            <label string="-" class="oe_inline"/>
+                                            <field name="date_to" attrs="{'required':[('type', '=', 'remove')]}"
+                                                   class="oe_inline"/>
+                                        </div>
+                                        <div>
+                                            <field name="number_of_days_temp" class="oe_inline"/>
+                                            días
+                                        </div>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="holiday_status_id" srting="Tipo de Ausencia"
+                                           options="{'no_create':True}"/>
+                                    <field name="name" required="1" string="Descripción"/>
+                                    <field name="department_id"
+                                           options="{'no_create':True}"
+                                           attrs="{'readonly':['|','|' ,('type','=','add'),('holiday_type','=','category'),('state','=', 'validate')],'invisible':[('holiday_type','=','category')]}"/>
+                                    <!--MARZ-->
+                                    <field name="document_name" invisible="1"/>
+                                    <field name="document"
+                                           widget="binary"
+                                           filename="document_name"
+                                           attrs="{'invisible':[('vacaciones', '=', True)]}"/>
+                                    <field name="payslip_status"
+                                           attrs="{'invisible':[('type','=','add')]}" invisible="1"/>
+                                    <field name="vacaciones" invisible="1"/>
+                                </group>
+                                <div>
+                                    <separator string="Notas y comentarios"/>
+                                    <field name="report_note"/>
+                                </div>
+                            </group>
+                            <group attrs="{'invisible':['|', ('vacaciones','=',False), ('holiday_type', '=', 'category')]}" string="Líneas de Vacaciones" col="1">
+                                <field name="linea_vacaciones"
+                                       attrs="{'readonly':[('state','=','validate')]}"
+                                       nolabel="1" readonly="0">
+                                    <tree editable="bottom" create="false">
+                                        <field name="empleado"/>
+                                        <field name="periodo" string="Período"/>
+                                        <field name="dias_vacaciones" string="Generadas"/>
+                                        <field name="vacaciones_tomadas" string="Gozadas"/>
+                                        <field name="vacaciones_disponibles" string="Por Gozar" sum="Total"/>
+                                        <field name="holiday_id" invisible="1"/>
+                                        <field name="tipo" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </sheet>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </form>
+                </xpath>
+            </field>
+        </record>
+        <record id='elitum_registro_ausencias_calendario_view' model='ir.ui.view'>
+            <field name='name'>elitum.registro.ausencias.calendario.view</field>
+            <field name='model'>hr.holidays</field>
+            <field name='inherit_id' ref='hr_holidays.view_holiday_new_calendar'/>
+            <field name='arch' type='xml'>
+                <xpath expr="//calendar" position="replace">
+                    <calendar string="Ausencias" color="employee_id"
+                              date_start="date_from" date_stop="date_to"
+                              mode="month"
+                              quick_add="False" avatar_model="hr.employee">
+                        <field name="display_name"/>
+                    </calendar>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
+
+

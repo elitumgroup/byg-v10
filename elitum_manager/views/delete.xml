@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!--Quitar Menu Tableros-->
+        <delete model="ir.ui.menu" id="base.menu_board_root"/>
+
+        <!--Quitar Mi tablero-->
+        <delete model="ir.ui.menu" id="board.menu_board_my_dash"/>
+
+    </data>
+</odoo>

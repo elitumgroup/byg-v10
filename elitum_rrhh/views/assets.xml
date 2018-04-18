@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <template id="assets_backend" name="Elitum RRHH Assets" inherit_id="web.assets_backend">
+            <xpath expr=".">
+                <link rel="stylesheet" href="/elitum_rrhh/static/src/less/elitum_rrhh.less"/>
+                <link rel="stylesheet" href="/elitum_rrhh/static/src/less/rrhh_tablero.less"/>
+                <script type="text/javascript" src="/elitum_rrhh/static/src/js/rrhh_tablero.js"></script>
+            </xpath>
+        </template>
+    </data>
+</odoo>

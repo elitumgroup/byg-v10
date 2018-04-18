@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_invoice_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.factura.line.view.wizard</field>
+            <field name="model">account.invoice.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razon">
+                    <sheet>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="confirm_cancel_reason"
+                                type="object"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_action_invoice_cancel_reason" model="ir.actions.act_window">
+            <field name="name">eliterp.action.invoice.cancel.reason</field>
+            <field name="res_model">account.invoice.cancel.reason</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_invoice_cancel_reason_view_wizard"/>
+            <field name="target">new</field>
+        </record>
+        <record id="eliterp_factura_linea_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.factura.line.view.tree</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree string="Invoice Line">
+                        <field name="name"/>
+                        <field name="account_id"/>
+                        <field name="quantity"/>
+                        <field name="uom_id" string="Unidad de Medida"/>
+                        <field name="price_unit"/>
+                        <field name="discount"/>
+                        <field name="price_subtotal"/>
+                        <field name="currency_id" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_factura_linea_view_form" model="ir.ui.view">
+            <field name="name">eliterp.factura.line.view.form</field>
+            <field name="model">account.invoice.line</field>
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='account_id']" position="attributes">
+                    <attribute name="string">Cuenta</attribute>
+                    <attribute name="groups"></attribute>
+                    <attribute name="domain"></attribute>
+                    <attribute name="domain">[('tipo_contable','=','movimiento')]</attribute>
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//field[@name='product_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('product_id', '=', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='purchase_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('purchase_id', '=', False)]}</attribute>
+                    <attribute name="string">Orden de Compra</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_tax_ids']" position="replace">
+                    <field name="invoice_line_tax_ids"
+                           widget="many2many_tags"
+                           context="{'type':parent.type}"
+                           domain="[('type_tax_use','=','purchase'),('tipo_impuesto','=','iva'),('company_id', '=', parent.company_id)]"
+                           options="{'no_create': True}"
+                           attrs="{'invisible': [('type', '=', 'in_sale_note')]}"
+                    />
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_tax_ids']" position="before">
+                    <field name="type" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_factura_view_form" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.form</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <!--MARZ-->
+                <xpath expr="//form/div[@class='alert alert-info']" position="replace">
+                    <!--<div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('state','in',('draft','cancel','paid'))]}">
+                        Tiene <bold><a class="alert-link" href="#outstanding" role="button">pagos pendientes</a></bold> para este proveedor
+                    </div>-->
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="attributes">
+                    <attribute name="string">Documento Origen</attribute>
+                    <!--
+                        <attribute name="readonly">1</attribute>
+                    -->
+                </xpath>
+                <xpath expr="//form/sheet/div/label[1]" position="replace"/>
+                <xpath expr="//form/sheet/div/label[2]" position="replace"/>
+
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <field name="con_sin_withhold" attrs="{'invisible':[('pago_provision','=', False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="string">Proveedor</attribute>
+                </xpath>
+                <xpath expr="//field[@name='reference']" position="attributes">
+                    <attribute name="string">Referencia Proveedor</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//notebook/page[1]" position="attributes">
+                    <attribute name="string">Detalle</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree" position="replace">
+                    <tree>
+                        <field name="sequence" widget="handle"/>
+                        <field name="product_id"
+                               context="{'partner_id': parent.partner_id}"
+                               options="{'no_create': True}"/>
+                        <field name="quantity"/>
+                        <field name="name"/>
+                        <field name="account_id"
+                               string="Cuenta Contable"
+                               domain="[('tipo_contable', '=', 'movimiento')]"
+                        />
+                        <field name="account_analytic_id"
+                               options="{'no_create': True}"
+                               string="Centro de Costos"
+                               domain="[('company_id', '=', parent.company_id)]"/>
+                        <field name="project"
+                               string="Proyecto"
+                               options="{'no_create': True}"/>
+                        <field name="uom_id"
+                               options="{'no_create': True}"/>
+                        <field name="price_unit"/>
+                        <field name="discount"/>
+                        <field name="invoice_line_tax_ids"
+                               widget="many2many_tags"
+                               context="{'type':parent.type}"
+                               domain="[('type_tax_use','=','purchase'),('tipo_impuesto','=','iva'),('company_id', '=', parent.company_id)]"
+                               options="{'no_create': True}"/>
+                        <field name="price_subtotal"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="analytic_tag_ids"
+                               invisible="1"
+                               widget="many2many_tags"/>
+                    </tree>
+                </xpath>
+                <xpath expr="//field[@name='date_due']" position="before">
+                    <field name="fecha_provision"/>
+                </xpath>
+                <xpath expr="//field[@name='date_due']" position="after">
+                    <field name="numero_autorizacion" string="No. Autorización" required="1"/>
+                    <field name="sustento_tributario"
+                           attrs="{'required':[('type','in', 'credit' )]}"
+                           string="Sustento Tributario"/>
+                    <field name="payment_conditions" string="Condiciones de Pago"/>
+                    <field name="property_supplier_payment_term_id"
+                           attrs="{'invisible':[('payment_conditions','!=', 'credit' )]}"/>
+                    <field name="periodo" string="Período"/>
+                    <field name="have_withhold" invisible="1"/>
+                    <field name="have_nota_credito" invisible="1"/>
+                    <!--MARZ-->
+                    <field name="pago_provision" invisible="1"/>
+                    <field name="pago_caja_chica" invisible="1"/>
+                    <field name="have_scheduled_payment" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='date_due']" position="attributes">
+                    <attribute name="string">Fecha Vencimiento</attribute>
+                </xpath>
+                <xpath expr="//field[@name='purchase_id']" position="after">
+                    <label for="numero_factura"
+                           string="No. Factura"
+                    />
+                    <div>
+                        <field name="punto_emision"
+                               class="numero_factura" style="width:10%" required="1"
+                        />
+                        -
+                        <field name="numero_establecimiento"
+                               class="numero_factura" style="width:10%" required="1"
+                        />
+                        -
+                        <field name="numero_factura"
+                               class="numero_factura" style="width:30%" required="1"
+                        />
+                    </div>
+                    <field name="analytic_account_id"
+                           options="{'no_create': True}"
+                           style="width:200px"/>
+                    <field name="project_id"
+                           options="{'no_create': True}"
+                           style="width:200px"/>
+                    <field name="concepto_factura" string="Concepto" required="1"/>
+                    <field name="factura_proveedor"
+                           string="Documento Adjunto"
+                           filename="factura_provision_name"
+                           widget="binary"
+                           attrs="{'invisible':[('type','=','in_refund')]}"
+                           placeholder="Adjunto la Factura"/>
+                    <field name="factura_provision_name" invisible="1"/>
+                    <field name="numero_factura_interno" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet/div[1]" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="withhold_button_invoice"
+                                string="Retención"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': ['|', ('have_withhold','=', False), ('type', '=', 'in_sale_note')]}"
+                                icon="fa-archive"/>
+                        <button name="nota_credito_button_invoice"
+                                string="Nota de Crédito"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': [('have_nota_credito','=', False)]}"
+                                icon="fa-archive"/>
+                        <!--MARZ-->
+                        <button name="payment_button_invoice"
+                                string="Pago Programado"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': [('have_scheduled_payment','=', False)]}"
+                                icon="fa-calendar"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='amount_total']" position="after">
+                    <field name="total_retener"
+                           attrs="{'invisible': [('have_withhold','=', False)]}"/>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_open']" position="attributes">
+                    <attribute name="confirm">Está todo correcto en el Documento?</attribute>
+                </xpath>
+                <button name="action_invoice_cancel" position="replace">
+                    <button name="action_invoice_cancel"
+                            type="object"
+                            states="draft,proforma2,open"
+                            string="Anular"
+                            invisible="1"/>
+                    <button name="action_invoice_cancel_reason"
+                            type="object"
+                            confirm="Está seguro que desea Anular Documento?"
+                            states="draft,open"
+                            string="Anular"/>
+                    <button name="imprimir_factura_provision"
+                            type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('type','=','in_refund')]}"
+                            string="Imprimir"/>
+                    <button name="nota_credito_create"
+                            type="object"
+                            attrs="{'invisible': ['|', ('type','=','in_refund'), ('type', '=', 'in_sale_note')]}"
+                            class="oe_highlight"
+                            confirm="Desea generar Nota de Crédito?"
+                            string="Nota de Crédito"/>
+                    <!--MARZ-->
+                    <button name="add_payment_scheduled"
+                            type='object'
+                            string="Aprobar Pago"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|', '|', '|', '|', ('line_approval', '==', 'aprobado'),('type','=','in_refund'), ('pago_provision', '=', True), ('pago_caja_chica', '=', True), ('state','!=','open')]}"/>
+                    <field name="line_approval" invisible="1"/>
+                </button>
+                <xpath expr="//field[@name='outstanding_credits_debits_widget']" position="replace">
+                    <field name="outstanding_credits_debits_widget" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='residual']" position="attributes">
+                    <attribute name="attrs"></attribute>
+                    <attribute name="attrs">{'invisible': [('state', 'in', ('draft','cancel'))]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_draft']" position="attributes">
+                    <attribute name="attrs"></attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//field[@name='comment']" position="replace">
+                    <group string="Notas y comentarios">
+                        <field name="comment" nolabel="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <record id="eliterp_factura_view_form1" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.form1</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="purchase.view_invoice_supplier_purchase_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='purchase_id']" position="attributes">
+                    <attribute name="string">Agregar (Orden de Compra)</attribute>
+                    <attribute name="attrs">{'invisible': ['|', ('state', '=', 'purchase'), ('type', '=',
+                        'in_sale_note')]}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="eliterp_account_invoice_form_cliente">
+            <field name="name">eliterp.account.invoice.form.cliente</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/div[@class='alert alert-info']" position="replace">
+                    <!--
+                        <div class="alert alert-info" role="alert" style="margin-bottom:0px;" attrs="{'invisible': [('state','in',('draft','cancel','paid'))]}">
+                            Cliente tiene <bold><a class="alert-link" href="#outstanding" role="button">valores pendientes de pago</a></bold>
+                        </div>
+                    -->
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_sent']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//button[@name='invoice_print']" position="replace">
+                    <button name="imprimir_factura_cliente"
+                            type="object"
+                            class="oe_highlight"
+                            string="Imprimir"/>
+                    <button name="nota_credito_create"
+                            type="object"
+                            attrs="{'invisible': [('type','=','out_refund')]}"
+                            class="oe_highlight"
+                            confirm="Desea generar Nota de Crédito?"
+                            string="Nota de Crédito"/>
+                </xpath>
+                <button name="%(account.action_account_invoice_payment)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <button name="%(account.action_account_invoice_refund)d" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </button>
+                <xpath expr="//field[@name='user_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="consultant_sale_id" string="Asesor"/>
+                </xpath>
+                <xpath expr="//field[@name='date_due']" position="after">
+                    <field name="autorizacion_sri" string="Autorización" invisible="1"/>
+                    <field name="numero_factura" string="No. Documento" readonly="1"/>
+                    <field name="numero_factura_interno" invisible="1"/>
+                    <field name="have_withhold" invisible="1"/>
+                    <field name="have_nota_credito" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet/label[1]" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="withhold_button_invoice"
+                                string="Retención"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': [('have_withhold','=', False)]}"
+                                icon="fa-archive"/>
+                        <button name="nota_credito_button_invoice"
+                                string="Nota de Crédito"
+                                type="object"
+                                class="oe_stat_button"
+                                attrs="{'invisible': [('have_nota_credito','=', False)]}"
+                                icon="fa-archive"/>
+                    </div>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_open']" position="attributes">
+                    <attribute name="confirm">Está todo correcto en el Documento?</attribute>
+                </xpath>
+                <button name="action_invoice_cancel" position="replace">
+                    <button name="action_invoice_cancel"
+                            type="object"
+                            invisible="1"
+                            string="Anular"/>
+                </button>
+                <xpath expr="//button[@name='action_invoice_cancel']" position="attributes">
+                    <attribute name="confirm">Está seguro que desea Anular Documento?</attribute>
+                </xpath>
+                <button name="action_invoice_cancel" position="after">
+                    <button name="action_invoice_cancel_reason"
+                            type="object"
+                            confirm="Está seguro que desea Anular Documento?"
+                            states="draft,open"
+                            string="Anular"/>
+                </button>
+                <xpath expr="//field[@name='outstanding_credits_debits_widget']" position="replace">
+                    <field name="outstanding_credits_debits_widget" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='residual']" position="attributes">
+                    <attribute name="attrs"></attribute>
+                    <attribute name="attrs">{'invisible': [('state', 'in', ('draft','cancel'))]}</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_invoice_draft']" position="attributes">
+                    <attribute name="attrs"></attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="attributes">
+                    <attribute name="attrs"></attribute>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='origin']" position="replace"/>
+                <xpath expr="//field[@name='origin']" position="replace"/>
+                <xpath expr="//field[@name='numero_factura']" position="before">
+                    <field name="origin" attrs="{'invisible': [('type', '=', 'out_invoice')]}"/>
+                </xpath>
+                <!--MARZ-->
+                <xpath expr="//field[@name='comment']" position="replace">
+                    <group string="Términos y condiciones">
+                        <field name="comment" nolabel="1"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+        <!--Facturas de Ventas-->
+        <record id="eliterp_factura_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.factura.view.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree"/>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" position="replace">
+                    <tree decoration-info="state == 'draft'"
+                          colors="red:state == 'cancel';blue:state == 'paid'"
+                          class="tree_facturas_css"
+                          default_order='create_date desc'
+                          string="Facturas">
+                        <field name="number" string="No. Documento"/>
+                        <field name="numero_factura_interno" string="No. Factura"/>
+                        <field name="partner_id" string="Cliente"/>
+                        <field name="date_invoice" string="Fecha Emisión"/>
+                        <field name="date_due" string="Fecha Vencimiento"/>
+                        <field name="amount_total_signed" string="Total"/>
+                        <field name="residual" string="Saldo Pendiente"/>
+                        <field name="total_nota_credito"/>
+                        <field name="origin" string="Documento Origen"/>
+                        <field name="commercial_partner_id" invisible="1"/>
+                        <field name="reference" invisible="1"/>
+                        <field name="name" invisible="1"/>
+                        <field name="journal_id" invisible="1"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        <field name="user_id" invisible="1"/>
+                        <field name="residual_signed" string="Amount Due" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="type" invisible="context.get('type',True)"/>
+                        <field name="state"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <!--Facturas Compras-->
+        <record id="eliterp_facturas_proveedor_form1" model="ir.ui.view">
+            <field name="name">eliterp.facturas.proveedor.fom1</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='fiscal_position_id']" position="replace"/>
+            </field>
+        </record>
+        <record id="eliterp_facturas_proveedor_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.facturas.proveedor.tree.view</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_tree"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree decoration-info="state == 'draft'"
+                          default_order='create_date desc'
+                          colors="red:state == 'cancel';blue:state == 'paid'"
+                          string="Facturas de Proveedor">
+                        <field name="number" string="No. Documento"/>
+                        <field name="numero_factura_interno" string="No. Factura"/>
+                        <field name="partner_id" string="Proveedor"/>
+                        <field name="date_invoice" string="Fecha Emisión"/>
+                        <field name="date_due" string="Fecha Vencimiento"/>
+                        <field name="amount_total_signed" string="Total"/>
+                        <field name="residual" string="Saldo Pendiente"/>
+                        <field name="total_nota_credito"
+                               invisible="context.get('fields_invisible', False)"
+                               string="Nota de Crédito"/>
+                        <field name="origin" string="Documento Origen"/>
+                        <!--MARZ-->
+                        <button name="add_payment_scheduled"
+                                type='object'
+                                string="Aprobar Pago"
+                                attrs="{'invisible': ['|', ('line_approval', '==', 'aprobado'), ('state','!=', 'open')]}"
+                                icon='fa-money'/>
+                        <field name="line_approval" string="Aprobación de Pago" readonly="1"
+                               attrs="{'invisible':[('state','==','cancel')]}"/>
+                        <field name="reference" invisible="1"/>
+                        <field name="commercial_partner_id" invisible="1"/>
+                        <field name="name" invisible="1"/>
+                        <field name="journal_id" invisible="1"/>
+                        <field name="company_id" invisible="1" options="{'no_create': True}"/>
+                        <field name="residual_signed" invisible="1"/>
+                        <field name="currency_id" invisible="1"/>
+                        <field name="company_currency_id" invisible="1"/>
+                        <field name="type" invisible="context.get('type',True)"/>
+                        <field name="state" string="Estado"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+        <!--Notas de Venta (Compras)-->
+        <!--Vistas de Nota de Venta (Compras)
+        <record id="eliterp_nota_venta_proveedor_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.nota.venta.proveedor.tree.view</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="elitum_financiero.eliterp_factura_view_form_tesoreria_2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='origin']" invisible="1"/>
+                <xpath expr="//field[@name='numero_retencion']" invisible="1"/>
+                <xpath expr="//field[@name='total_nota_credito']" invisible="1"/>
+            </field>
+        </record>-->
+        <record id="eliterp_nota_venta_proveedor_form_view" model="ir.ui.view">
+            <field name="name">eliterp.nota.venta.proveedor.form.view</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='tax_line_ids']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', '=', 'in_sale_note')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='amount_tax']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('type', '=', 'in_sale_note')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']" position="attributes">
+                    <attribute name="context">{'type': type, 'journal_id': journal_id, 'default_type':
+                        type}
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="action_invoice_nota_venta_pending_contabilidad" model="ir.actions.act_window">
+            <field name="name">Notas de Venta Proveedor</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="domain">[('type','=','in_sale_note')]</field>
+            <field name="context">{'default_type': 'in_sale_note', 'type': 'in_sale_note', 'journal_type':
+                'purchase_sale_note', 'fields_invisible': True}
+            </field> <!--Contexto, fields_invisible (Ocultar columnas no necesitadas)-->
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        </record>
+        <!--Cambiamos la Acción-Vista Listado/Formulario-->
+        <record model="ir.actions.act_window.view" id="eliterp_action_nota_venta_tree_view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="eliterp_facturas_proveedor_tree_view"/>
+            <field name="act_window_id" ref="action_invoice_nota_venta_pending_contabilidad"/>
+        </record>
+        <record id="eliterp_action_nota_venta_form_view" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="eliterp_nota_venta_proveedor_form_view"/>
+            <field name="act_window_id" ref="action_invoice_nota_venta_pending_contabilidad"/>
+        </record>
+    </data>
+</odoo>

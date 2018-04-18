@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="mrp.menu_mrp_root"
+                  name="Producción"
+                  web_icon="elitum_produccion,static/description/icon.png"
+                  sequence="5"/>
+
+        <menuitem id="menu_produccion_tablero"
+                  name="Producción"
+                  action="board.open_board_my_dash_action"
+                  parent="mrp.menu_mrp_root"
+                  sequence="-1"/>
+
+        <menuitem id="menu_produccion_operaciones"
+                  name="Operaciones"
+                  parent="mrp.menu_mrp_root" sequence="1"/>
+
+        <menuitem id="menu_operaciones_ordenes_produccion"
+                  name="Ordenes de Producción"
+                  action="mrp.mrp_production_action"
+                  parent="menu_produccion_operaciones" sequence="1"/>
+
+        <menuitem id="menu_produccion_reportes"
+                  name="Reportes"
+                  parent="mrp.menu_mrp_root" sequence="99"/>
+
+
+        <menuitem id="menu_produccion_reportes_planificacion"
+                  name="Planificacion"
+                  action="mrp.mrp_production_action_planning"
+                  parent="menu_produccion_reportes" sequence="2"/>
+
+
+    </data>
+</openerp>

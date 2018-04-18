@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="provision_factura"
+                model="account.invoice"
+                string="Provisión Factura/Nota de Venta"
+                report_type="qweb-pdf"
+                name="elitum_contabilidad.reporte_provision_factura"
+                file="elitum_contabilidad.reporte_provision_factura"
+        />
+        <record id="paperformat_provision_factura" model="report.paperformat">
+            <field name="name">Provisión Factura/Nota de Venta</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">40</field>
+            <field name="margin_left">8</field>
+            <field name="margin_right">8</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+        <record id="elitum_contabilidad.provision_factura" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="elitum_contabilidad.paperformat_provision_factura" />
+        </record>
+        <template id="reporte_provision_factura">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <style type="text/css">
+                            .a6_format td {
+                            font-size: 10px;
+                            }
+                            .a6_format td > span{
+                            font-size: 9px;
+                            }
+                            .a6_format th {
+                            font-size: 10px;
+                            }
+                            table > thead > tr > th {
+                            border: 1px solid black;
+                            }
+                        </style>
+                        <div class="row col-xs-12" style="margin-bottom: 0px;" >
+                            <div class="col-xs-3" align="top" style="margin-top: -10px; padding-top:-10px">
+                                <img style="width:180px;"
+                                     align="center"
+                                     src="/elitum_ventas/static/src/img/elitum.png"/>
+                            </div>
+                            <div class="col-xs-7 text-center" style="margin-top: 10px; padding-top:10px" >
+                                <h2>
+                                    <p t-if="doc.type == 'in_invoice'"><strong style="font-size: 15pt; color: black; ">PROVISIÓN DE FACTURA</strong></p>
+                                    <p t-if="doc.type == 'in_sale_note'"><strong style="font-size: 15pt; color: black; ">PROVISIÓN DE NOTA DE VENTA</strong></p>
+                                </h2>
+                            </div>
+                            <div class="col-xs-2 text-center">
+                                <h2>
+                                    <p><strong style="font-size: 8pt; color: black; "><span t-field="doc.number"/></strong></p>
+                                    <p t-if="doc.state != 'cancel'"><strong style="font-size: 8pt; color: black; "><span t-field="doc.state"/></strong></p>
+                                    <p t-if="doc.state == 'cancel'"><strong style="font-size: 15pt; color: c9be4a; "><span t-field="doc.state"/></strong></p>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 " style="margin: 0px; padding:0px; padding-right:30px;" >
+                            <hr style="border-top: 1px solid white;border-bottom: 4px solid c9be4a; background-color:None;"></hr>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0 0 5px 0; padding:0px; padding-right:30px;">
+                            <table class="a6_format" style="border: 1px solid black">
+                                <tbody >
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">FECHA DOCUMENTO:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.date_invoice"/></td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">FECHA VENCIMIENTO:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.date_due"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">PROVEEDOR:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.partner_id.name"/></td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">NO. DOCUMENTO:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.numero_factura_interno"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">CI/RUC:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.partner_id.vat_eliterp"/></td>
+                                        <td  style="background-color:#D3D3D3;" class="text-left col-xs-2">AUTORIZACIÓN:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.numero_autorizacion"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">ESTADO:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.state"/></td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">TOTAL A PAGAR:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.amount_total"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">DETALLE:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.concepto_factura"/>
+                                        </td>
+                                        <td style="background-color:#D3D3D3;" class="text-left col-xs-2">SUSTENTO TRIBUTARIO:</td>
+                                        <td class="text-left col-xs-3" style="font-size: 7pt;">
+                                            <span t-field="doc.sustento_tributario.name"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0 0 5px 0; padding:0px; padding-right:30px;">
+                            <table class="table table-condensed a6_format">
+                                <thead>
+                                    <tr style="border: 1px solid black; background-color:#D3D3D3;">
+                                        <th class="text-center col-xs-2"><strong>CÓDIGO CUENTA</strong></th>
+                                        <th class="text-center col-xs-6"><strong>NO. CUENTA/CONCEPTO</strong></th>
+                                        <th class="text-center col-xs-2"><strong>DEBE</strong></th>
+                                        <th class="text-center col-xs-2"><strong>HABER</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.move_id.line_ids" t-as="line">
+                                        <tr>
+                                            <td class="text-left col-xs-2" style="font-size: 6pt;">
+                                                <span t-field="line.account_id.code"/></td>
+                                            <td class="text-left col-xs-6" style="font-size: 6pt;">
+                                                <span t-field="line.account_id.name"/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-field="line.debit"/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-field="line.credit"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-if="doc.have_withhold == True" class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <table class="table table-condensed a6_format">
+                                <caption class="text-center" style="color: black;font-weight: bold;font-size: 13px">COMPROBANTE DE RETENCIÓN</caption>
+                                <thead>
+                                    <tr style="border: 1px solid black; background-color:#D3D3D3; ">
+                                        <th class="text-center col-xs-2"><strong>NO. DOCUMENTO</strong></th>
+                                        <th class="text-center col-xs-2"><strong>COD. RET. IVA</strong></th>
+                                        <th class="text-center col-xs-2"><strong>%RET. IVA</strong></th>
+                                        <th class="text-center col-xs-2"><strong>COD. RET. RENTA</strong></th>
+                                        <th class="text-center col-xs-2"><strong>%RET. RENTA</strong></th>
+                                        <th class="text-center col-xs-2"><strong>TOTAL</strong></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.withhold_id.line_tax_withhold" t-as="line">
+                                        <tr>
+                                            <td class="text-center col-xs-2" style="font-size: 6pt;">
+                                                <span t-field="line.withhold_id.name_retencion"/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-if="line.tipo_retencion == 'iva'" t-field="line.retencion.code_name"/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-if="line.tipo_retencion == 'iva'" t-esc='"%.2f" %line.retencion.amount'/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-if="line.tipo_retencion == 'renta'" t-field="line.retencion.code_name"/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-if="line.tipo_retencion == 'renta'" t-esc='"%.2f" %line.retencion.amount'/></td>
+                                            <td class="text-right col-xs-2" style="font-size: 6pt;">
+                                                <span t-esc='"%.2f" %line.monto'/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <style type="text/css">
+                            .a6_format td {
+                            font-size: 10px;
+                            }
+                        </style>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                            <table class="row col-xs-12 a6_format" style="margin: 0px; padding:0px; padding-right:30px;" >
+                                <tbody>
+                                    <tr >
+                                        <td class="text-center col-xs-4"><span t-field="doc.create_uid"/></td>
+                                        <td class="text-center col-xs-4"></td>
+                                        <td class="text-center col-xs-4"></td>
+                                    </tr>
+                                    <tr >
+                                        <td class="text-center col-xs-4">ELABORADO</td>
+                                        <td class="text-center col-xs-4">REVISADO</td>
+                                        <td class="text-center col-xs-4">APROBADO</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;" >
+                            <hr style="border-top: 1px solid white;border-bottom: 4px solid c9be4a; background-color:None;"></hr>
+                        </div>
+                        <div class="col-xs-10" style="font-size: 7pt;">
+                            <table >
+                                <tbody>
+                                    <tr>
+                                        <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Usuario:</td>
+                                        <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;"><span t-esc="user.name"/></td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. 1/1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Fecha Impresión:</td>
+                                        <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;" ><span t-esc="(datetime.datetime.now()-datetime.timedelta(hours=5)).strftime('%Y-%m-%d %H:%M:%S')"  /></td>
+                                        <!--MARZ-->
+                                        <td t-if="doc.type == 'in_invoice'" class="text-left col-xs-3" style="padding-left:30px;">COMP-004-FPV-V1</td>
+                                        <td t-if="doc.type == 'in_sale_note'" class="text-left col-xs-3" style="padding-left:30px;">COMP-005-NVP-V1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-2">
+                            <img style="width:100;"
+                                 align="left"
+                                 src="/elitum_ventas/static/src/img/elitum_footer.jpg"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

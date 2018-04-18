@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="factura_cliente"
+                model="account.invoice"
+                string="Factura Cliente"
+                report_type="qweb-pdf"
+                name="elitum_contabilidad.reporte_factura_cliente"
+                file="elitum_contabilidad.reporte_factura_cliente"
+        />
+
+        <record id="paperformat_factura_cliente" model="report.paperformat">
+            <field name="name">Factura Cliente</field>
+            <field name="default" eval="True" />
+            <field name="format">custom</field>
+            <field name="page_height">227</field>
+            <field name="page_width">175</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">55</field>
+            <field name="margin_bottom">90</field>
+            <field name="margin_left">15</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="elitum_contabilidad.factura_cliente" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="elitum_contabilidad.paperformat_factura_cliente" />
+        </record>
+
+        <template id="reporte_factura_cliente">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <t t-if="doc.state == 'cancel'">
+                            <style>
+                                .rotar{
+                                -webkit-transform: rotate(-45deg);
+                                -moz-transform: rotate(-45deg);
+                                -ms-transform: rotate(-45deg);
+                                -o-transform: rotate(-45deg);
+                                transform: rotate(-45deg);
+
+                                -webkit-transform-origin: 50% 50%;
+                                -moz-transform-origin: 50% 50%;
+                                -ms-transform-origin: 50% 50%;
+                                -o-transform-origin: 50% 50%;
+                                transform-origin: 50% 50%;
+
+                                position: relative;
+                                top: 55px;
+                                }
+                            </style>
+                            <div class="watermark rotar" style="position:absolute;font-size:45px;width:100%; padding-top:2px;text-align:center;">
+                                <span>ANULADO</span>
+                            </div>
+                        </t>
+                        <style type="text/css">
+                        </style>
+                        <div class="row col-xs-12">
+                            <br>&amp;nbsp;</br>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <table style="font-size: 8pt;" >
+                                <tbody>
+                                    <tr>
+                                        <td class="text-left col-xs-1" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td class="text-left col-xs-6" >
+                                            <span t-field="doc.partner_id.name"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td style="padding-left:50px"  class="text-left col-xs-3" >
+                                            <span t-field="doc.partner_id.vat_eliterp"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-1" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td class="text-left col-xs-6" >
+                                            <span t-field="doc.partner_id.street"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td style="padding-left:50px" class="text-left col-xs-3">
+                                            <span t-field="doc.partner_id.phone"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-1" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td class="text-left col-xs-6" >
+                                            <span t-field="doc.date_invoice"/>
+                                        </td>
+                                        <td class="text-left col-xs-2" >
+                                            <span><br>&amp;nbsp;</br></span>
+                                        </td>
+                                        <td style="padding-left:50px" class="text-left col-xs-3" >
+                                            <span t-field="doc.payment_term_id.name"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;" >
+                            <br>&amp;nbsp;</br>
+                        </div>
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <table style="font-size: 8pt;">
+                                <tbody>
+                                    <t t-foreach="doc.invoice_line_ids" t-as="line">
+                                        <tr>
+                                            <td style="padding-right:30px;" class="text-left col-xs-1">
+                                                <span t-esc='"%.0f" % line.quantity'/></td>
+                                            <td style="padding-left:50px" class="text-left col-xs-7" >
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <td style="padding-left:60px" class="text-left col-xs-3" >
+                                                <span t-esc='"%.2f" %line.price_unit'/>
+                                            </td>
+                                            <td style="padding-left:30px"  class="text-left col-xs-1" >
+                                                <span t-esc='"%.2f" %line.price_subtotal'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="footer" >
+                        <div class="row col-xs-12" style="margin: 0px; padding:0px; padding-right:0px;">
+                            <table style="font-size: 8pt; border-collapse:separate; border-spacing: 10px;" >
+                                <tbody>
+                                    <tr>
+                                        <td  class="text-left col-xs-7">
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-1" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td  class="text-left col-xs-3" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td style="padding-left:30px;" class="text-right col-xs-1" >
+                                            <span t-esc='"%.2f" %doc.amount_untaxed'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size: 10pt;"  class="text-left col-xs-7">
+                                            <span t-esc="get_amount_to_word(doc.amount_total)"/>
+                                        </td>
+                                        <td class="text-left col-xs-1" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td  class="text-left col-xs-3" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td style="padding-left:30px;" class="text-right col-xs-1" >
+                                            <span t-esc='"%.2f" %doc.base_cero_iva'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-left:40px; font-size: 10pt;"  class="text-left col-xs-7">
+                                            <span t-field="doc.payment_metod_ec.name"/>
+                                        </td>
+                                        <td class="text-left col-xs-1" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td  class="text-left col-xs-3" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td style="padding-left:30px;" class="text-right col-xs-1" >
+                                            <span t-esc='"%.2f" %doc.amount_tax'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-left col-xs-7">
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td class="text-left col-xs-1" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td  class="text-right col-xs-3" >
+                                            <span>&amp;nbsp;</span>
+                                        </td>
+                                        <td style="padding-left:30px;" class="text-right col-xs-1" >
+                                            <span t-esc='"%.2f" %doc.amount_total'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

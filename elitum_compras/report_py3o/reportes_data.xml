@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="reporte_compras"
+                model="elitumgroup.report.purchases"
+                string="Reporte de Compras"
+                report_type="py3o"
+                name="elitum_compras.reporte_compras"/>
+        <record id="elitum_compras.reporte_compras" model="ir.actions.report.xml">
+            <field name="module">elitum_compras</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_compras.ods</field>
+        </record>
+        <report id="reporte_tipo_compra"
+                model="elitumgroup.report.purchase.type"
+                string="Reporte de Tipo de Compra (Gasto)"
+                report_type="py3o"
+                name="elitum_compras.reporte_tipo_compra"/>
+        <record id="elitum_compras.reporte_tipo_compra" model="ir.actions.report.xml">
+            <field name="module">elitum_compras</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_tipo_compra.ods</field>
+        </record>
+    </data>
+</odoo>

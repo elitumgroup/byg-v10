@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="eliterp_concilacion_bancaria_wizard" model="ir.ui.view">
+            <field name="name">eliterp.concilacion.bancaria.wizard</field>
+            <field name="model">concilacion.bancaria.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Concilacion Bancaria">
+                    <group col="2">
+                        <field name="banco_id" options="{'no_create':True}"/>
+                    </group>
+                    <group col="4">
+                        <field name="fecha_inicio"/>
+                        <field name="fecha_fin"/>
+                    </group>
+                    <footer>
+                        <!--MARZ-->
+                        <button name="generar_conciliacion"
+                                type="object"
+                                class="oe_highlight"
+                                string="Generar" />
+                        <button string="Cancelar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="eliterp_concilacion_bancaria_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.concilacion.bancaria.view.tree</field>
+            <field name="model">concilacion.bancaria</field>
+            <field name="arch" type="xml">
+                <tree   decoration-info="state=='pendiente'"
+                        colors="blue:state == 'confirmado';"
+                >
+                    <field name="state" invisible="1"/>
+                    <field name="name" string="No. Documento"/>
+                    <field name="banco_id" string="Banco"/>
+                    <field name="fecha_inicio"/>
+                    <field name="fecha_fin"/>
+                    <field name="saldo_cuenta"/>
+                    <field name="total"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eliterp_concilacion_bancaria_view_form" model="ir.ui.view">
+            <field name="name">eliterp.concilacion.bancaria.view.form</field>
+            <field name="model">concilacion.bancaria</field>
+            <field name="arch" type="xml">
+                <form string="Concilacion Bancaria" version="7">
+                    <header>
+                        <button name="confirmar_concilacion"
+                                type="object"
+                                class="oe_highlight"
+                                attrs="{'invisible': [('state', '!=', 'pendiente')]}"
+                                string="Confirmar"/>
+                        <button name="imprimir_concilacion_bancaria"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <field name="state" widget="statusbar"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" >
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="2">
+                            <field name="banco_id" string="Banco" attrs="{'readonly':[('state','=', 'confirmado')]}"/>
+                        </group>
+                        <group col="4">
+                            <field name="fecha_inicio" string="Fecha Inicio"/>
+                            <field name="fecha_fin" string="Fecha Fin"/>
+                            <field name="saldo_inicial" readonly="1"/>
+                            <field name="saldo_cuenta" required="1"/>
+                            <field name="total" readonly="1"/>
+                            <field name="concepto" string="Concepto"/>
+                            <field name="journal_id" string="Diario" attrs="{'readonly':[('state','=', 'confirmado')]}"/>
+                        </group>
+                        <group col="1" string="Movimientos">
+                            <field name="lineas_movimientos_bancarios_ids"
+                                   nolabel="1" attrs="{'readonly':[('state','=', 'confirmado')]}">
+                                <tree editable="bottom" create="false">
+                                    <field name="check"/>
+                                    <field name="fecha"/>
+                                    <field name="tipo"/>
+                                    <field name="concepto"/>
+                                    <field name="referencia"/>
+                                    <field name="valor" />
+                                    <field name="move_line_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group string="Notas y comentarios">
+                            <field name="notas" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+
+    </data>
+</odoo>

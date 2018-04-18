@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_nota_credito_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.nota.credito.view.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <tree string="Nota de Credito">
+                    <field name="number"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

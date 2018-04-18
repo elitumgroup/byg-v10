@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="elitumgroup_group_sales" model="res.groups">
+            <field name="name">Módulo Ventas</field>
+            <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+        <!--
+            <record id="elitumgroup_group_dashboard_user" model="res.groups">
+                <field name="name">Tablero Ventas (Usuario)</field>
+            </record>
+            <record id="elitumgroup_group_dashboard_manager" model="res.groups">
+                <field name="name">Tablero Ventas (Administrador)</field>
+                <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            </record>
+            <record id="elitumgroup_group_res_partner_user" model="res.groups">
+                <field name="name">Clientes (Usuario)</field>
+            </record>
+            <record id="elitumgroup_group_res_partner_senior" model="res.groups">
+                <field name="name">Clientes (Senior)</field>
+            </record>
+            <record id="elitumgroup_group_res_partner_manager" model="res.groups">
+                <field name="name">Clientes (Administrador)</field>
+                <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            </record>
+            <record id="elitumgroup_group_sale_order_user" model="res.groups">
+                <field name="name">Cotizaciones/Pedidos (Usuario)</field>
+            </record>
+            <record id="elitumgroup_group_sale_order_senior" model="res.groups">
+                <field name="name">Cotizaciones/Pedidos (Senior)</field>
+            </record>
+            <record id="elitumgroup_group_sale_order_manager" model="res.groups">
+                <field name="name">Cotizaciones/Pedidos (Administrador)</field>
+                <field name="users" eval="[(4, ref('base.user_root'))]"/>
+            </record>
+        -->
+
+        <!--Aprobaciones/Negaciones-->
+
+        <!--Otros Botones-->
+
+    </data>
+</odoo>

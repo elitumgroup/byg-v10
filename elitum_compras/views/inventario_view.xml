@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <menuitem id="menu_productos_entrantes"
+                  name="Productos Entrantes"
+                  action="stock.action_receipt_picking_move"
+                  parent="stock.menu_stock_inventory_control"
+                  sequence="5"/>
+
+    </data>
+</openerp>

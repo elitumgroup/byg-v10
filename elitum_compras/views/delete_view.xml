@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!--Quitar Opcion de Productos -->
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_partner_contact_form" />
+
+        <!--Quitar Opcion de Proveedores -->
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_management_supplier_name" />
+
+        <!--Quitar Opcion de Oferta de Proveedores -->
+        <delete model="ir.ui.menu" id="purchase_requisition.menu_purchase_requisition_pro_mgt" />
+
+        <!--Quitar Opcion de Productos Entrantes-->
+        <delete model="ir.ui.menu" id="purchase.menu_action_picking_tree_in_move" />
+
+        <!--Quitar Opcion de Facturas de Proveedor-->
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_management_pending_invoice" />
+
+        <!--Quitar Menu Control-->
+        <delete model="ir.ui.menu" id="purchase.menu_purchase_control" />
+
+        <!--Quitar Opcion de Informes-->
+        <delete model="ir.ui.menu" id="purchase.purchase_report" />
+
+        <!--Quitar Opcion de Purchase agree-->
+        <delete model="ir.ui.menu" id="purchase_requisition.menu_purchase_requisition_type" />
+
+        <!--Quitar Opcion de Pedido de Compras-->
+        <delete model="ir.ui.menu" id="purchase.menu_purchase_form_action" />
+
+        <!--Quitar Opcion de Solicitud de Presupuesto-->
+        <delete model="ir.ui.menu" id="purchase.menu_purchase_rfq" />
+
+        <!--Quitar Menu de Compra-->
+        <delete model="ir.ui.menu" id="purchase.menu_procurement_management" />
+
+
+        <!--Quitar Tablero-->
+        <delete model="ir.ui.menu" id="stock.stock_picking_type_menu" />
+
+
+
+    </data>
+</openerp>
+
+
+

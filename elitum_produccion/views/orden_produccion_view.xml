@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <record id="eliterp_mrp_produccion_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.mrp.produccion.tree.view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+            <field name="arch" type="xml">
+                <tree position="replace">
+                    <tree default_order="date_planned_start desc"
+                          decoration-info="state=='confirmed'"
+                          decoration-danger="date_planned_start&lt;current_date and state not in ('done','cancel')"
+                          decoration-muted="state in ('done','cancel')" string="Manufacturing Orders">
+                        <field name="message_needaction" invisible="1"/>
+                        <field name="name" string="No. Documento"/>
+                        <field name="product_id" string="Producto"/>
+                        <field name="product_qty" sum="Total Qty" string="Cantidad"/>
+                        <field name="date_planned_start" string="Fecha Entrega"/>
+                        <field name="origin" string="Documento Origen"/>
+                        <field name="state" string="Estado"/>
+                        <field name="location_dest_id" string="Ubicación"/>
+                        <field name="product_uom_id"
+                               string="Unit of Measure"
+                               options="{'no_open':True,'no_create':True}" invisible="1"/>
+                        <field name="availability" invisible="1"/>
+                        <field name="routing_id" invisible="1"/>
+                    </tree>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eliterp_mrp_produccion_form_view" model="ir.ui.view">
+            <field name="name">eliterp.mrp.produccion.form.view</field>
+            <field name="model">mrp.production</field>
+            <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+            <field name="arch" type="xml">
+
+                <button name="button_plan" position="replace">
+                    <button name="button_plan"
+                            attrs="{'invisible': ['|', ('state', '!=', 'confirmed')]}"
+                            type="object"
+                            string="Iniciar"
+                            class="oe_highlight"/>
+                </button>
+
+                <xpath expr="//button[@name='action_assign']" position="after">
+                    <button name="confirm_mrp_production" string="Confirmar" type="object" class="oe_highlight"/>
+                    <button name="imprimir_orden_produccion"
+                            string="Imprimir"
+                            class="btn-primary"
+                            type="object"/>
+                </xpath>
+
+                <xpath expr="//field[@name='routing_id']" position="replace"/>
+
+
+                <xpath expr="//field[@name='product_id']" position="replace">
+                    <field name="product_id" on_change="0" invisible="1" />
+                    <field name="product_uom_id" invisible="1" />
+                    <field name="product_qty" invisible="1"/>
+                    <field name="create_date" string="Fecha de Creación" readonly="1"/>
+                    <field name="analytic_account_id" style="width:200px"/>
+                    <field name="project_id"
+                           options="{'no_create': True}"
+                           style="width:200px"/>
+                    <field name="routing_id" readonly="0" required="0" style="witdh:300px"/>
+                </xpath>
+                <xpath expr="//label[@for='product_qty']" position="replace"/>
+                <xpath expr="//div[@class='o_row']" position="replace"/>
+                <xpath expr="//field[@name='bom_id']" position="replace"/>
+
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="placeholder">Numero de Producción</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='date_planned_start']" position="attributes">
+                    <attribute name="string">Fecha de Entrega</attribute>
+                </xpath>
+
+                <xpath expr="//notebook" position="replace">
+                    <notebook>
+                        <page string="Productos a Fabricar">
+                            <field name="lines_product_done">
+                                <tree editable="bottom">
+                                    <field name="product_id" domain="[('type','=','product_done')]" />
+                                    <field name="name"/>
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                            <field name="notas" class="oe_inline" placeholder="Notas y comentarios"/>
+                            <div class="oe_clear"/>
+
+                        </page>
+                        <page string="Materia Prima">
+                            <field name="move_raw_ids"
+                                   options="{'reload_on_button': True}"
+                                   context="{'default_location_id': location_src_id, 'default_location_dest_id': location_dest_id}">
+                                <tree editable="bottom">
+                                    <field name="product_id" domain="[('type','=','product')]" />
+                                    <field name="name" invisible="1"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom"/>
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="location_dest_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Ordenes de Trabajo">
+                        </page>
+                        <page string="Notas">
+                            <div>
+                                <field name="notas"/>
+                            </div>
+                        </page>
+                        <page string="Ubicaciones">
+                            <group col="1">
+                                <group>
+                                    <field name="picking_type_id"
+                                           attrs="{'readonly': [('has_moves', '=', True)]}"
+                                           on_change="1"
+                                           can_create="true"
+                                           can_write="true"
+                                           invisible="1"
+                                           modifiers="{'readonly': [['has_moves', '=', true]], 'required': true}"/>
+                                </group>
+                                <separator string="Ubicacion"/>
+                                <group>
+                                    <field name="location_src_id"
+                                           domain="[('usage','=','internal')]"
+                                           attrs="{'readonly': [('has_moves', '=', True)]}"
+                                           can_create="true"
+                                           can_write="true"
+                                           modifiers="{'readonly': [['has_moves', '=', true]], 'required': true}" string="Materias Primas"/>
+                                    <field name="location_dest_id"
+                                           domain="[('usage','=','internal')]"
+                                           attrs="{'readonly': [('has_moves', '=', True)]}"
+                                           can_create="true"
+                                           can_write="true"
+                                           string="Productos Finalizados"
+                                           modifiers="{'readonly': [['has_moves', '=', true]], 'required': true}"/>
+                                </group>
+                                <group>
+                                    <field name="availability" modifiers="{'readonly': true}"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+
+                </xpath>
+
+                <xpath expr="//field[@name='origin']" position="after">
+                    <field name="adjunto" string="Archivo/Imagen"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

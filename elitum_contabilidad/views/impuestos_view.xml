@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="elitum_tax_code_view_tree" model="ir.ui.view">
+            <field name="name">elitum.tax.code.view.form</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_tree"/>
+            <field name="arch" type="xml">
+                <field name="name" position="before">
+                    <field name="code_name"/>
+                </field>
+            </field>
+        </record>
+
+        <!--MARZ-->
+        <record id="elitum_account_tax_view_search" model="ir.ui.view">
+            <field name="name">elitum.account.tax.view.search</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_account_tax_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="replace">
+                    <field name="name"
+                           filter_domain="['|', '|', ('name','ilike',self), ('code_name','ilike',self), ('description','ilike',self)]"
+                           string="Impuesto"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="elitum_tax_code_view_form" model="ir.ui.view">
+            <field name="name">elitum.tax.code.view.form</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="code_name"/>
+                    <field name="taxable_code_id"/>
+                    <field name="tieback_code_id"/>
+                </field>
+                <field name="type_tax_use" position="after">
+                    <field name="tipo_impuesto" required="1"/>
+                    <field name="tipo_retencion"
+                           attrs="{'invisible':[('tipo_impuesto','=','iva')], 'required':[('tipo_impuesto','=','retencion')]}"/>
+                </field>
+                <xpath expr="//field[@name='refund_account_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="open_eliterp_tax_code" model="ir.actions.act_window">
+            <field name="name">Código de Impuesto</field>
+            <field name="res_model">account.tax.code</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</openerp>

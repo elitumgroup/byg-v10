@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_payment_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.payment.cancel.reason.view.wizard</field>
+            <field name="model">payment.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razon">
+                    <group>
+                        <field name="description"/>
+                    </group>
+                    <footer>
+                        <button name="cancel_reason_payment"
+                                type="object"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_pagos_varios_view_form" model="ir.ui.view">
+            <field name="name">eliterp.pagos.varios.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <form string="Registrar Pagos" version="7">
+                    <header>
+                        <button name="post" class="oe_highlight" states="draft" string="Confirmar" type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}"
+                             modifiers="{'invisible': [['state', '=', 'draft']]}">
+                            <h1>
+                                <field name="name" modifiers="{'readonly': true}"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="partner_id"
+                                   domain="[('supplier','=', True)]"
+                                   string="Proveedor"/>
+                            <field name="payment_date" string="Fecha de Pago"/>
+                        </group>
+                        <notebook>
+                            <page name="lineas_registro" string="Detalle">
+                                <field name="line_method_pagos">
+                                    <tree editable="bottom">
+                                        <field name="account_id"
+                                               domain="[('tipo_contable','=', 'movimiento')]"
+                                               string="Cuenta"
+                                               options="{'no_create':True}"/>
+                                        <field name="glosa_referencia" string="Glosa"/>
+                                        <field name="payment_method" string="Metodo de Pago"/>
+                                        <field name="amount" string="Monto"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_pagos_varios_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.pagos.varios.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='draft'" class="deposito_pagos_varios_css">
+                    <field name="name" string="No. Documento"/>
+                    <field name="partner_id" string="Cliente"/>
+                    <field name="payment_date"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_transferencias_view_form" model="ir.ui.view">
+            <field name="name">eliterp.transferencias.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <form string="Registrar Transferencias" version="7">
+                    <header>
+                        <button name="imprimir_transferencia"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button name="confirmar_transferencia" class="oe_highlight" states="draft" string="Confirmar"
+                                type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="anular_payment" states="posted" string="Anular" type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['posted']]]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}"
+                             modifiers="{'invisible': [['state', '=', 'draft']]}">
+                            <h1>
+                                <field name="name" modifiers="{'readonly': true}"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="payment_date" attrs="{'readonly':[('state','==','posted')]}" string="Fecha de Pago"/>
+                            <field name="concepto" attrs="{'readonly':[('state','==','posted')]}"/>
+                            <field name="monto_transferencia_bancaria" attrs="{'readonly':[('state','==','posted')]}"/>
+                            <field name="cuenta_debit_id" attrs="{'readonly':[('state','==','posted')]}"
+                                   string="Cuenta Debe"
+                                   options="{'no_create':True}"/>
+                            <field name="account_credit_id"
+                                   string="Cuenta Haber" attrs="{'readonly':[('state','==','posted')]}"
+                                   options="{'no_create':True}"/>
+                            <!--ABEL-->
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
+                            <!---->
+                            <field name="journal_id" invisible="1"/>
+                            <field name="payment_method_id" invisible="1"/>
+                            <field name="payment_type" invisible="1"/>
+                            <field name="payment_type_eliterp" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_transferencias_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.transferencia.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree
+                        colors="red:state == 'cancel';blue:state == 'posted'"
+                        decoration-info="state=='draft'">
+                    <field name="name" string="No. Documento"/>
+                    <field name="payment_date" string="Fecha de Pago"/>
+                    <field name="cuenta_debit_id" string="Cuenta Debe"/>
+                    <field name="account_credit_id" string="Cuenta Haber"/>
+                    <field name="monto_transferencia_bancaria" string="Monto"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_depositos_view_form" model="ir.ui.view">
+            <field name="name">eliterp.depositos.view.form</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <form string="Registrar Depositos" version="7">
+                    <header>
+                        <button name="confirm_payment" class="oe_highlight" states="draft" string="Confirmar"
+                                type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="imprimir_deposito"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <button name="anular_payment" states="posted" string="Anular" type="object"
+                                modifiers="{'invisible': [['state', 'not in', ['posted']]]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" attrs="{'invisible': [('state', '=', 'draft')]}"
+                             modifiers="{'invisible': [['state', '=', 'draft']]}">
+                            <h1>
+                                <field name="name" modifiers="{'readonly': true}"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="tipo_deposito" attrs="{'readonly':[('state','==','posted')]}"/>
+                            <field name="payment_date" string="Fecha de Depósito"
+                                   attrs="{'readonly':[('state','==','posted')]}"/>
+                            <field name="banco_efectivo"
+                                   options="{'no_create':True}"
+                                   attrs="{'readonly':[('state','==','posted')]}"
+                                   domain="[('type_action', '=', 'payments')]"
+                                   string="Banco"/>
+                            <field name="concepto" string="Concepto" attrs="{'readonly':[('state','==','posted')]}"/>
+                            <field name="amount" string="Monto Total"
+                                   readonly="1"/>
+                            <!--ABEL-->
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
+                            <!---->
+                            <field name="journal_id" string="Diario" readonly="1" invisible="1"/>
+                            <field name="payment_method_id" string="Tipo de Pago" invisible="1"/>
+                            <field name="payment_type" invisible="1"/>
+                            <field name="payment_type_eliterp" invisible="1"/>
+                        </group>
+                        <group col="1" string="Cheques Recaudados"
+                               attrs="{'invisible':[('tipo_deposito','!=','cheque')]}">
+                            <group col="6">
+                                <button name="cargar_cheques"
+                                        attrs="{'invisible':[('state','==','posted')]}"
+                                        type="object"
+                                        string="Cargar Cheques"
+                                        class="oe_highlight"/>
+                                <button name="cargar_monto"
+                                        attrs="{'invisible':[('state','==','posted')]}"
+                                        type="object"
+                                        string="Sumar Monto"
+                                        class="oe_highlight"/>
+                            </group>
+                            <field name="line_deposits_check_ids" nolabel="1"
+                                   attrs="{'readonly':[('state','==','posted')]}">
+                                <tree editable="bottom" create="false" edit="false">
+                                    <field name="numero_cheque"/>
+                                    <!--MARZ-->
+                                    <field name="fecha_vencimiento" string="Fecha de Vencimiento"/>
+                                    <field name="amount"/>
+                                    <field name="banco" string="Banco Origen"/>
+                                    <field name="account_id"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group col="1" string="Detalle de Cuentas"
+                               attrs="{'invisible':[('tipo_deposito','!=','efectivo')]}">
+                            <group>
+                                <button name="cargar_monto"
+                                        attrs="{'invisible':[('state','==','posted')]}"
+                                        type="object"
+                                        string="Sumar Monto"
+                                        class="oe_highlight"/>
+                            </group>
+                            <field name="linea_depositos_efectivo" nolabel="1"
+                                   attrs="{'readonly':[('state','==','posted')]}">
+                                <tree editable="bottom">
+                                    <field name="account_id" string="Cuenta Contable"/>
+                                    <field name="referencia" string="Referencia"/>
+                                    <field name="monto" string="Monto"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group col="1" string="Detalle de Cheques"
+                               attrs="{'invisible':[('tipo_deposito','!=','cheque_externo')]}">
+                            <group>
+                                <button name="cargar_monto"
+                                        attrs="{'invisible':[('state','==','posted')]}"
+                                        type="object"
+                                        string="Sumar Monto"
+                                        class="oe_highlight"/>
+                            </group>
+                            <field name="linea_depositos_cheques_externos" nolabel="1"
+                                   attrs="{'readonly':[('state','==','posted')]}">
+                                <tree editable="bottom">
+                                    <field name="banco"
+                                           options="{'no_create':True}"
+                                           domain="[('type_action', '=', 'charges')]"/>
+                                    <field name="numero_cuenta"/>
+                                    <field name="numero_cheque"/>
+                                    <field name="nombre_girador"/>
+                                    <field name="account_id"/>
+                                    <field name="monto"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_depositos_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.depositos.view.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='draft'"
+                      colors="red:state == 'cancel';blue:state == 'posted'">
+                    <field name="name" string="No. Documento"/>
+                    <field name="banco_efectivo" string="Banco"/>
+                    <field name="payment_date" string="Fecha de Depósito"/>
+                    <field name="amount" string="Monto Total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

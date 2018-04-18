@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="cheque_matricial"
+                model="cheques.eliterp"
+                string="Cheque Emitido"
+                report_type="qweb-pdf"
+                name="elitum_contabilidad.reporte_cheque_matricial"
+                file="elitum_contabilidad.reporte_cheque_matricial"/>
+
+        <record id="paperformat_reporte_cheque_matricial" model="report.paperformat">
+            <field name="name">Cheque Emitido</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">16</field>
+            <field name="margin_bottom">0</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">50</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="elitum_contabilidad.cheque_matricial" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="elitum_contabilidad.paperformat_reporte_cheque_matricial"/>
+        </record>
+
+        <template id="reporte_cheque_matricial">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="doc">
+                     <div class="page">
+                        <style type="text/css">
+                            table {
+                                font-size: 12pt;
+                            }
+                            table > tbody > tr > td {
+                                height: 25px;
+                            }
+                        </style>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td width="60px">&amp;nbsp;</td>
+                                    <td width="410px">
+                                       <span t-esc="doc.nombre"/>
+                                    </td>
+                                    <td>
+                                        <span t-esc='"%.2f" %doc.monto'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>&amp;nbsp;</td>
+                                    <td colspan="2">
+                                        <span t-esc="get_amount_to_word(doc.monto)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">&amp;nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <span t-esc="get_lugar_fecha(doc.fecha_del_cheque)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

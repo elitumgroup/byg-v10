@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="eliterp_withhold_cancel_reason_view_wizard" model="ir.ui.view">
+            <field name="name">eliterp.withhold.cancel.reason.view.wizard</field>
+            <field name="model">withhold.cancel.reason</field>
+            <field name="arch" type="xml">
+                <form string="Explique la Razon">
+                    <sheet>
+                        <group>
+                            <field name="description"/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="cancel_reason_withhold_move"
+                                type="object"
+                                class="oe_highlight"
+                                string="Confirmar"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_retenciones_view_form_ventas" model="ir.ui.view">
+            <field name="name">eliterp.retenciones.view.form.ventas</field>
+            <field name="model">tax.withhold</field>
+            <field name="arch" type="xml">
+                <form string="Retenciones" version="7">
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="confirm_withhold"
+                                attrs="{'invisible': [('state', '!=', 'draft')]}"
+                                string="Validar"
+                                class="oe_highlight"
+                                type="object"/>
+                        <button name="cancel_reason_withhold"
+                                attrs="{'invisible': [('state', '==', 'cancel')]}"
+                                string="Anular"
+                                type="object"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="type" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="fecha"/>
+                            <field name="partner_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('customer', '=', True)]"/>
+                            <field name="invoice_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('type', '=', 'out_invoice'),('partner_id','=',partner_id),('have_withhold','=',False),('state','=','open')]"/>
+                            <field name="name_retencion"/>
+                            <field name="move_id"
+                                   attrs="{'invisible': [('state', '==', 'draft')]}"
+                                   string="Asiento Contable"/>
+                            <field name="journal_id" invisible="1"/>
+                            <field name="base_imponible" invisible="1"/>
+                            <field name="base_iva" invisible="1"/>
+                            <field name="if_secuencial" string="Secuencial?" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="line_tax_withhold">
+                                <tree editable="top/bottom">
+                                    <field name="tipo_retencion"/>
+                                    <field name="retencion"
+                                           domain="[('type_tax_use','=','sale'),('tipo_impuesto','=','retencion'),('tipo_retencion', '=',tipo_retencion)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="base_imponible"/>
+                                    <field name="monto" sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_retenciones_view_form_compras_wizard" model="ir.ui.view">
+            <field name="name">eliterp.retenciones.view.form.compras.wizard</field>
+            <field name="model">tax.withhold</field>
+            <field name="arch" type="xml">
+                <form string="Retenciones" version="7">
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="type" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="fecha"/>
+                            <field name="partner_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('supplier', '=', True)]" string="Proveedor"/>
+                            <field name="invoice_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('type', '=', 'out_invoice'),('partner_id','=',partner_id)]"/>
+                            <field name="if_secuencial" string="Secuencial?"/>
+                            <field name="name_retencion"
+                                   attrs="{'invisible': [('if_secuencial', '=', False)]}"
+                                   readonly="1"/>
+                            <field name="journal_id" invisible="1"/>
+                            <field name="base_imponible" invisible="1"/>
+                            <field name="base_iva" invisible="1"/>
+                        </group>
+                        <group string="Líneas de Retenciones">
+                            <field name="line_tax_withhold" nolabel="1">
+                                <tree editable="top/bottom">
+                                    <field name="tipo_retencion"/>
+                                    <field name="retencion"
+                                           domain="[('type_tax_use','=','purchase'),('tipo_impuesto','=','retencion'),('tipo_retencion','=',tipo_retencion)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="base_imponible"/>
+                                    <field name="monto" sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="save" class="oe_highlight" string="Guardar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_retenciones_view_form_compras" model="ir.ui.view">
+            <field name="name">eliterp.retenciones.view.form.compras</field>
+            <field name="model">tax.withhold</field>
+            <field name="arch" type="xml">
+                <form string="Retenciones" version="7">
+                    <header>
+                        <field name="state" widget="statusbar" modifiers="{'readonly': true}"/>
+                        <button name="imprimir_retencion_venta"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="type" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="fecha"/>
+                            <field name="partner_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('supplier', '=', True)]" string="Proveedor"/>
+                            <field name="invoice_id"
+                                   required="1"
+                                   options="{'no_create': True}"
+                                   domain="[('type', '=', 'out_invoice'),('partner_id','=',partner_id)]"/>
+                            <!--MARZ
+                                <field name="move_id"
+                                    attrs="{'invisible': [('state', '==', 'draft')]}"
+                                    string="Asiento Contable"/>
+                            -->
+                            <field name="if_secuencial" string="Secuencial?"/>
+                            <field name="name_retencion"
+                                   attrs="{'invisible': [('if_secuencial', '=', False)]}"
+                                   readonly="1"/>
+                            <field name="journal_id" invisible="1"/>
+                            <field name="base_imponible"/>
+                            <field name="base_iva"/>
+                        </group>
+                        <group string="Líneas de Retenciones">
+                            <field name="line_tax_withhold" nolabel="1">
+                                <tree editable="top/bottom">
+                                    <field name="tipo_retencion"/>
+                                    <field name="retencion"
+                                           domain="[('type_tax_use','=','purchase'),('tipo_impuesto','=','retencion'),('tipo_retencion','=',tipo_retencion)]"
+                                           options="{'no_create': True}"/>
+                                    <field name="base_imponible"/>
+                                    <field name="monto" sum="Total"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_retenciones_view_tree_compras" model="ir.ui.view">
+            <field name="name">eliterp.retenciones.view.tree.compras</field>
+            <field name="model">tax.withhold</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones"
+                      decoration-info="state=='draft'"
+                      colors="red:state=='cancel';blue:state=='confirm'"
+                      default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="name_retencion" string="No. Retención"/>
+                    <field name="fecha"/>
+                    <field name="invoice_id"/>
+                    <field name="partner_id"/>
+                    <field name="monto_total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="eliterp_retenciones_view_tree_ventas" model="ir.ui.view">
+            <field name="name">eliterp.retenciones.view.tree.ventas</field>
+            <field name="model">tax.withhold</field>
+            <field name="arch" type="xml">
+                <tree string="Retenciones"
+                      decoration-info="state=='draft'"
+                      colors="red:state=='cancel';blue:state=='confirm'"
+                      default_order='create_date desc'>
+                    <field name="name" string="No. Documento"/>
+                    <field name="name_retencion" string="No. Retención"/>
+                    <field name="fecha"/>
+                    <field name="invoice_id"/>
+                    <field name="partner_id"/>
+                    <field name="monto_total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <!--MARZ - Pagos Factura Proveedor-->
+        <record id="elitum_invoice_payment_scheduled_form_wizard" model="ir.ui.view">
+            <field name="name">Elitum - Pagos Factura Proveedor</field>
+            <field name="model">account.invoice.payment.scheduled</field>
+            <field name="arch" type="xml">
+                <form string="Formulario - Pagos Factura Proveedor">
+                    <group>
+                        <group>
+                            <field name="invoice_id"
+                                   required="1"
+                                   string="Factura"
+                                   options="{'no_create': True}"
+                                   domain="[('type', '=', 'out_invoice')]"/>
+                            <field name="payment_type"
+                                   widget="radio"
+                                   string="Tipo de Pago"
+                                   options="{'horizontal': true}"/>
+                            <field name="way_to_pay"
+                                   widget="radio"
+                                   required="1"
+                                   string="Forma de Pago"
+                                   options="{'horizontal': true}"/>
+                            <field name="saldo_pendiente" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="fecha" required="1"/>
+                            <field name="value"/>
+                            <field name="bank_id"
+                                   string="Banco"
+                                   options="{'no_create':True}"
+                                   attrs="{'invisible':[('way_to_pay','!=','cheque')]}"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="save" class="oe_highlight" string="Aprobar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_pago_programado_view_form" model="ir.ui.view">
+            <field name="name">eliterp.pago.programado.view.form</field>
+            <field name="model">account.invoice.payment.scheduled</field>
+            <field name="arch" type="xml">
+                <form string="Formulario (View) - Pagos Factura Proveedor">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="invoice_id"
+                                       required="1"
+                                       string="Factura"
+                                       options="{'no_create': True}"
+                                       domain="[('type', '=', 'out_invoice')]"/>
+                                <field name="payment_type"
+                                       widget="radio"
+                                       string="Tipo de Pago"
+                                       options="{'horizontal': true}"/>
+                                <field name="way_to_pay"
+                                       widget="radio"
+                                       required="1"
+                                       string="Forma de Pago"
+                                       options="{'horizontal': true}"/>
+                                <field name="pagada" string="Pagado?" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="fecha" required="1"/>
+                                <field name="value"/>
+                                <field name="bank_id"
+                                       string="Banco"
+                                       options="{'no_create':True}"
+                                       attrs="{'invisible':[('way_to_pay','!=','cheque')]}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_pago_programado_view_tree" model="ir.ui.view">
+            <field name="name">eliterp.pago.programado.view.tree</field>
+            <field name="model">account.invoice.payment.scheduled</field>
+            <field name="arch" type="xml">
+                <tree string="Pagos Programados Relaciones con la Factura"
+                      default_order='fecha asc'>
+                    <field name="fecha"/>
+                    <field name="payment_type" string="Tipo de Pago"/>
+                    <field name="way_to_pay" string="Forma de Pago"/>
+                    <field name="bank_id" string="Banco"/>
+                    <field name="pagada" string="Pagada?" readonly="1"/>
+                    <field name="value" sum="Total"/>
+                </tree>
+            </field>
+        </record>
+        <!--Fin MARZ-->
+    </data>
+</odoo>

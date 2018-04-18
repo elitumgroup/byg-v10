@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="eliterp_comision_presupuesto_form" model="ir.ui.view">
+            <field name="name">eliterp.comision.presupuesto.form</field>
+            <field name="model">presupuesto.comision</field>
+            <field name="arch" type="xml">
+                <form string="Variables">
+                    <sheet>
+                        <div class="oe_title" >
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="2">
+                            <label for="fecha_desde" string="Período"/>
+                            <div>
+                                <field name="fecha_desde"  class="oe_inline" />
+                                -
+                                <field name="fecha_hasta"  class="oe_inline" />
+                            </div>
+                        </group>
+                        <group>
+                            <field name="monto"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="eliterp_comision_variables_form" model="ir.ui.view">
+            <field name="name">eliterp.comision.variables.form</field>
+            <field name="model">variables.comisiones</field>
+            <field name="arch" type="xml">
+                <form string="Variables">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="linea_parametros">
+                                <tree editable="bottom">
+                                    <field name="name"/>
+                                    <field name="cumplimiento" string="Cumplimiento"/>
+                                    <field name="rango_inicial" />
+                                    <field name="rango_final" />
+                                    <field name="porcentaje" String="Comision"/>
+                                </tree>
+                            </field>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="eliterp_comisiones_form" model="ir.ui.view">
+            <field name="name">eliterp.comisiones.form</field>
+            <field name="model">comisiones</field>
+            <field name="arch" type="xml">
+                <form string="Comisiones">
+                    <header>
+                        <button name="calcular_comision"
+                                type="object"
+                                string="Calcular Comisión"
+                                class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" >
+                            <h1>
+                                <field name="name" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="asesor_id" required="1"/>
+                            <field name="tipo_base" string="Base de Cálculo"/>
+                            <field name="presupuesto" string="Período" required="1"/>
+                            <field name="presupuesto_monto"/>
+                            <field name="ventas_monto"/>
+                        </group>
+                        <group string="Líneas de Variables">
+                            <field name="lineas_variables" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="variable_id"/>
+                                    <field name="nota"/>
+                                    <field name="porcentaje_comision" string="% Comisión"/>
+                                    <field name="monto"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="total"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="eliterp_comisiones_tree" model="ir.ui.view">
+            <field name="name">eliterp.comisiones.tree</field>
+            <field name="model">comisiones</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="asesor_id" string="Asesor"/>
+                    <field name="presupuesto" string="Período"/>
+                    <field name="presupuesto_monto" string="Presupuesto" sum="Total"/>
+                    <field name="ventas_monto" string="Ventas" sum="Total"/>
+                    <field name="total" string="Comisión" sum="Total"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</odoo>

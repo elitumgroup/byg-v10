@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+
+        <record id="eliterp_version_alternativa_form" model="ir.ui.view">
+            <field name="name">eliterp.version_alternativa.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                 <field name="project_id" position="after">
+                    <field name="alternativa_check" invisible="1"/>
+                    <field name="version_check" invisible="1"/>
+                    <field name="alternativa_version" invisible="1"/>
+                    <field name="es_version" invisible="1"/>
+                    <field name="es_alternativa" invisible="1"/>
+                </field>
+
+                <button name="action_cancel" position="after">
+                    <button name="nueva_alternativa"
+                            type='object'
+                            string="Crear Alternativa"
+                            attrs="{'invisible': ['|',('alternativa_version','==', False),('es_version','==', True)]}"/>
+                    <button name="nueva_version"
+                            type='object'
+                            string="Crear Version"
+                            attrs="{'invisible': [('es_alternativa','==', False)]}"/>
+                </button>
+
+
+
+                <xpath expr="//form/sheet/notebook" position="inside">
+                    <page string="Alternativas" attrs="{'invisible': [('alternativa_check','==', False)]}">
+                        <field name="alternativas">
+                        </field>
+                    </page>
+
+                    <page string="Versiones" attrs="{'invisible': [('version_check','==', False)]}">
+                        <field name="versiones">
+                        </field>
+                    </page>
+
+                </xpath>
+
+
+
+
+
+            </field>
+        </record>
+
+
+
+    </data>
+</openerp>

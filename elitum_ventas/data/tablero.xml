@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ventas.tablero" id="eliterp_tablero_historico_facturacion">
+            <field name="name">Histórico de Facturación</field>
+            <field name="type">bar</field>
+            <field name="type_barra_doble">meses</field>
+        </record>
+        <record model="ventas.tablero" id="eliterp_tablero_pedido_cliente_acumulado">
+            <field name="name">Pedidos por Cliente (Acumulado)</field>
+            <field name="type">bar</field>
+        </record>
+         <record model="ventas.tablero" id="eliterp_tablero_gestion_por_aseror">
+            <field name="name">Gestión por Asesor (Mes Actual)</field>
+            <field name="type">bar_stacked</field>
+            <field name="type_barra_doble">asesor</field>
+        </record>
+        <record model="ventas.tablero" id="eliterp_tablero_gestion_producto">
+            <field name="name">Gestión por Producto (Mes Actual)</field>
+            <field name="type">bar_stacked</field>
+            <field name="type_barra_doble">producto</field>
+        </record>
+    </data>
+</odoo>

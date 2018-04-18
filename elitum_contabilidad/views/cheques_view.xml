@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+        <record id="eliterp_cheques_recibidos_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.cheques.recibidos.tree.view</field>
+            <field name="model">cheques.eliterp</field>
+            <field name="arch" type="xml">
+                <tree string="Cheques"
+                    decoration-info="state=='recibido'"
+                    colors="blue:state=='depositado'"
+                >
+                    <field name="name" string="No. Cheque"/>
+                    <field name="partner_id" string="Cliente"/>
+                    <field name="nombre" string="Girador"/>
+                    <field name="fecha_recepcion_emision" string="Fecha de Recepción"/>
+                    <field name="fecha_del_cheque" string="Fecha del Cheque"/>
+                    <!--<field name="tipo_cheque_fecha" string="Tipo de Cheque"/>-->
+                    <field name="monto" string="Monto"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eliterp_cheques_emitidos_tree_view" model="ir.ui.view">
+            <field name="name">eliterp.cheques.emitidos.tree.view</field>
+            <field name="model">cheques.eliterp</field>
+            <field name="arch" type="xml">
+                <tree string="Cheques">
+                    <field name="name" string="No. Cheque"/>
+                    <field name="partner_id" string="Proveedor"/>
+                    <field name="nombre" string="Beneficiario"/>
+                    <field name="fecha_recepcion_emision" string="Fecha de Emisión"/>
+                    <field name="fecha_del_cheque" string="Fecha del Cheque"/>
+                    <field name="monto" string="Monto"/>
+                    <field name="state" string="Estado"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eliterp_cheques_recibidos_view_form" model="ir.ui.view">
+            <field name="name">eliterp.cheques.recibidos.view.form</field>
+            <field name="model">cheques.eliterp</field>
+            <field name="arch" type="xml">
+                <form string="Cheques Recibidos" version="7">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="recibido,depositado"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="partner_id" string="Cliente"/>
+                            <field name="nombre" string="Girador"/>
+                            <field name="monto" string="Monto"/>
+                        </group>
+                        <group>
+                            <field name="cheque_en_letras" nolabel="1"/>
+                            <field name="tipo_cheque_fecha" invisible="1"/>
+                        </group>
+                        <group col="4">
+                            <field name="banco" string="Banco"/>
+                            <field name="fecha_recepcion_emision" string="Fecha de Recepción"/>
+                            <field name="fecha_del_cheque" string="Fecha del Cheque"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="eliterp_cheques_emitidos_view_form" model="ir.ui.view">
+            <field name="name">eliterp.cheques.emitidos.view.form</field>
+            <field name="model">cheques.eliterp</field>
+            <field name="arch" type="xml">
+                <form string="Cheques Emitidos" version="7">
+                    <header>
+                        <!--MARZ-->
+                        <button name="imprimir_reporte_cheque"
+                                type="object"
+                                class="oe_highlight"
+                                string="Imprimir"/>
+                        <field name="state" widget="statusbar" statusbar_visible="emitido,cobrado"
+                               modifiers="{'readonly': true}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group col="4">
+                            <field name="partner_id" string="Proveedor"/>
+                            <field name="nombre" string="Beneficiario"/>
+                            <field name="monto" string="Monto"/>
+                        </group>
+                        <group>
+                            <field name="cheque_en_letras" nolabel="1"/>
+                            <field name="tipo_cheque_fecha" invisible="1"/>
+                        </group>
+                        <group col="4">
+                            <field name="banco" string="Banco"/>
+                            <field name="fecha_recepcion_emision" string="Fecha De Emisión"/>
+                            <field name="fecha_del_cheque" string="Fecha del Cheque"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

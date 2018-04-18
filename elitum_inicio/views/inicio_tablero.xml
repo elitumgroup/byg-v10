@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem name="Inicio"
+                  id="eliterp_menu_root_inicio"
+                  web_icon="elitum_inicio,static/description/icon.png"
+                  sequence="1"/>
+        <menuitem id="menu_inicio_tablero"
+                  name="Inicio"
+                  action="board.open_board_my_dash_action"
+                  parent="elitum_inicio.eliterp_menu_root_inicio"
+                  sequence="-1"/>
+        <menuitem id="menu_inicio_calendario"
+                  name="Calendario"
+                  action="calendar.action_calendar_event"
+                  parent="elitum_inicio.eliterp_menu_root_inicio"
+                  sequence="1"/>
+        <menuitem id="menu_inicio_mensajeria"
+                  name="Mensajería"
+                  action="mail.mail_channel_action_client_chat"
+                  parent="elitum_inicio.eliterp_menu_root_inicio"
+                  sequence="2"/>
+    </data>
+</openerp>
+
+
+

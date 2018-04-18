@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="reporte_103_104"
+                model="reporte.103.104"
+                string="Impuesto (SRI)"
+                report_type="py3o"
+                name="elitum_contabilidad.reporte_103_104"/>
+        <record id="elitum_contabilidad.reporte_103_104" model="ir.actions.report.xml">
+            <field name="module">elitum_contabilidad</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_103_104.ods</field>
+        </record>
+        <!--MARZ-->
+        <report id="reporte_ats_plantilla"
+                model="eliterp.reporte.ats.plantilla"
+                string="Plantilla ATS"
+                report_type="py3o"
+                name="elitum_contabilidad.reporte_ats_plantilla"/>
+        <record id="elitum_contabilidad.reporte_ats_plantilla" model="ir.actions.report.xml">
+            <field name="module">elitum_contabilidad</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_ats.ods</field>
+        </record>
+    </data>
+</odoo>

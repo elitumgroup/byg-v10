@@ -1,0 +1,3 @@
+import productos
+import stock_picking
+import stock_warehouse
