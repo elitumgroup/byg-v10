@@ -163,7 +163,7 @@
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Usuario:</td>
                                         <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;"><span t-esc="user.name"/></td>
-                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pag. 1/1</td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. <span class="page"/>/<span class="topage" /></td>
                                     </tr>
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Fecha Impresion:</td>
