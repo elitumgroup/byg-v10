@@ -411,9 +411,6 @@ class ReporteEstadoFinanciero(models.AbstractModel):
         if doc.tipo_proyecto != 'all':
             arg.append(('project_id', '=', doc.project_id.id))
         movimientos = self.env['account.move.line'].search(arg)
-        saldo_inicial_cuenta = 0.00
-        if cuenta.fecha_saldo_inicial <= doc.fecha_inicio:
-            saldo_inicial_cuenta = cuenta.saldo_inicial  # Saldo Inicial (Nueva Compañía)
         credit = 0.00
         debit = 0.00
         if cuenta.code == '3.3.3':
@@ -442,7 +439,7 @@ class ReporteEstadoFinanciero(models.AbstractModel):
             monto = monto + self.env['report.elitum_contabilidad.reporte_libro_mayor'].get_saldo_inicial(cuenta,
                                                                                                          doc.fecha_inicio,
                                                                                                          doc.fecha_fin)
-        return monto + saldo_inicial_cuenta
+        return monto
 
     def buscar_padre(self, cuenta):
         '''Buscamos la cuenta padre de la cuenta'''
