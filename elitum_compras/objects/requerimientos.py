@@ -701,10 +701,9 @@ class EliterpProvisionLiquidate(models.Model):
             # Documentos ya procesados
             line.provision_voucher_id.write({'validate': True})
         # Generamos Asiento Contable
-        fecha_actual = fields.Date.today()
         move_id = self.env['account.move'].create({
             'journal_id': self.journal_id.id,
-            'date': fecha_actual
+            'date': self.application_date
         })
         if self.have_anticipo == 'no':
             for register in list_movimientos:
@@ -717,7 +716,7 @@ class EliterpProvisionLiquidate(models.Model):
                     'move_id': move_id.id,
                     'debit': register['valor'],
                     'credit': 0.00,
-                    'date': fecha_actual
+                    'date': self.application_date
                 })
             moves_credit = []
             for acount, grupo in groupby(list_movimientos, key=itemgetter('account_id')):
@@ -739,7 +738,7 @@ class EliterpProvisionLiquidate(models.Model):
                          'move_id': move_id.id,
                          'credit': line['monto'],
                          'debit': 0.00,
-                         'date': fecha_actual})
+                         'date': self.application_date})
                 else:
                     self.env['account.move.line'].with_context(check_move_validity=False).create(
                         {'name': line['account'].name,
@@ -748,7 +747,7 @@ class EliterpProvisionLiquidate(models.Model):
                          'move_id': move_id.id,
                          'credit': line['monto'],
                          'debit': 0.00,
-                         'date': fecha_actual})
+                         'date': self.application_date})
 
         move_id.with_context(asientos_eliterp=True, name_asiento=self.name).post()
         move_id.write({'ref': self.name})
