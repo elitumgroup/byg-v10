@@ -260,7 +260,7 @@
                                         <field name="table_provision_id_check" readonly="1"/>
                                         <field name="valor_check" sum="Total" readonly="1"/>
                                         <field name="validation_check"/>
-                                        <field name="approval"/>
+                                        <field name="account_id" options="{'no_open': True, 'no_create': True}"/>
                                         <field name="monto" sum="Total"/>
                                     </tree>
                                 </field>
