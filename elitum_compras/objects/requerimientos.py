@@ -689,12 +689,14 @@ class EliterpProvisionLiquidate(models.Model):
                     factura = self.env['account.invoice'].search(
                         [('voucher_provision_id', '=', line.provision_voucher_id.id)])
                     partner = factura.partner_id.id
+                    cuenta = factura.account_id.id
                 else:
-                    partner = ''
+                    cuenta = line.table_provision_id_check.account_id.id
+                    partner = False
                 list_movimientos.append({
                     'partner': partner,
                     'nombre': line.table_provision_id_check.name,
-                    'cuenta': line.table_provision_id_check.account_id.id,
+                    'cuenta': cuenta,
                     'valor': line.monto,
                     'account_id': line.account_id
                 })
