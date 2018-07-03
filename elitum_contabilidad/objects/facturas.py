@@ -416,12 +416,10 @@ class AccountInvoice(models.Model):
             else:
                 # Validamos Cuentas (Concepto/Factura)
                 if self.pago_provision:
-                    if len(self.invoice_line_ids) > 1:
-                        raise ValidationError(_("Soló debe crear una línea de detalle (Factura de Viáticos)"))
-                    else:
-                        for line in self.invoice_line_ids:
-                            if line.account_id != self.voucher_provision_id.table_provision_id.account_id:
-                                raise ValidationError(_("Cuentas contables diferentes (Factura y Concepto)"))
+                    accounts = self.env['eliterp.table.provision'].search([])
+                    for line in self.invoice_line_ids:
+                        if not line.account_id.id in accounts._ids:
+                            raise ValidationError(_("Una cuenta de las líneas diferentes a las cuentas de viáticos."))
                 res = super(AccountInvoice, self).action_invoice_open()
         # Nota de Venta de Compra
         if self.type == 'in_sale_note':
