@@ -264,27 +264,21 @@
                             <table class="table table-condensed" style="font-size: 8pt;">
                                 <thead>
                                     <tr style="border: 1px solid black; background-color:#D3D3D3; ">
-                                        <th class="text-center col-xs-4">
-                                            <strong>VALOR NO APROBADO</strong>
+                                        <th class="text-center col-xs-6">
+                                            <strong>POR REEMBOLSAR</strong>
                                         </th>
-                                        <th class="text-center col-xs-4">
+                                        <th class="text-center col-xs-6">
                                             <strong>CON CARGO A EMPRESA</strong>
-                                        </th>
-                                        <th class="text-center col-xs-4">
-                                            <strong>NO VÁLIDO</strong>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-center col-xs-4">
-                                            <span t-esc='"%.2f" % sum(line.valor_check for line in doc.lines_documents_check.filtered(lambda x: x.validation_check=="no_aprobado"))'/>
+                                        <td class="text-center col-xs-6">
+                                            <span t-esc='"%.2f" % sum(line.valor_check for line in doc.lines_documents_check.filtered(lambda x: x.validation_check=="reembolsar"))'/>
                                         </td>
-                                        <td class="text-center col-xs-4">
+                                        <td class="text-center col-xs-6">
                                             <span t-esc='"%.2f" % sum(line.valor_check for line in doc.lines_documents_check.filtered(lambda x: x.validation_check=="cargo_empresa"))'/>
-                                        </td>
-                                        <td class="text-center col-xs-4">
-                                            <span t-esc='"%.2f" % sum(line.valor_check for line in doc.lines_documents_check.filtered(lambda x: x.validation_check=="no_validate"))'/>
                                         </td>
                                     </tr>
                                 </tbody>
