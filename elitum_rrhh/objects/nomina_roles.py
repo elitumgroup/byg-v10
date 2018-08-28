@@ -728,7 +728,7 @@ class HrSalaryRule(models.Model):
 
 class HrPayslipInput(models.Model):
     _inherit = 'hr.payslip.input'
-    order = 'amount desc'
+    _order = 'amount desc'
 
     account_id = fields.Many2one('account.account', domain=[('tipo_contable', '=', 'movimiento')])
     total = fields.Float('Total')
