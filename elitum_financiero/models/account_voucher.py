@@ -840,7 +840,7 @@ class AccountVoucher(models.Model):
                                  default=_default_journal)
     # MARZ
     forma_de_pago = fields.Selection([('bank', 'Cheque'),
-                                      ('cash', 'Efectivo'),
+                                      ('cash', 'Varios'),
                                       ('transferencia', 'Transferencia')], string='Forma de Pago', default='bank',
                                      required=True)
     beneficiario_proveedor = fields.Selection(
