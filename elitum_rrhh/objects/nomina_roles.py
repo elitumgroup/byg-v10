@@ -701,7 +701,6 @@ class HrPayslipRun(models.Model):
         # if self.env['rrhh.nivel.aprobacion'].search([])[0].nivel_1_nomina.id == self._uid:
         self.aprobado_confirmar = True
 
-
     # MARZ
     state = fields.Selection([
         ('draft', 'Borrador'),
@@ -729,6 +728,7 @@ class HrSalaryRule(models.Model):
 
 class HrPayslipInput(models.Model):
     _inherit = 'hr.payslip.input'
+    order = 'amount desc'
 
     account_id = fields.Many2one('account.account', domain=[('tipo_contable', '=', 'movimiento')])
     total = fields.Float('Total')
@@ -739,7 +739,7 @@ class HrPayslipInput(models.Model):
 class HrPayslipInput2(models.Model):
     _name = 'hr.payslip.input.2'
     _description = u'Modelo - Línea de Egresos'
-    _order = 'payslip_id, sequence'
+    _order = 'amount desc'
 
     name = fields.Char(string='Description', required=True)
     payslip_id = fields.Many2one('hr.payslip', string='Pay Slip', required=True, ondelete='cascade', index=True)
@@ -757,7 +757,7 @@ class HrPayslipInput2(models.Model):
 class HrPayslipInput3(models.Model):
     _name = 'hr.payslip.input.3'
     _description = u'Modelo - Línea de Provisión'
-    _order = 'payslip_id, sequence'
+    _order = 'amount desc'
 
     name = fields.Char(string='Description', required=True)
     payslip_id = fields.Many2one('hr.payslip', string='Pay Slip', required=True, ondelete='cascade', index=True)
