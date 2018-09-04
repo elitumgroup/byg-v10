@@ -89,5 +89,26 @@
             <field name="py3o_template_fallback">report_py3o/reporte_pagos_programados.ods</field>
         </record>
         <!--Fin MARZ-->
+        <report id="reporte_cheque_in"
+                model="account.voucher"
+                string="Cheque internacional"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheque_in"/>
+        <record id="elitum_financiero.reporte_cheque_in" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheque_i.ods</field>
+        </record>
+
+        <report id="reporte_cheque_bo"
+                model="account.voucher"
+                string="Cheque bolivariano"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheque_bo"/>
+        <record id="elitum_financiero.reporte_cheque_bo" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheque_b.ods</field>
+        </record>
     </data>
 </odoo>

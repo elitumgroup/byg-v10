@@ -212,6 +212,8 @@
                                 type="object"/>
                         <button name="validar_voucher_eliterp" string="Contabilizar" states="draft" class="oe_highlight"
                                 type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="imprimir_cheque" string="Imprimir cheque" attrs="{'invisible':[('forma_de_pago', '!=', 'bank')]}"
+                                type="object"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
