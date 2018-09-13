@@ -438,7 +438,8 @@ class AccountVoucher(models.Model):
                     'cuenta_id': self.banco.account_id.id,
                     'tipo_cheque_fecha': 'corriente',
                     'state': 'emitido',
-                    'monto': self.cantidad
+                    'monto': self.cantidad,
+                    'voucher_id': self.id,
                 })
             elif self.forma_de_pago == 'cash':  # Efectivo
                 sequence = self.env['ir.sequence'].next_by_code('account.voucher.purchase.cash')
@@ -907,3 +908,8 @@ class AccountVoucher(models.Model):
         ('cancel', 'Anulado'),
         ('posted', 'Contabilizado'),
         ('proforma', 'Pro-forma')], 'Estado', readonly=True, track_visibility='onchange', copy=False, default='draft')
+    transfer_code = fields.Char('Código de transferencia', readonly=True, states={'draft': [('readonly', False)]})
+    _sql_constraints = [
+        ('transfer_code_uniq', 'unique (bank_id, transfer_code, state)',
+         'El Código de transferencia debe ser única por banco.')
+    ]

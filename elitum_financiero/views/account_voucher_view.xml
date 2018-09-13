@@ -48,11 +48,14 @@
                       default_order='date desc'>
                     <field name="date" string="Fecha Emisión"/>
                     <field name="name" string="Forma de Pago"/>
+                    <field name="forma_de_pago"/>
                     <field name="banco" string="Banco"/>
                     <field name="beneficiario" string="Beneficiario"/>
                     <field name="cantidad" string="Total" sum="Total"/>
                     <field name="concepto_pago" string="Concepto"/>
                     <field name="state" string="Estado"/>
+                    <field name="reconcile" attrs="{'invisible':['|', ('forma_de_pago', 'not in',
+                            ['transfer', 'bank']), ('state', '!=', 'posted')]}"/>
                 </tree>
             </field>
         </record>

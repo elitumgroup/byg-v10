@@ -27,7 +27,9 @@
             <field name="name">eliterp.cheques.emitidos.tree.view</field>
             <field name="model">cheques.eliterp</field>
             <field name="arch" type="xml">
-                <tree string="Cheques">
+                <tree create="false"
+                      decoration-success="reconcile==True"
+                      decoration-bf="reconcile==True">
                     <field name="name" string="No. Cheque"/>
                     <field name="partner_id" string="Proveedor"/>
                     <field name="nombre" string="Beneficiario"/>
@@ -35,6 +37,7 @@
                     <field name="fecha_del_cheque" string="Fecha del Cheque"/>
                     <field name="monto" string="Monto"/>
                     <field name="state" string="Estado"/>
+                    <field name="reconcile"/>
                 </tree>
             </field>
         </record>

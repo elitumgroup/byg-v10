@@ -46,7 +46,7 @@ class ConcilacionBancariaWizard(models.TransientModel):
             concilacion_anterior = concilaciones[-1]
             saldo_inicial = concilacion_anterior.saldo_cuenta
             for line in concilacion_anterior.lineas_movimientos_bancarios_ids:
-                if line.check == False:
+                if not line.check:
                     lineas_movimientos.append([0, 0, {'move_line_id': line.move_line_id.id,
                                                       'valor': line.valor}])
         for line in movimientos:
@@ -133,8 +133,19 @@ class ConcilacionBancaria(models.Model):
     def imprimir_concilacion_bancaria(self):
         return self.env['report'].get_action(self, 'elitum_contabilidad.reporte_concilacion_bancaria')
 
+    def _set_reconcile(self):
+        # Colocamos cómo conciliados los documentos seleccionados al validar
+        for line in self.lineas_movimientos_bancarios_ids.filtered(
+                lambda x: x.tipo.name == 'Comprobante de Egreso' and x.check):
+            move = line.move_line_id.move_id
+            voucher = self.env['account.voucher'].search([
+                ('move_id', '=', move.id)
+            ])
+            voucher.update({'reconcile': True})
+
     def confirmar_concilacion(self):
         '''Confirmamos la Conciliación Bancaria'''
+        self._set_reconcile()
         new_name = self.journal_id.sequence_id.next_by_id()
         return self.write({
             'state': 'confirmado',

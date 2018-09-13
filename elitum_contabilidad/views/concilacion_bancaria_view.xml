@@ -19,8 +19,8 @@
                         <button name="generar_conciliacion"
                                 type="object"
                                 class="oe_highlight"
-                                string="Generar" />
-                        <button string="Cancelar" class="oe_link" special="cancel" />
+                                string="Generar"/>
+                        <button string="Cancelar" class="oe_link" special="cancel"/>
                     </footer>
                 </form>
             </field>
@@ -30,8 +30,8 @@
             <field name="name">eliterp.concilacion.bancaria.view.tree</field>
             <field name="model">concilacion.bancaria</field>
             <field name="arch" type="xml">
-                <tree   decoration-info="state=='pendiente'"
-                        colors="blue:state == 'confirmado';"
+                <tree decoration-info="state=='pendiente'"
+                      colors="blue:state == 'confirmado';"
                 >
                     <field name="state" invisible="1"/>
                     <field name="name" string="No. Documento"/>
@@ -63,7 +63,7 @@
                                modifiers="{'readonly': true}"/>
                     </header>
                     <sheet>
-                        <div class="oe_title" >
+                        <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>
                             </h1>
@@ -78,18 +78,19 @@
                             <field name="saldo_cuenta" required="1"/>
                             <field name="total" readonly="1"/>
                             <field name="concepto" string="Concepto"/>
-                            <field name="journal_id" string="Diario" attrs="{'readonly':[('state','=', 'confirmado')]}"/>
+                            <field name="journal_id" string="Diario"
+                                   attrs="{'readonly':[('state','=', 'confirmado')]}"/>
                         </group>
                         <group col="1" string="Movimientos">
                             <field name="lineas_movimientos_bancarios_ids"
                                    nolabel="1" attrs="{'readonly':[('state','=', 'confirmado')]}">
                                 <tree editable="bottom" create="false">
                                     <field name="check"/>
-                                    <field name="fecha"/>
-                                    <field name="tipo"/>
-                                    <field name="concepto"/>
-                                    <field name="referencia"/>
-                                    <field name="valor" />
+                                    <field name="fecha" readonly="1"/>
+                                    <field name="tipo" readonly="1"/>
+                                    <field name="concepto" readonly="1"/>
+                                    <field name="referencia" readonly="1"/>
+                                    <field name="valor" readonly="1"/>
                                     <field name="move_line_id" invisible="1"/>
                                 </tree>
                             </field>
@@ -101,8 +102,6 @@
                 </form>
             </field>
         </record>
-
-
 
 
     </data>
