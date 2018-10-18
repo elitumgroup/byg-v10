@@ -176,7 +176,7 @@ class AccountVoucherCancelReason(models.Model):
         for line in move_id.line_ids:
             if line.full_reconcile_id:
                 line.remove_move_reconcile()
-        move_id.with_context(from_voucher=True, id_voucher=voucher.id).reverse_moves(voucher.post_date,
+        move_id.with_context(from_voucher=True, id_voucher=voucher.id).reverse_moves(voucher.date,
                                                                                      voucher.journal_id or False)
         move_id.write({'state': 'cancel', 'ref': self.description})
         voucher.write({'state': 'cancel'})
@@ -898,7 +898,7 @@ class AccountVoucher(models.Model):
                 'datas': {'ids': reporte},
                 'context': {
                     'reporte_cheque_i': True,
-                    'fecha': 'GUAYAQUIL, ' + self.date,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': monto,
                     'monto_letras': amount
@@ -911,7 +911,7 @@ class AccountVoucher(models.Model):
                 'datas': {'ids': reporte},
                 'context': {
                     'reporte_cheque_i': True,
-                    'fecha': 'GUAYAQUIL, ' + self.date,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': monto,
                     'monto_letras': amount
