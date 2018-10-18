@@ -143,7 +143,7 @@
                         <button name="imprimir_retencion_venta"
                                 type="object"
                                 class="oe_highlight"
-                                string="Imprimir"/>
+                                string="Imprimir Retencion"/>
                     </header>
                     <sheet>
                         <div class="oe_title">

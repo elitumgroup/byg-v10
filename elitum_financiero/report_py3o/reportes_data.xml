@@ -110,5 +110,16 @@
             <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
             <field name="py3o_template_fallback">report_py3o/reporte_cheque_b.ods</field>
         </record>
+         <!--Retencion de Venta-->
+        <report id="reporte_retencion_venta"
+                model="tax.withhold"
+                string="Retencion de venta"
+                report_type="py3o"
+                name="elitum_financiero.reporte_retencion_venta"/>
+        <record id="elitum_financiero.reporte_retencion_venta" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/Retencion.ods</field>
+        </record>
     </data>
 </odoo>

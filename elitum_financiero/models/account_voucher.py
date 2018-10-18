@@ -895,7 +895,7 @@ class AccountVoucher(models.Model):
                     'reporte_cheque_i': True,
                     'fecha': 'GUAYAQUIL, ' + self.date,
                     'nombre': self.beneficiario,
-                    'monto': self.cantidad,
+                    'monto': '{:,}'.format(self.cantidad),
                     'monto_letras': amount
                 }
             }
@@ -908,7 +908,7 @@ class AccountVoucher(models.Model):
                     'reporte_cheque_i': True,
                     'fecha': 'GUAYAQUIL, ' + self.date,
                     'nombre': self.beneficiario,
-                    'monto': self.cantidad,
+                    'monto': '{:,}'.format(self.cantidad),
                     'monto_letras': amount
                 }
             }
