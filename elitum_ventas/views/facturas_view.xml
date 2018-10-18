@@ -24,7 +24,7 @@
                                    class="o_address_city"/>(%)
                             <button name="aplicar_descuento_global"
                                     type="object"
-                                    attrs="{'invisible':[('descuento_global','=',False)]}"
+                                    attrs="{'invisible':['|', ('descuento_global','=',False), ('state','!=','draft')]}"
                                     class="btn-primary"
                                     string="Aplicar"/>
                         </div>

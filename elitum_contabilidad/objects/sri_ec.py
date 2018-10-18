@@ -17,6 +17,7 @@
 #########################################################################
 
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError, ValidationError
 
 
 # MARZ
@@ -75,28 +76,63 @@ class AutorizacionSri(models.Model):
             res.append((data.id, "%s - %s" % (data.tipo_comprobante.name, data.numero_autorizacion)))
         return res
 
+    def _check_autorizacion(self, values):
+        """
+        Verificar no exista una autorización anterior activa
+        :param values:
+        :return:
+        """
+        domain = [
+            ('code_comprobante', '=', values['code_comprobante']),
+            ('numero_establecimiento', '=', values['numero_establecimiento']),
+            ('punto_emision', '=', values['punto_emision']),
+            ('state', '=', 'activo')
+        ]
+        result = self.search(domain)
+        if result:
+            raise UserError("Ya existe una autorización activa para tipo de documento.")
+        else:
+            return
+
     @api.model
     def create(self, values):
-        if values['tipo_comprobante'] == 1:
+        self._check_autorizacion(values)
+        if values['code_comprobante'] == '07': # Para retenciones
             numero = values['numero_autorizacion']
             new_sequence_withhold = self.env['ir.sequence'].create({'name': u"Retención" + "-" + numero,
                                                                     'code': values['numero_autorizacion'],
                                                                     'prefix': values['numero_establecimiento'] + "-" +
                                                                               values['punto_emision'] + "-",
-                                                                    'padding': 10
+                                                                    'padding': 9
                                                                     })
             values.update({'sequence_id': new_sequence_withhold.id})
         return super(AutorizacionSri, self).create(values)
 
-    numero_establecimiento = fields.Char('No. Establecimiento')
-    punto_emision = fields.Char('Punto Emisión')
-    secuencial_inico = fields.Integer(u'Secuencial Inicio')
-    secuencial_fin = fields.Integer(u'Secuencial Fin')
-    secuencia = fields.Integer('Próximo No.', default=1)
-    numero_autorizacion = fields.Char('No. Autorización', required=True)
+    @api.constrains('secuencial_fin')
+    def _check_secuencial_fin(self):
+        if self.secuencial_fin <= self.secuencial_inico:
+            raise ValidationError("Secuencia fin no puede ser menor a la de inicio.")
+
+    @api.onchange('secuencial_inico')
+    def _onchange_secuencial_inico(self):
+        if self.secuencial_inico:
+            if self.code_comprobante == '18':
+                self.secuencia = self.secuencial_inico
+
+    @api.multi
+    def _update_state(self):
+        self.write({'state': 'terminado'})
+
+    numero_establecimiento = fields.Char('No. Establecimiento', size=3, required=True)
+    punto_emision = fields.Char('Punto Emisión', size=3, required=True)
+    secuencial_inico = fields.Integer(u'Secuencial Inicio', size=9, required=True)
+    secuencial_fin = fields.Integer(u'Secuencial Fin', size=9, required=True)
+    secuencia = fields.Integer('Próximo No.')
+    numero_autorizacion = fields.Char('No. Autorización', required=True, size=10)
     tipo_comprobante = fields.Many2one('eliterp.type.document', 'Tipo Documento', required=True)
+    code_comprobante = fields.Char(related='tipo_comprobante.code', string=u'Código')
     state = fields.Selection([('activo', 'Activo'),
-                              ('terminado', 'Terminado')], string="Estado", default='activo')
+                              ('terminado', 'Terminada')], string="Estado", default='activo')
     sequence_id = fields.Many2one('ir.sequence', 'Secuencia')
 
 

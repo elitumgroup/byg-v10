@@ -553,8 +553,10 @@ class AccountInvoice(models.Model):
         # Sí es Factura de Venta generamos nuestra Autorización
         if flag_venta == True:
             mensaje = ""
-            autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 4), ('state', '=', 'activo')])
-            mensaje = "No hay Autorización del SRI para Factura de Venta"
+            autorizacion = self.env['autorizacion.sri'].search(
+                [('code_comprobante', '=', '18'), ('state', '=', 'activo')])
+            mensaje = "No hay Autorización activa del SRI para Factura de Venta"
+            # TODO: Pendiente de revisar
             if 'type' in values:
                 if values['type'] == 'out_refund':
                     autorizacion = self.env['autorizacion.sri'].search(
@@ -562,6 +564,9 @@ class AccountInvoice(models.Model):
                     mensaje = "No hay Autorización del SRI para Nota de Crédito de Venta"
             if not autorizacion:
                 raise except_orm("Error", mensaje)
+            # Validamos secuencia si son iguales la damos por terminada
+            if autorizacion.secuencia == autorizacion.secuencial_fin:
+                autorizacion._update_state()
             if len(str(autorizacion.secuencia)) == 13:
                 numero_factura = autorizacion.secuencia
             else:

@@ -77,15 +77,25 @@
                                modifiers="{'readonly': true}"/>
                     </header>
                     <sheet>
-                        <group col="4">
-                            <field name="tipo_comprobante"/>
-                            <field name="numero_autorizacion"/>
-                        </group>
-                        <group col="4">
-                            <field name="numero_establecimiento"/>
-                            <field name="punto_emision"/>
-                            <field name="secuencial_inico"/>
-                            <field name="secuencial_fin"/>
+                        <group>
+                            <group>
+                                <field name="tipo_comprobante"/>
+                                <field name="numero_autorizacion"/>
+                                <field name="numero_establecimiento"/>
+                                <field name="secuencia"
+                                       attrs="{'invisible':[('code_comprobante','==','07')]}"
+                                       groups="base.group_erp_manager"/> <!--Libre para poder editar-->
+                                <field name="sequence_id"
+                                       attrs="{'invisible':[('code_comprobante','!=','07')]}"
+                                       groups="base.group_erp_manager"/> <!--Libre para poder editar-->
+                                <field name="state" groups="base.group_erp_manager"/> <!--Libre para poder editar-->
+                            </group>
+                            <group>
+                                <field name="punto_emision"/>
+                                <field name="secuencial_inico"/>
+                                <field name="secuencial_fin"/>
+                                <field name="code_comprobante" invisible="1"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
@@ -95,7 +105,7 @@
             <field name="name">elitum.autorizacion.comprobante.view.tree</field>
             <field name="model">autorizacion.sri</field>
             <field name="arch" type="xml">
-                <tree>
+                <tree decoration-danger="state == 'terminado'">
                     <field name="tipo_comprobante"/>
                     <field name="numero_autorizacion"/>
                     <field name="state"/>

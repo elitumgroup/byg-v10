@@ -298,7 +298,7 @@ class Reporte103104(models.TransientModel):
         arg.append(('type', '=', 'out_invoice'))
         facturas = self.env['account.invoice'].search(arg)
         count = 0
-        autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 4), ('state', '=', 'activo')])[0]
+        autorizacion = self.env['autorizacion.sri'].search([('code_comprobante', '=', '18'), ('state', '=', 'activo')])[0]
         for factura in facturas:
             count_factura = 0
             for line in factura.invoice_line_ids:
