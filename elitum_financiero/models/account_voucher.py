@@ -893,7 +893,7 @@ class AccountVoucher(models.Model):
                 'datas': {'ids': reporte},
                 'context': {
                     'reporte_cheque_i': True,
-                    'fecha': 'GUAYAQUIL, ' + self.date,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': '{:,}'.format(self.cantidad),
                     'monto_letras': amount
@@ -906,7 +906,7 @@ class AccountVoucher(models.Model):
                 'datas': {'ids': reporte},
                 'context': {
                     'reporte_cheque_i': True,
-                    'fecha': 'GUAYAQUIL, ' + self.date,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': '{:,}'.format(self.cantidad),
                     'monto_letras': amount
