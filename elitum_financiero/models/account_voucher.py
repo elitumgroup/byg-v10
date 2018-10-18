@@ -464,28 +464,69 @@ class AccountVoucher(models.Model):
                 'date': self.date
             })
             count = len(self.lineas_pagos_proveedores)
-            for line in self.lineas_pagos_proveedores:
-                count -= 1
-                if count == 0:
-                    self.env['account.move.line'].with_context(check_move_validity=True).create(
-                        {'name': self.concepto_pago,
-                         'journal_id': self.journal_id.id,
-                         'partner_id': self.partner_id.id,
-                         'account_id': line.account_id.id,
-                         'move_id': move_id.id,
-                         'credit': 0.0,
-                         'debit': line.monto_pago,
-                         'date': self.date})
-                else:
-                    self.env['account.move.line'].with_context(check_move_validity=False).create(
-                        {'name': self.concepto_pago,
-                         'journal_id': self.journal_id.id,
-                         'partner_id': self.partner_id.id,
-                         'account_id': line.account_id.id,
-                         'move_id': move_id.id,
-                         'credit': 0.0,
-                         'debit': line.monto_pago,
-                         'date': self.date})
+            count_ = len(self.lineas_pagos_facturas)
+            if count_ > 1:
+                account_partner = self.partner_id.property_account_payable_id.id
+                for line in self.lineas_pagos_proveedores.filtered(lambda x: not x.account_id.id == account_partner):
+                    self.env['account.move.line'].with_context(check_move_validity=False).create({
+                        'name': self.concepto_pago,
+                        'journal_id': self.journal_id.id,
+                        'partner_id': False,
+                        'account_id': line.account_id.id,
+                        'move_id': move_id.id,
+                        'credit': 0.0,
+                        'debit': line.monto_pago,
+                        'date': self.date,
+                    })
+                for line in self.lineas_pagos_facturas:
+                    count_ -= 1
+                    if count_ == 0:
+                        self.env['account.move.line'].with_context(check_move_validity=True).create({
+                            'name': "Pago de factura: " + line.name,
+                            'journal_id': self.journal_id.id,
+                            'partner_id': self.partner_id.id,
+                            'account_id': account_partner,
+                            'move_id': move_id.id,
+                            'credit': 0.0,
+                            'debit': line.monto_pago,
+                            'date': self.date,
+                            'invoice_id': line.invoice_id.id
+                        })
+                    else:
+                        self.env['account.move.line'].with_context(check_move_validity=False).create({
+                            'name': "Pago de factura: " + line.name,
+                            'journal_id': self.journal_id.id,
+                            'partner_id': self.partner_id.id,
+                            'account_id': account_partner,
+                            'move_id': move_id.id,
+                            'credit': 0.0,
+                            'debit': line.monto_pago,
+                            'date': self.date,
+                            'invoice_id': line.invoice_id.id
+                        })
+            else:
+                for line in self.lineas_pagos_proveedores:
+                    count -= 1
+                    if count == 0:
+                        self.env['account.move.line'].with_context(check_move_validity=True).create(
+                            {'name': self.concepto_pago,
+                             'journal_id': self.journal_id.id,
+                             'partner_id': self.partner_id.id,
+                             'account_id': line.account_id.id,
+                             'move_id': move_id.id,
+                             'credit': 0.0,
+                             'debit': line.monto_pago,
+                             'date': self.date})
+                    else:
+                        self.env['account.move.line'].with_context(check_move_validity=False).create(
+                            {'name': self.concepto_pago,
+                             'journal_id': self.journal_id.id,
+                             'partner_id': self.partner_id.id,
+                             'account_id': line.account_id.id,
+                             'move_id': move_id.id,
+                             'credit': 0.0,
+                             'debit': line.monto_pago,
+                             'date': self.date})
             if self.beneficiario_proveedor == 'supplier':
                 for line_nota in self.lineas_notas_credito:
                     line_move_factura = line_nota.facturas_afectar.invoice_id.move_id.line_ids.filtered(
@@ -493,11 +534,19 @@ class AccountVoucher(models.Model):
                     line_move_nota = line_nota.invoice_id.move_id.line_ids.filtered(
                         lambda x: x.account_id == cuenta)
                     (line_move_factura + line_move_nota).reconcile()
-                line_move_pago = move_id.line_ids.filtered(lambda x: x.account_id == cuenta)
-                for line_factura in self.lineas_pagos_facturas:
-                    line_move_factura = line_factura.invoice_id.move_id.line_ids.filtered(
-                        lambda x: x.account_id == cuenta)
-                    (line_move_factura + line_move_pago).reconcile()
+                if len(self.lineas_pagos_facturas) > 1:
+                    for line_invoice in self.lineas_pagos_facturas:
+                        line_move_voucher = move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta and x.invoice_id.id == line_invoice.invoice_id.id)
+                        line_move_invoice = line_invoice.invoice_id.move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta)
+                        (line_move_invoice + line_move_voucher).reconcile()
+                else:
+                    line_move_pago = move_id.line_ids.filtered(lambda x: x.account_id == cuenta)
+                    for line_factura in self.lineas_pagos_facturas:
+                        line_move_factura = line_factura.invoice_id.move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta)
+                        (line_move_factura + line_move_pago).reconcile()
             if self.beneficiario_proveedor == 'viaticos':
                 self.env['account.move.line'].with_context(check_move_validity=True).create(
                     {'name': self.viatico_id.name,
