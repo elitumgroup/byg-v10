@@ -356,11 +356,11 @@ class TaxWithhold(models.Model):
         for line in self.line_tax_withhold:
             lista.append({
                 'anio': self.get_ano_fiscal(self.fecha),
-                'imponible': '{:,}'.format(line.base_imponible),
+                'imponible': '{:,.2f}'.format(line.base_imponible),
                 'tipo': line.tipo_retencion.upper(),
                 'code': line.retencion.code_name,
                 'porc': line.retencion.amount,
-                'valor': '{:,}'.format(line.monto)
+                'valor': '{:,.2f}'.format(line.monto)
 
             })
         result = {
@@ -374,7 +374,7 @@ class TaxWithhold(models.Model):
                 'calle': self.partner_id.street,
                 'fecha': self.fecha,
                 'factura': self.invoice_id.numero_factura_interno,
-                'total': '{:,}'.format(sum(x.monto for x in self.line_tax_withhold)),
+                'total': '{:,.2f}'.format(sum(x.monto for x in self.line_tax_withhold)),
                 'get_lines': lista
             }
         }
