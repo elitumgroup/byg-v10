@@ -892,7 +892,7 @@ class AccountVoucher(models.Model):
                 'report_name': 'elitum_financiero.reporte_cheque_bo',
                 'datas': {'ids': reporte},
                 'context': {
-                    'reporte_cheque_i': True,
+                    'reporte_cheque_b': True,
                     'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': '{:,.2f}'.format(self.cantidad),
@@ -906,6 +906,19 @@ class AccountVoucher(models.Model):
                 'datas': {'ids': reporte},
                 'context': {
                     'reporte_cheque_i': True,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
+                    'nombre': self.beneficiario,
+                    'monto': '{:,.2f}'.format(self.cantidad),
+                    'monto_letras': amount
+                }
+            }
+        elif self.banco.display_name == 'BANCO DEL AUSTRO':
+            result = {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'elitum_financiero.reporte_cheque_au',
+                'datas': {'ids': reporte},
+                'context': {
+                    'reporte_cheque_a': True,
                     'fecha': 'GUAYAQUIL, ' + self.post_date,
                     'nombre': self.beneficiario,
                     'monto': '{:,.2f}'.format(self.cantidad),
