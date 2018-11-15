@@ -13,7 +13,7 @@
             <field name="format">A4</field>
             <field name="page_height">0</field>
             <field name="page_width">0</field>
-            <field name="orientation">Landscape</field>
+            <field name="orientation">Portrait</field>
             <field name="margin_top">10</field>
             <field name="margin_bottom">30</field>
             <field name="margin_left">8</field>
@@ -80,27 +80,29 @@
                             <table class="table table-condensed" style="font-size: 8pt;">
                                 <thead>
                                     <tr style="border: 1px solid black; background-color:#D3D3D3; ">
+                                        <th class="text-center"><strong>Nº FACTURA</strong></th>
                                         <th class="text-center"><strong>FECHA</strong></th>
                                         <th class="text-center"><strong>CLIENTE</strong></th>
+                                        <th class="text-center"><strong>SUBTOTAL</strong></th>
+                                        <th class="text-center"><strong>IVA</strong></th>
                                         <th class="text-center"><strong>TOTAL</strong></th>
-                                        <th class="text-center"><strong>ASESOR</strong></th>
                                         <th class="text-center"><strong>ESTADO</strong></th>
-                                        <th class="text-center"><strong>NO. DOCUMENTO</strong></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-foreach="get_lines(doc)" t-as="line">
                                         <tr>
+                                            <td class="text-left"><span t-esc="line['factura']"/></td>
                                             <td class="text-left"><span t-esc="line['fecha']"/></td>
                                             <td class="text-left"><span t-esc="line['cliente']"/></td>
+                                            <td class="text-left"><span t-esc="line['subtotal']"/></td>
+                                            <td class="text-left"><span t-esc="line['iva']"/></td>
                                             <td class="text-left"><span t-esc="line['valor']"/></td>
-                                            <td class="text-left"><span t-esc="line['asesor']"/></td>
                                             <td class="text-left"><span t-esc="line['estado']"/></td>
-                                            <td class="text-left"><span t-esc="line['documento']"/></td>
                                         </tr>
                                     </t>
                                     <tr>
-                                        <td colspan="2"></td>
+                                        <td colspan="4"></td>
                                         <td style="background-color:#D3D3D3;" class="text-right">TOTAL</td>
                                         <td class="text-left" colspan="4">
                                             <span t-esc='"%.2f" % sum(line["total"] for line in get_lines(doc))'/></td>
