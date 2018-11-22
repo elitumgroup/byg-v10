@@ -253,8 +253,11 @@
                             <field name="post_date" attrs="{'invisible':[('forma_de_pago', '=', 'cash')], 'required':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"
                                    string="Fecha Che./Tran."/>
                             <field name="concepto_pago" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
                             <field name="cantidad" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
                             <field name="account_id" required="1" attrs="{'invisible':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"/><!--Visible para forma de pago Efectivo-->
+
                         </group>
                         <group>
                             <notebook>

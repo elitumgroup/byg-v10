@@ -451,7 +451,9 @@ class AccountVoucher(models.Model):
                 nombre_asiento = 'Egreso Transferencia No. ' + sequence
             move_id = self.env['account.move'].create({
                 'journal_id': self.journal_id.id,
-                'date': self.date
+                'date': self.date,
+                'analytic_account_id': self.analytic_account_id.id,
+                'project_id': self.project_id.id
             })
             self.env['account.move.line'].with_context(check_move_validity=False).create({
                 'name': self.concepto_pago if self.beneficiario_proveedor != 'viaticos' else self.viatico_id.name,
@@ -477,6 +479,8 @@ class AccountVoucher(models.Model):
                         'credit': 0.0,
                         'debit': line.monto_pago,
                         'date': self.date,
+
+
                     })
                 for line in self.lineas_pagos_facturas:
                     count_ -= 1
@@ -516,7 +520,9 @@ class AccountVoucher(models.Model):
                              'move_id': move_id.id,
                              'credit': 0.0,
                              'debit': line.monto_pago,
-                             'date': self.date})
+                             'date': self.date
+
+                             })
                     else:
                         self.env['account.move.line'].with_context(check_move_validity=False).create(
                             {'name': self.concepto_pago,
@@ -526,7 +532,8 @@ class AccountVoucher(models.Model):
                              'move_id': move_id.id,
                              'credit': 0.0,
                              'debit': line.monto_pago,
-                             'date': self.date})
+                             'date': self.date
+                             })
             if self.beneficiario_proveedor == 'supplier':
                 for line_nota in self.lineas_notas_credito:
                     line_move_factura = line_nota.facturas_afectar.invoice_id.move_id.line_ids.filtered(
@@ -885,7 +892,8 @@ class AccountVoucher(models.Model):
     def imprimir_cheque(self):
         reporte = []
         reporte.append(self.id)
-        amount = self.env['report.elitum_contabilidad.reporte_factura_cliente'].get_amount_to_word(self.cantidad).upper()
+        amount = self.env['report.elitum_contabilidad.reporte_factura_cliente'].get_amount_to_word(
+            self.cantidad).upper()
         if self.banco.display_name == 'BANCO BOLIVARIANO':
             result = {
                 'type': 'ir.actions.report.xml',
@@ -948,6 +956,9 @@ class AccountVoucher(models.Model):
         string="Tipo", default='beneficiario', required=True)
     solicitud_id = fields.Many2one('eliterp.payment.request', string="Titular", domain=[('state', '=', 'approved')])
     viatico_id = fields.Many2one('eliterp.provision', string="Titular")
+    # Centro de costo y proyecto
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Centro de Costos')
+    project_id = fields.Many2one('eliterp.project', 'Proyecto')
     # Fin MARZ
     beneficiario = fields.Char('Beneficiario')
     numero_cheque = fields.Char('No. Cheque')
@@ -965,6 +976,7 @@ class AccountVoucher(models.Model):
     mostrar_cuenta = fields.Boolean('Se muestra la Cuenta?', default=False)
     account_saldo = fields.Many2one('account.account', domain=[('tipo_contable', '=', 'movimiento')])
     valor_saldo = fields.Float('saldo')
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('cancel', 'Anulado'),

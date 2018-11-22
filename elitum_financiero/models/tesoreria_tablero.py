@@ -320,7 +320,10 @@ class TesoreriaTablero(models.Model):
             mes_posterior_total = 0.00
             facturas_ids = []
             for factura in facturas:
-                fecha_factura = datetime.datetime.strptime(factura.date_due, "%Y-%m-%d")
+                if factura.date_due:
+                    fecha_factura = datetime.datetime.strptime(factura.date_due, "%Y-%m-%d")
+                else:
+                    fecha_factura = datetime.datetime.strptime(factura.date_invoice, "%Y-%m-%d")
                 flag = False
                 if fecha_factura.month in (
                             fecha.month - 1, fecha.month, fecha.month + 1) and fecha_factura.year == fecha.year:
