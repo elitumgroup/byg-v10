@@ -140,7 +140,7 @@ class ReporteATS(models.TransientModel):
 
     def get_withholding(self, wh):
         '''Obtenemos la Retención de la Factura'''
-        autorizacion = self.env['autorizacion.sri'].search([('code_comprobante', '=', '07'), ('state', '=', 'activo')])
+        autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 1), ('state', '=', 'activo')])
         return {
             'estabRetencion1': wh.name_retencion[:3],
             'ptoEmiRetencion1': wh.name_retencion[4:7],
@@ -149,15 +149,18 @@ class ReporteATS(models.TransientModel):
             'fechaEmiRet1': self.convertir_fecha(wh.fecha)
         }
 
-    def get_refund(self, invoice):
-        '''Obtenemos la Nota de Crédito del documento'''
-        refund = self.env['account.invoice'].search([('invoice_id_ref', '=', invoice.id)])
+    def _get_refund(self, invoice):
+        """
+        Obtenemos la nota de crédito de la factura
+        :param invoice:
+        :return:
+        """
         return {
-            'docModificado': '01', # Factura
-            'estabModificado': refund.numero_establecimiento,
-            'ptoEmiModificado': refund.punto_emision,
-            'secModificado': refund.numero_factura,
-            'autModificado': refund.origin,
+            'docModificado': '01',
+            'estabModificado': invoice.numero_establecimiento,
+            'ptoEmiModificado': invoice.punto_emision,
+            'secModificado': invoice.numero_factura,
+            'autModificado': invoice.numero_autorizacion
         }
 
     def read_compras(self, period, pay_limit):
@@ -172,6 +175,12 @@ class ReporteATS(models.TransientModel):
         compras = []
         for inv in compras_sistema:
             if not inv.partner_id.tipo_de_identificacion == '06':  # Proveedores con pasaporte no se procesa
+                if inv.type == 'in_invoice':
+                    code = '01'
+                elif inv.type == 'in_sale_note':
+                    code = '02'
+                else:
+                    code = '04'
                 detallecompras = {}
                 valRetBien10, valRetServ20, valorRetBienes, valorRetServicios, valRetServ100 = self._get_ret_iva(
                     inv)
@@ -179,7 +188,7 @@ class ReporteATS(models.TransientModel):
                     'codSustento': inv.sustento_tributario.codigo,
                     'tpIdProv': tpIdProv[inv.partner_id.tipo_de_identificacion],
                     'idProv': inv.partner_id.vat_eliterp,
-                    'tipoComprobante': '01' if inv.type == 'in_invoice' else '02',
+                    'tipoComprobante': code,
                     'parteRel': 'NO',
                     'fechaRegistro': self.convertir_fecha(inv.date_invoice),
                     'establecimiento': inv.numero_establecimiento,
@@ -188,8 +197,8 @@ class ReporteATS(models.TransientModel):
                     'fechaEmision': self.convertir_fecha(inv.date_invoice),
                     'autorizacion': inv.numero_autorizacion,
                     'baseNoGraIva': '0.00',
-                    'baseImponible': '%.2f' % inv.base_cero_iva,
-                    'baseImpGrav': '%.2f' % inv.base_gravada,
+                    'baseImponible': '0.00',
+                    'baseImpGrav': '%.2f' % inv.amount_untaxed,
                     'baseImpExe': '0.00',
                     'montoIce': '0.00',
                     'montoIva': '%.2f' % inv.amount_tax,
@@ -202,16 +211,16 @@ class ReporteATS(models.TransientModel):
                     'totbasesImpReemb': '0.00',
                     'detalleAir': self.process_lines(inv)
                 })
-                if inv.amount_total >= pay_limit: # Formas de Pago
-                    detallecompras.update({'pay': True})
-                    detallecompras.update({'formaPago': inv.payment_metod_ec.code})
-                if inv.have_withhold: # Retención
+                detallecompras.update({'pay': True})
+                detallecompras.update({'formaPago': inv.payment_metod_ec.code})
+                if inv.have_withhold:  # Retención
                     if inv.withhold_id.if_secuencial:
                         detallecompras.update({'retencion': True})
                         detallecompras.update(self.get_withholding(inv.withhold_id))
-                if inv.have_nota_credito: # Nota de Crédito
-                    detallecompras.update({'nota': True})
-                    detallecompras.update(self.get_refund(inv))
+                if inv.type in ['out_refund', 'in_refund']:
+                    if inv.invoice_id_ref:
+                        detallecompras.update({'es_nc': True})
+                        detallecompras.update(self._get_refund(inv.invoice_id_ref))
                 compras.append(detallecompras)
         return compras
 
@@ -323,7 +332,7 @@ class ReporteATS(models.TransientModel):
             ('if_secuencial', '=', True)
         ]
         for ret in self.env['tax.withhold'].search(dmn_ret):
-            auth = self.env['autorizacion.sri'].search([('code_comprobante', '=', '07'), ('state', '=', 'activo')])
+            auth = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 1), ('state', '=', 'activo')])
             detalleanulados = {
                 'tipoComprobante': auth.tipo_comprobante.code,
                 'establecimiento': auth.numero_establecimiento,

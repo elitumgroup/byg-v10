@@ -222,6 +222,41 @@
             <xsd:pattern value="[0-9]{3,49}"/>
         </xsd:restriction>
     </xsd:simpleType>
+
+    <xsd:simpleType name="docModificadoType">
+		<xsd:annotation>
+			<xsd:documentation>Se detalla los tipos de comprobantes de venta
+				autorizados
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:integer">
+			<xsd:pattern value="\d{2,3}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+    <xsd:simpleType name="secModType">
+		<xsd:annotation>
+			<xsd:documentation>Se detalla el secuencial del comprobante
+				modificado
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:integer">
+			<xsd:minInclusive value="0"/>
+			<xsd:maxInclusive value="999999999"/>
+			<xsd:pattern value="\d{1,9}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+    <xsd:simpleType name="autModificadoType">
+		<xsd:annotation>
+			<xsd:documentation>Corresponde al numero de autorizacion emitido por
+				el sistema de Facturacion para emtir comprobantes de venta
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="49"/>
+			<xsd:minLength value="3"/>
+			<xsd:pattern value="[0-9]{3,49}"/>
+		</xsd:restriction>
+	</xsd:simpleType>
     <!--Tipos XML de Ventas-->
     <xsd:simpleType name="tpIdClienteType">
         <xsd:annotation>
@@ -335,6 +370,12 @@
             <xsd:element name="secRetencion1" type="secuencialType" minOccurs="0"/>
             <xsd:element name="autRetencion1" type="autRetencionType" minOccurs="0"/>
             <xsd:element name="fechaEmiRet1" type="fechaType" minOccurs="0"/>
+
+            <xsd:element name="docModificado" type="docModificadoType" maxOccurs="1" minOccurs="0"/>
+			<xsd:element name="estabModificado" type="establecimientoType" maxOccurs="1" minOccurs="0"/>
+			<xsd:element name="ptoEmiModificado" type="ptoEmisionType" maxOccurs="1" minOccurs="0"/>
+			<xsd:element name="secModificado" type="secModType" maxOccurs="1" minOccurs="0"/>
+			<xsd:element name="autModificado" type="autModificadoType" maxOccurs="1" minOccurs="0"/>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="comprasType">
