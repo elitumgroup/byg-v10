@@ -140,7 +140,7 @@ class ReporteATS(models.TransientModel):
 
     def get_withholding(self, wh):
         '''Obtenemos la Retención de la Factura'''
-        autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 1), ('state', '=', 'activo')])
+        autorizacion = self.env['autorizacion.sri'].search([('code_comprobante', '=', '07'), ('state', '=', 'activo')])
         return {
             'estabRetencion1': wh.name_retencion[:3],
             'ptoEmiRetencion1': wh.name_retencion[4:7],
@@ -332,7 +332,7 @@ class ReporteATS(models.TransientModel):
             ('if_secuencial', '=', True)
         ]
         for ret in self.env['tax.withhold'].search(dmn_ret):
-            auth = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 1), ('state', '=', 'activo')])
+            auth = self.env['autorizacion.sri'].search([('code_comprobante', '=', '07'), ('state', '=', 'activo')])
             detalleanulados = {
                 'tipoComprobante': auth.tipo_comprobante.code,
                 'establecimiento': auth.numero_establecimiento,
