@@ -681,6 +681,19 @@ class AccountInvoice(models.Model):
                 total = total + nota.amount_total
         self.total_nota_credito = total
 
+    @api.constrains('numero_autorizacion')
+    def _check_numero_autorizacion(self):
+        """
+        Verificar la longitud de la autorización
+        10: Documento físico
+        35: Documento electrónico, online
+        49: Documento electrónico, offline
+        """
+        if self.type not in ['in_invoice', 'in_sale_note']:
+            return
+        if self.numero_autorizacion and len(self.numero_autorizacion) not in [10, 35, 49]:
+            raise ValidationError('Debe ingresar 10, 35 o 49 dígitos según el documento.')
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('proforma', 'Pro-forma'),
@@ -701,7 +714,7 @@ class AccountInvoice(models.Model):
         ('confirm', 'Contabilizada'),
         ('cancel', 'Anulada')], string="Estado", default='draft')
     invoice_id_ref = fields.Many2one('account.invoice', 'Referencia de Factura')
-    numero_autorizacion = fields.Char(string='No. Autorización')
+    numero_autorizacion = fields.Char(string='No. Autorización', size=49)
     numero_factura = fields.Char(string='No. Factura')
     punto_emision = fields.Char(string='Punto Emisión', size=3)
     numero_factura_interno = fields.Char(string=u'Número de Factura Interno')
