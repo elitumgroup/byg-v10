@@ -169,7 +169,7 @@
                            attrs="{'invisible':[('type_requisition','!=','stock_warehouse')], 'required': [('type_requisition', '=', 'stock_warehouse')]}"/>
                     <field name="partner_id" domain="[('customer', '=', True)]"/>-->
                     <field name="stock_warehouse_id" required="1"/>
-                    <field name="partner_id" domain="[('customer', '=', True)]"/>
+                    <field name="vendor_id" string="Proveedor" domain="[('supplier', '=', True)]"/>
                 </xpath>
                 <xpath expr="//field[@name='name']" position="attributes">
                     <attribute name="string">No. Documento</attribute>
