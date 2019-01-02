@@ -138,6 +138,9 @@ class RrhhTablero(models.Model):
             if mes == -1:
                 mes = 11
                 year -= 1
+            if mes == -2:
+                mes = 10
+                year -= 1
             fecha_inicio = datetime.date(year, mes, 1)
             fecha_fin = self.last_day_of_month(fecha_inicio)
             domain = [('date_start', '>=', fecha_inicio.strftime('%Y-%m-%d')),
@@ -214,6 +217,9 @@ class RrhhTablero(models.Model):
                     year -= 1
                 if mes == -1:
                     mes = 11
+                    year -= 1
+                if mes == -2:
+                    mes = 10
                     year -= 1
                 fecha_inicio = datetime.date(year, mes, 1)
                 fecha_fin = self.last_day_of_month(fecha_inicio)
