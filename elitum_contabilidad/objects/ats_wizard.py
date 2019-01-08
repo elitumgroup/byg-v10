@@ -135,6 +135,10 @@ class ReporteATS(models.TransientModel):
                     temp[line.retencion.code_name]['porcentajeAir'] = int(line.retencion.amount)
                     temp[line.retencion.code_name]['valRetAir'] += abs(line.monto)
         for k, v in temp.items():
+            v.update({
+                'baseImpAir': "{0:.2f}".format(v['baseImpAir']),
+                'valRetAir': "{0:.2f}".format(v['valRetAir'])
+            })
             data_air.append(v)
         return data_air
 
