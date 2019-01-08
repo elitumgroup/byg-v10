@@ -1,8 +1,8 @@
- <?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xsd:element name="iva" type="ivaType"/>
-    <!--Tipos XML de InformaciÃ³n-->
+    <!--Tipos XML de Información-->
     <xsd:simpleType name="numeroRucType">
         <xsd:annotation>
             <xsd:documentation/>
@@ -16,7 +16,7 @@
     <xsd:simpleType name="razonSocialType">
         <xsd:annotation>
             <xsd:documentation>
-                RazÃ³n Social del Informante
+                Razón Social del Informante
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:string">
@@ -27,9 +27,9 @@
     </xsd:simpleType>
     <xsd:simpleType name="anioType">
         <xsd:annotation>
-            <xsd:documentation>Se detalla el aÃ±o correspondiente a la
-                informaciÃ³n que esta presentando el contribuyente, consta de cuatro
-                dÃ­gitos.
+            <xsd:documentation>Se detalla el año correspondiente a la
+                información que esta presentando el contribuyente, consta de cuatro
+                dígitos.
             </xsd:documentation>
         </xsd:annotation>
         <xsd:restriction base="xsd:integer">
