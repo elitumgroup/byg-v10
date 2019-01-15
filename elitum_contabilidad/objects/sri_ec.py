@@ -130,7 +130,7 @@ class AutorizacionSri(models.Model):
     secuencia = fields.Integer('Próximo No.')
     numero_autorizacion = fields.Char('No. Autorización', required=True, size=10)
     tipo_comprobante = fields.Many2one('eliterp.type.document', 'Tipo Documento', required=True)
-    code_comprobante = fields.Char(related='tipo_comprobante.code', string=u'Código')
+    code_comprobante = fields.Char(related='tipo_comprobante.code', string=u'Código', store=True)
     state = fields.Selection([('activo', 'Activo'),
                               ('terminado', 'Terminada')], string="Estado", default='activo')
     sequence_id = fields.Many2one('ir.sequence', 'Secuencia')
