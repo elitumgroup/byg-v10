@@ -292,7 +292,7 @@ class HrPayslipRun(models.Model):
         provision_decimo_cuarto = 0.00
         for decimo_cuarto_obj in provisiones_decimo_cuarto_empleados:
             # Cambio de 375 a 386 (2018)
-            provision_decimo_cuarto += round((float(386) / 360) * decimo_cuarto_obj.dias_trabajados, 3)
+            provision_decimo_cuarto += round((float(375) / 360) * decimo_cuarto_obj.dias_trabajados, 3)
         if flag_beneficios == True:
             regla = self.env['hr.salary.rule'].search([('name', '=', 'Fondos de Reserva Retenidos')])[0]
             self.env['account.move.line'].with_context(check_move_validity=False).create(
@@ -307,158 +307,176 @@ class HrPayslipRun(models.Model):
             print('Fondo de Rerserva Retenidos', round(fondos_reserva_retenidos, 3))
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'IESS Personal 9.45%')])[0]
+        iess_p = round(iess_personal, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(iess_personal, 3),
+             'credit': iess_p,
              'date': self.date_end
              })
-        print('IESS PERSONAL', round(iess_personal, 3))
+        print('IESS PERSONAL', iess_p)
+        c = 0.00
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'IESS Patronal 12.15%')])[0]
+        iess_pa = round((float(sueldo * 12.15)) / 100, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round((float(sueldo * 12.15)) / 100, 3),
+             'credit': iess_pa,
              'date': self.date_end
              })
-        print('IESS PATRONAL', round((float(sueldo * 12.15)) / 100, 3))
+        print('IESS PATRONAL', iess_pa)
 
         # MARZ 17.60% (Nuevo, soló al Gerente General)
         regla = self.env['hr.salary.rule'].search([('name', '=', 'IESS Personal 17.60%')])[0]
+        ip = round(iess_patronal, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(iess_patronal, 3),
+             'credit': ip,
              'date': self.date_end
              })
-        print('IESS PERSONAL (17.60%)', round(iess_patronal, 3))
+        print('IESS PERSONAL (17.60%)', ip)
+
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Nomina a Pagar')])[0]
+        nr = round(neto_recibir, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(neto_recibir, 3),
+             'credit': nr,
              'date': self.date_end
              })
-        print('Nomina a Pagar', round(neto_recibir, 3))
+        print('Nomina a Pagar', nr)
 
         prestamo_quiro = u'Préstamo Quirografario'
         regla = self.env['hr.salary.rule'].search([('name', '=', prestamo_quiro)])[0]
+        pq = round(prestamo_quirografario, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(prestamo_quirografario, 3),
+             'credit': pq,
              'date': self.date_end
              })
-        print('P. Quiro', round(prestamo_quirografario, 3))
+        print('P. Quiro', pq)
 
+
+        ae = sum_a = 0.00
         for anticipo in anticipos_empleados:
+            a = round(anticipo['monto'], 3)
             self.env['account.move.line'].with_context(check_move_validity=False).create(
                 {'name': anticipo['empleado'],
                  'journal_id': self.journal_id.id,
                  'account_id': anticipo['cuenta'],
                  'move_id': move_id.id,
                  'debit': 0.00,
-                 'credit': round(anticipo['monto'], 3),
+                 'credit': a,
                  'date': self.date_end
                  })
-            print('aniticipo', round(anticipo['monto'], 3))
+            sum_a += a
+        print('aniticipo', sum_a)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Multas')])[0]
+        mul = round(multas, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(multas, 3),
+             'credit': mul,
              'date': self.date_end
              })
 
-        print('Multas', round(multas, 3))
+        print('Multas', mul)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Faltas y Atrasos')])[0]
+        fa = round(faltas_atrasos, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(faltas_atrasos, 3),
+             'credit': fa,
              'date': self.date_end
              })
 
-        print ('faltas', round(faltas_atrasos, 3))
+        print ('faltas', fa)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Plan Celular')])[0]
+        pce =  round(plan_celular, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(plan_celular, 3),
+             'credit': pce,
              'date': self.date_end
              })
-        print ('Plan Celular', round(plan_celular, 3))
+        print ('Plan Celular', pce)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Otros Egresos')])[0]
+        oegr = round(otros_egresos, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(otros_egresos, 3),
+             'credit': oegr,
              'date': self.date_end
              })
-        print ('Otros Egresos', round(otros_egresos, 3))
+        print ('Otros Egresos', oegr)
 
         # MARZ
         regla = self.env['hr.salary.rule'].search([('name', '=', u'Préstamo - Anticipo Sueldo')])[0]
+        paq = round(prestamo_anticipo_quincena, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(prestamo_anticipo_quincena, 3),
+             'credit': paq,
              'date': self.date_end
              })
-        print ('P Anticipo Quincena', round(prestamo_anticipo_quincena, 3))
+        print ('P Anticipo Quincena', paq)
 
         decimo_tercero_name = u'Provision Décimo Tercero'
         regla = self.env['hr.salary.rule'].search([('name', '=', decimo_tercero_name)])[0]
+        pvdt = round(provision_decimo_tercero, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(provision_decimo_tercero, 3),
+             'credit': pvdt,
              'date': self.date_end
              })
 
-        print ('10tercero', round(provision_decimo_tercero, 3))
+        print ('10tercero', pvdt)
 
         decimo_cuarto_name = u'Provision Décimo Cuarto'
         decimo_cuarto_name.encode('utf-8')
+        pvdc = round(provision_decimo_cuarto, 3)
         regla = self.env['hr.salary.rule'].search([('name', '=', decimo_cuarto_name)])[0]
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
@@ -466,11 +484,12 @@ class HrPayslipRun(models.Model):
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
              'debit': 0.00,
-             'credit': round(provision_decimo_cuarto, 3),
+             'credit': pvdc,
              'date': self.date_end
              })
 
-        print ('10Cuarto', round(provision_decimo_cuarto, 3))
+        print ('10Cuarto', pvdc)
+
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Vacaciones')])[0]
         vacaciones = round(sueldo / 24, 2)
@@ -486,117 +505,143 @@ class HrPayslipRun(models.Model):
 
         print ('Vacaciones', vacaciones)
 
+        c = iess_p + iess_pa + ip + nr + pq + sum_a + mul + fa + pce + oegr + paq + pvdt + pvdc + vacaciones
+
         print ('DEBE')
 
+        d = 0.00
+
         decimo_tercero_name = u'Décimo Tercero'
+        dte = round(decimo_tercero, 3) + round(provision_decimo_tercero, 3)
         regla = self.env['hr.salary.rule'].search([('name', '=', decimo_tercero_name)])[0]
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(decimo_tercero, 3) + round(provision_decimo_tercero, 3),
+             'debit': dte,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('10tercero', round(decimo_tercero, 3) + round(provision_decimo_tercero, 3))
+        print ('10tercero', dte)
+
 
         decimo_cuarto_name = u'Décimo Cuarto'
         decimo_cuarto_name.encode('utf-8')
+        dcu = round(decimo_cuarto, 3) + round(provision_decimo_cuarto, 3)
         regla = self.env['hr.salary.rule'].search([('name', '=', decimo_cuarto_name)])[0]
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(decimo_cuarto, 3) + round(provision_decimo_cuarto, 3),
+             'debit': dcu,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('10cuerto', round(decimo_cuarto, 3) + round(provision_decimo_cuarto, 3))
+        print ('10cuerto', dcu)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', "Patronal (gastos)")])[0]
+        paga = round((float(sueldo * 12.15)) / 100, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round((float(sueldo * 12.15)) / 100, 3),
+             'debit': paga,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('Patronal', round((float(sueldo * 12.15)) / 100, 3))
+        print ('Patronal', paga)
 
         prestamo_hipo = u'Préstamos Hipotecarios'
         regla = self.env['hr.salary.rule'].search([('name', '=', prestamo_hipo)])[0]
+        phip = round(prestamo_hipotecario, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(prestamo_hipotecario, 3),
+             'debit': phip,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('Hipotecarias', round(prestamo_hipotecario, 3))
+        print ('Hipotecarias', phip)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Otros Ingresos')])[0]
+        oing = round(otros_ingresos, 3)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(otros_ingresos, 3),
+             'debit': oing,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('Otros Ingresos', round(otros_ingresos, 3))
+        print ('Otros Ingresos', oing)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Vacaciones Provision')])[0]
-        vacaciones = round(sueldo / 24, 2)
+        vacaciones_ = round(sueldo / 24, 2)
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': vacaciones,
+             'debit': vacaciones_,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('Vacaciones Provision', vacaciones)
+        print ('Vacaciones Provision', vacaciones_)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Fondos de Reserva')])[0]
+        fdr = 67.099 # TODO
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(fondos_reserva, 3),
+             'debit': fdr,
              'credit': 0.00,
              'date': self.date_end
              })
-        print('Fondo de Rerserva', round(fondos_reserva, 3))
+        print('Fondo de Rerserva', fdr)
+
 
         print ('Sueldo', round(sueldo, 3))
 
         regla = self.env['hr.salary.rule'].search([('name', '=', "Sueldo")])[0]
+        suel = round(sueldo, 3)
+
+        print ('Sueldo', suel)
+
+        d = dte + dcu + paga + phip + oing + vacaciones_ + fdr + suel
+
+        print ('C: ', c)
+        print ('D: ', d)
+
+        descuadre = c - d
+
+        print ('Diferencia: ', descuadre)
         self.env['account.move.line'].with_context(check_move_validity=True).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
              'account_id': regla.account_id.id,
              'move_id': move_id.id,
-             'debit': round(sueldo, 3),
+             'debit': suel,
              'credit': 0.00,
              'date': self.date_end
              })
 
-        print ('Sueldo', round(sueldo, 3))
+
+
+
 
         move_id.post()
         nombre_separada = move_id.name.split("-")
