@@ -601,7 +601,7 @@ class HrPayslipRun(models.Model):
         print ('Vacaciones Provision', vacaciones_)
 
         regla = self.env['hr.salary.rule'].search([('name', '=', 'Fondos de Reserva')])[0]
-        fdr = 67.099 # TODO
+        fdr = 67.099 * 2 # TODO
         self.env['account.move.line'].with_context(check_move_validity=False).create(
             {'name': regla.name,
              'journal_id': self.journal_id.id,
