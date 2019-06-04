@@ -20,7 +20,8 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 import json
-from datetime import datetime
+from operator import itemgetter
+from itertools import groupby
 
 
 class EliterpRequestProduct(models.Model):
@@ -540,15 +541,16 @@ class EliterpProvisionVoucherCheck(models.Model):
     number_document_check = fields.Char('No. Documento')
     validation_check = fields.Selection([
         ('none', '-'),
-        ('no_aprobado', 'Valor no Aprobado'),
-        ('no_validate', 'Documento no Válido'),
-        ('cargo_empresa', 'Cargo a Empresa')
+        ('reembolsar', 'Por reembolsar'),
+        ('cargo_empresa', 'Cargo a empresa')
     ], string="Validación", default='none')
     approval = fields.Selection([
         ('none', '-'),
         ('total', 'Total'),
         ('parcial', 'Parcial')
     ], string="Aprobación", default='none')
+    account_id = fields.Many2one('account.account',
+                                 domain=[('tipo_contable', '=', 'movimiento')], string='Cuenta')  # Cuenta sin solicitud
     monto = fields.Float(string="Monto")
 
 
@@ -650,7 +652,8 @@ class EliterpProvisionLiquidate(models.Model):
                                       'type_voucher_check': voucher.type_voucher,
                                       'table_provision_id_check': voucher.table_provision_id,
                                       'valor_check': voucher.valor,
-                                      'number_document_check': voucher.number_document}])
+                                      'number_document_check': voucher.number_document,
+                                      'monto': voucher.valor}])
         return self.update({
             'lines_documents_check': list_lines
         })
@@ -666,57 +669,47 @@ class EliterpProvisionLiquidate(models.Model):
 
     def liquidate(self):
         '''Liquidamos'''
-        cuenta_provisiones = self.env['account.account'].search([('code', '=', '1.1.2.3.9')])
-        # Validamos exista cuenta de Provisiones
-        if not cuenta_provisiones:
-            raise UserError(_("No existe Cuenta de Viáticos creada"))
-        # Validamos qué el Benficiario tenga Cuenta
-        if not self.provision_id.beneficiary.account_advance_payment:
-            raise UserError(_("No tiene Cuenta asignada al Empleado/a"))
-        cuenta_empleado = self.provision_id.beneficiary.account_advance_payment
+        if self.have_anticipo == 'yes':
+            cuenta_provisiones = self.env['account.account'].search([('code', '=', '1.1.2.3.9')])
+            # Validamos exista cuenta de Provisiones
+            if not cuenta_provisiones:
+                raise UserError(_("No existe Cuenta de Viáticos creada"))
+            # Validamos qué el Benficiario tenga Cuenta
+            if not self.provision_id.beneficiary.account_advance_payment:
+                raise UserError(_("No tiene Cuenta asignada al Empleado/a"))
+            cuenta_empleado = self.provision_id.beneficiary.account_advance_payment
         list_movimientos = []
-        for line in self.lines_documents_check:
+        for line in self.lines_documents_check:  # Para ambos sí, no
             # Documento no Válido
             if line.validation_check == 'no_validate':
                 line.provision_voucher_id.write({'state': 'cancel'})
             # Cargo A Empresa, Valor no Aprobado
             else:
-                cuenta = ''
-                partner = ''
                 if line.type_voucher_check == 'invoice':
                     factura = self.env['account.invoice'].search(
                         [('voucher_provision_id', '=', line.provision_voucher_id.id)])
                     partner = factura.partner_id.id
                     cuenta = factura.account_id.id
                 else:
-                    partner = ''
                     cuenta = line.table_provision_id_check.account_id.id
+                    partner = False
                 list_movimientos.append({
-                    # True -> Debe, False -> Haber
-                    'type': True,
                     'partner': partner,
                     'nombre': line.table_provision_id_check.name,
                     'cuenta': cuenta,
-                    'valor': line.monto
-                })
-                list_movimientos.append({
-                    'type': False,
-                    'partner': partner,
-                    'nombre': line.table_provision_id_check.name,
-                    'cuenta': cuenta_provisiones.id,
-                    'valor': line.monto
+                    'valor': line.monto,
+                    'account_id': line.account_id
                 })
             # Documentos ya procesados
             line.provision_voucher_id.write({'validate': True})
         # Generamos Asiento Contable
-        fecha_actual = fields.Date.today()
         move_id = self.env['account.move'].create({
             'journal_id': self.journal_id.id,
-            'date': fecha_actual
+            'date': self.application_date
         })
-        for register in list_movimientos:
-            # Línea del Debe
-            if register['type']:
+        if self.have_anticipo == 'no':
+            for register in list_movimientos:
+                # Gastos de viáticos (Debe)
                 self.env['account.move.line'].with_context(check_move_validity=False).create({
                     'name': register['nombre'],
                     'journal_id': self.journal_id.id,
@@ -724,65 +717,40 @@ class EliterpProvisionLiquidate(models.Model):
                     'account_id': register['cuenta'],
                     'move_id': move_id.id,
                     'debit': register['valor'],
-                    'credit': 0.0,
-                    'date': fecha_actual
+                    'credit': 0.00,
+                    'date': self.application_date
                 })
-            # Línea del Haber
-            else:
-                self.env['account.move.line'].with_context(check_move_validity=False).create({
-                    'name': register['nombre'],
-                    'journal_id': self.journal_id.id,
-                    'partner_id': register['partner'],
-                    'account_id': register['cuenta'],
-                    'move_id': move_id.id,
-                    'debit': 0.0,
-                    'credit': register['valor'],
-                    'date': fecha_actual
+            moves_credit = []
+            for acount, grupo in groupby(list_movimientos, key=itemgetter('account_id')):
+                amount = 0.00
+                for i in grupo:
+                    amount += i['valor']
+                moves_credit.append({
+                    'account': acount,
+                    'monto': amount
                 })
-        # Línea de Diferencia
-        if self.diferencia > 0 or self.have_anticipo == 'no':
-            self.env['account.move.line'].with_context(check_move_validity=False).create({
-                'name': cuenta_empleado.name,
-                'journal_id': self.journal_id.id,
-                'partner_id': '',
-                'account_id': cuenta_empleado.id,
-                'move_id': move_id.id,
-                'debit': self.diferencia,
-                'credit': 0.0,
-                'date': fecha_actual
-            })
-            self.env['account.move.line'].with_context(check_move_validity=False).create({
-                'name': cuenta_provisiones.name,
-                'journal_id': self.journal_id.id,
-                'partner_id': '',
-                'account_id': cuenta_provisiones.id,
-                'move_id': move_id.id,
-                'debit': 0.0,
-                'credit': self.diferencia,
-                'date': fecha_actual
-            })
+            count = len(moves_credit)
+            for line in moves_credit:
+                count -= 1
+                if count == 0:
+                    self.env['account.move.line'].with_context(check_move_validity=True).create(
+                        {'name': line['account'].name,
+                         'journal_id': self.journal_id.id,
+                         'account_id': line['account'].id,
+                         'move_id': move_id.id,
+                         'credit': line['monto'],
+                         'debit': 0.00,
+                         'date': self.application_date})
+                else:
+                    self.env['account.move.line'].with_context(check_move_validity=False).create(
+                        {'name': line['account'].name,
+                         'journal_id': self.journal_id.id,
+                         'account_id': line['account'].id,
+                         'move_id': move_id.id,
+                         'credit': line['monto'],
+                         'debit': 0.00,
+                         'date': self.application_date})
 
-        if self.diferencia < 0 and self.have_anticipo == 'yes':
-            self.env['account.move.line'].with_context(check_move_validity=False).create({
-                'name': cuenta_provisiones.name,
-                'journal_id': self.journal_id.id,
-                'partner_id': '',
-                'account_id': cuenta_provisiones.id,
-                'move_id': move_id.id,
-                'debit': self.diferencia,
-                'credit': 0.0,
-                'date': fecha_actual
-            })
-            self.env['account.move.line'].with_context(check_move_validity=False).create({
-                'name': cuenta_empleado.name,
-                'journal_id': self.journal_id.id,
-                'partner_id': '',
-                'account_id': cuenta_empleado.id,
-                'move_id': move_id.id,
-                'debit': self.diferencia,
-                'credit': 0.0,
-                'date': fecha_actual
-            })
         move_id.with_context(asientos_eliterp=True, name_asiento=self.name).post()
         move_id.write({'ref': self.name})
         # Liquidamos la Solicitud/Sin Solicitud

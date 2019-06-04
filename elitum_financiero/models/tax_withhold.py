@@ -17,7 +17,8 @@
 #########################################################################
 
 from odoo import api, fields, models, _
-from odoo.exceptions import except_orm
+from odoo.exceptions import except_orm, ValidationError
+from datetime import datetime, timedelta
 
 
 class AccountInvoice(models.Model):
@@ -295,11 +296,15 @@ class TaxWithhold(models.Model):
         obj_sequence = self.env['ir.sequence']
         if values['type'] == 'purchase':
             if values['if_secuencial'] == True:
-                autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 3), ('state', '=', 'activo')])
+                autorizacion = self.env['autorizacion.sri'].search([('code_comprobante', '=', '07'), ('state', '=', 'activo')])
                 if not autorizacion:
-                    raise except_orm("Error", "No hay Autorización del SRI para Retención de Compra")
+                    raise except_orm("Error", "No hay Autorización activa del SRI para Retención de Compra")
                 else:
                     sequence = obj_sequence.next_by_code(autorizacion[0].numero_autorizacion)
+                    # Verificamos secuencia si es mayor no validamos y le cambiamos el estado
+                    n_s = int(sequence[8:])
+                    if n_s == autorizacion.secuencial_fin:
+                        autorizacion._update_state()
                     values.update({'name_retencion': sequence})
             if 'if_secuencial' in values:
                 if values['if_secuencial'] == False:
@@ -340,9 +345,40 @@ class TaxWithhold(models.Model):
         else:
             return self.env['account.journal'].search([('name', '=', 'Retención Compra')])[0].id
 
+    def get_ano_fiscal(self, fecha):
+        fecha_convert = datetime.strptime(fecha, "%Y-%m-%d")
+        return fecha_convert.year
+
     def imprimir_retencion_venta(self):
-        '''Imprimir Retención Venta'''
-        return self.env['report'].get_action(self, 'elitum_financiero.reporte_retencion_venta')
+        reporte = []
+        reporte.append(self.id)
+        lista = []
+        for line in self.line_tax_withhold:
+            lista.append({
+                'anio': self.get_ano_fiscal(self.fecha),
+                'imponible': '{:,.2f}'.format(line.base_imponible),
+                'tipo': line.tipo_retencion.upper(),
+                'code': line.retencion.code_name,
+                'porc': line.retencion.amount,
+                'valor': '{:,.2f}'.format(line.monto)
+
+            })
+        result = {
+            'type': 'ir.actions.report.xml',
+            'report_name': 'elitum_financiero.reporte_retencion_venta',
+            'datas': {'ids': reporte},
+            'context': {
+                'Retencion': True,
+                'proveedor': self.partner_id.name,
+                'cedula': self.partner_id.vat_eliterp,
+                'calle': self.partner_id.street,
+                'fecha': self.fecha,
+                'factura': self.invoice_id.numero_factura_interno,
+                'total': '{:,.2f}'.format(sum(x.monto for x in self.line_tax_withhold)),
+                'get_lines': lista
+            }
+        }
+        return result
 
     name = fields.Char(u'Número de Comprobante')
     name_retencion = fields.Char(u'Número de Retención', default='001-001-')

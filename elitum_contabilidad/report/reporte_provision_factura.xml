@@ -100,7 +100,7 @@
                                             <span t-field="doc.state"/></td>
                                         <td style="background-color:#D3D3D3;" class="text-left col-xs-2">TOTAL A PAGAR:</td>
                                         <td class="text-left col-xs-3" style="font-size: 7pt;">
-                                            <span t-field="doc.amount_total"/></td>
+                                            <span t-field="doc.residual"/></td>
                                     </tr>
                                     <tr>
                                         <td style="background-color:#D3D3D3;" class="text-left col-xs-2">DETALLE:</td>
@@ -207,7 +207,7 @@
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Usuario:</td>
                                         <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;"><span t-esc="user.name"/></td>
-                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. 1/1</td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. <span class="page"/>/<span class="topage" /></td>
                                     </tr>
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Fecha Impresión:</td>

@@ -91,6 +91,15 @@ class AccountInvoiceLine(models.Model):
 class AccountInvoice(models.Model):
     _inherit = 'account.invoice'
 
+    def _check_invoice_reference(self):
+        for invoice in self:
+            #refuse to validate a vendor bill/refund if there already exists one with the same reference for the same partner,
+            #because it's probably a double encoding of the same bill/refund
+            if invoice.type in ('in_invoice', 'in_refund') and invoice.reference:
+                if self.search([('type', '=', invoice.type), ('numero_factura_interno', '=', invoice.numero_factura_interno), ('company_id', '=', invoice.company_id.id), ('commercial_partner_id', '=', invoice.commercial_partner_id.id), ('id', '!=', invoice.id)]):
+                    raise UserError(_("Duplicated vendor reference detected. You probably encoded twice the same vendor bill/refund."))
+
+
     @api.model
     def _default_journal(self):
         '''(Sobreescrito) Diario por defecto'''
@@ -389,7 +398,7 @@ class AccountInvoice(models.Model):
             notas_credito = self.env['account.invoice'].search(
                 [('invoice_id_ref', '=', self.invoice_id_ref.id), ('state', '=', 'open')])
             valor_para_nota = self.invoice_id_ref.amount_total - sum(nota.amount_total for nota in notas_credito)
-            if self.amount_total > valor_para_nota:
+            if self.amount_untaxed > valor_para_nota:
                 raise except_orm("Error", "Excede el total de Notas de Crédito que puede crear")
             res = super(AccountInvoice, self).action_invoice_open()
             if self.type == 'out_refund':
@@ -416,12 +425,10 @@ class AccountInvoice(models.Model):
             else:
                 # Validamos Cuentas (Concepto/Factura)
                 if self.pago_provision:
-                    if len(self.invoice_line_ids) > 1:
-                        raise ValidationError(_("Soló debe crear una línea de detalle (Factura de Viáticos)"))
-                    else:
-                        for line in self.invoice_line_ids:
-                            if line.account_id != self.voucher_provision_id.table_provision_id.account_id:
-                                raise ValidationError(_("Cuentas contables diferentes (Factura y Concepto)"))
+                    accounts = self.env['eliterp.table.provision'].search([])
+                    for line in self.invoice_line_ids:
+                        if not line.account_id.id in accounts._ids:
+                            raise ValidationError(_("Una cuenta de las líneas diferentes a las cuentas de viáticos."))
                 res = super(AccountInvoice, self).action_invoice_open()
         # Nota de Venta de Compra
         if self.type == 'in_sale_note':
@@ -555,8 +562,10 @@ class AccountInvoice(models.Model):
         # Sí es Factura de Venta generamos nuestra Autorización
         if flag_venta == True:
             mensaje = ""
-            autorizacion = self.env['autorizacion.sri'].search([('tipo_comprobante', '=', 4), ('state', '=', 'activo')])
-            mensaje = "No hay Autorización del SRI para Factura de Venta"
+            autorizacion = self.env['autorizacion.sri'].search(
+                [('code_comprobante', '=', '18'), ('state', '=', 'activo')])
+            mensaje = "No hay Autorización activa del SRI para Factura de Venta"
+            # TODO: Pendiente de revisar
             if 'type' in values:
                 if values['type'] == 'out_refund':
                     autorizacion = self.env['autorizacion.sri'].search(
@@ -564,6 +573,9 @@ class AccountInvoice(models.Model):
                     mensaje = "No hay Autorización del SRI para Nota de Crédito de Venta"
             if not autorizacion:
                 raise except_orm("Error", mensaje)
+            # Validamos secuencia si son iguales la damos por terminada
+            if autorizacion.secuencia == autorizacion.secuencial_fin:
+                autorizacion._update_state()
             if len(str(autorizacion.secuencia)) == 13:
                 numero_factura = autorizacion.secuencia
             else:
@@ -678,6 +690,19 @@ class AccountInvoice(models.Model):
                 total = total + nota.amount_total
         self.total_nota_credito = total
 
+    @api.constrains('numero_autorizacion')
+    def _check_numero_autorizacion(self):
+        """
+        Verificar la longitud de la autorización
+        10: Documento físico
+        35: Documento electrónico, online
+        49: Documento electrónico, offline
+        """
+        if self.type not in ['in_invoice', 'in_sale_note']:
+            return
+        if self.numero_autorizacion and len(self.numero_autorizacion) not in [10, 35, 49]:
+            raise ValidationError('Debe ingresar 10, 35 o 49 dígitos según el documento.')
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('proforma', 'Pro-forma'),
@@ -698,7 +723,7 @@ class AccountInvoice(models.Model):
         ('confirm', 'Contabilizada'),
         ('cancel', 'Anulada')], string="Estado", default='draft')
     invoice_id_ref = fields.Many2one('account.invoice', 'Referencia de Factura')
-    numero_autorizacion = fields.Char(string='No. Autorización')
+    numero_autorizacion = fields.Char(string='No. Autorización', size=49)
     numero_factura = fields.Char(string='No. Factura')
     punto_emision = fields.Char(string='Punto Emisión', size=3)
     numero_factura_interno = fields.Char(string=u'Número de Factura Interno')

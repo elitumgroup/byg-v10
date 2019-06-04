@@ -190,11 +190,11 @@
                             </table>
                         </div>
                         <!--MARZ-->
-                        <div t-if="doc.state == 'posted'" class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
+                        <div t-if="doc.state == 'posted' and doc.forma_de_pago == 'bank'" class="col-xs-12" style="margin: 0px; padding:0px; padding-right:30px;">
                             <h3 class="text-center" style="color: black;font-weight: bold;font-size: 13px">CHEQUE EMITIDO</h3>
                             <table style="font-size: 12pt; width: 100%; border: none;">
                                 <tbody>
-                                    <t t-set="cheque" t-value="get_cheque_emitido(doc.banco, doc.numero_cheque)"/>
+                                    <t t-set="cheque" t-value="get_cheque_emitido(doc.banco, doc.name)"/>
                                     <tr>
                                         <td colspan="3">&amp;nbsp;</td>
                                     </tr>
@@ -266,7 +266,7 @@
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Usuario:</td>
                                         <td class="text-left col-xs-7" style="padding-left:0px; margin-left:0px;"><span t-esc="user.name"/></td>
-                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. 1/1</td>
+                                        <td class="text-left col-xs-3" style="padding-left:30px;" >Pág. <span class="page"/>/<span class="topage" /></td>
                                     </tr>
                                     <tr>
                                         <td class="text-left col-xs-2" style="padding-right:0px; margin-right:0px;">Fecha Impresión:</td>

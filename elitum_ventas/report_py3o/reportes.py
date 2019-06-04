@@ -22,6 +22,12 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+STATES = {
+    'draft': 'Borrador',
+    'open': 'Ingresado',
+    'paid': 'Pagado'
+}
+
 
 class ParserReVentas(models.TransientModel):
     _inherit = 'py3o.report'
@@ -35,8 +41,7 @@ class ParserReVentas(models.TransientModel):
                 'get_lines': lines,
                 'cliente': "Todos" if self._context['cliente'] == False else self.env['res.partner'].browse(
                     self._context['cliente']).name,
-                'asesor': "Todos" if self._context['asesor'] == False else self.env['hr.employee'].browse(
-                    self._context['asesor']).name,
+
                 'fecha_actual': fields.date.today(),
                 'total': format(sum(line['total'] for line in lines), ',.2f')
             })
@@ -48,40 +53,32 @@ class ReporteVentas(models.TransientModel):
     _name = 'reporte.ventas'
     _description = 'Reporte Ventas'
 
-    def get_estado(self, estado):
-        if estado == 'invoice':
-            return "Facturado"
-        if estado == 'order':
-            return "Emitido"
-        if estado == 'invoice_parcial':
-            return "Facturado Parcial"
-
     def get_lines(self, context):
         data = []
+        object_sales = self.env['account.invoice']
         arg = []
         if context['tipo_cliente'] != 'todos':
             if isinstance(context['cliente'], int):
-                arg.append(('partner_id', '=', context['cliente']))
+                partner = context['cliente']
             else:
-                arg.append(('partner_id', '=', context['cliente'].id))
-        if context['tipo_asesor'] != 'todos':
-            if isinstance(context['cliente'], int):
-                arg.append(('partner_id', '=', context['asesor']))
-            else:
-                arg.append(('consultant_sale_id', '=', context['asesor'].id))
-        arg.append(('date_created', '>=', context['fecha_inicio']))
-        arg.append(('date_created', '<=', context['fecha_fin']))
-        arg.append(('type_eliterp', '=', 'pedido_venta'))
-        pedidos = self.env['sale.order'].search(arg)
+                partner = context['cliente'].id
+            arg.append(('partner_id', '=', partner))
+        arg.append(('date_invoice', '>=', context['fecha_inicio']))
+        arg.append(('date_invoice', '<=', context['fecha_fin']))
+        arg.append(('type', '=', 'out_invoice'))
+        arg.append(('state', 'in', ('open', 'paid')))
+        pedidos = object_sales.search(arg)
         total = 0.00
-        for pedido in pedidos:
-            data.append({'fecha': pedido.date_created,
-                         'cliente': pedido.partner_id.name,
-                         'valor': format(pedido.amount_total, ',.2f'),
-                         'total': pedido.amount_total,
-                         'asesor': pedido.consultant_sale_id.name if pedido.consultant_sale_id.name else "",
-                         'estado': self.get_estado(pedido.state_pedido_eliterp),
-                         'documento': pedido.name})
+        for line in pedidos:
+            data.append({'fecha': line.date_invoice,
+                         'cliente': line.partner_id.name,
+                         'factura': line.numero_factura_interno,
+                         'valor': format(line.amount_total, ',.2f'),
+                         'subtotal': format(line.amount_untaxed, ',.2f'),
+                         'iva': format(line.amount_tax, ',.2f'),
+                         'estado': STATES.get(line.state),
+                         'total': line.amount_total})
+        data = sorted(data, key=lambda k: k['cliente']) # Ordenar por cliente
         return data
 
     def imprimir_reporte_ventas(self):
@@ -95,8 +92,6 @@ class ReporteVentas(models.TransientModel):
                               'fecha_fin': self.fecha_fin,
                               'tipo_cliente': self.tipo_cliente,
                               'cliente': self.cliente.id if len(self.cliente) != 0 else False,
-                              'tipo_asesor': self.tipo_asesor,
-                              'asesor': self.asesor.id if len(self.asesor) != 0 else False,
                               }
                   }
         return result
@@ -110,7 +105,3 @@ class ReporteVentas(models.TransientModel):
         ('todos', 'Todos'),
         ('cliente', 'Individual')], 'Tipo de Cliente', default='todos')
     cliente = fields.Many2one('res.partner', 'Cliente')
-    tipo_asesor = fields.Selection([
-        ('todos', 'Todos'),
-        ('asesor', 'Individual')], 'Tipo de Asesor', default='todos')
-    asesor = fields.Many2one('hr.employee', 'Asesor')

@@ -35,7 +35,6 @@
         'views/tax_withhold_view.xml',
         'views/facturas_view.xml',
         'views/caja_chica_view.xml',
-        'report/reporte_retencion_venta.xml',
         'report/comprobante_ingreso.xml',
         'report/comprobante_egreso.xml',
         'report/reporte_vale_caja_chica.xml',

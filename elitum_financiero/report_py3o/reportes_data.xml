@@ -89,5 +89,48 @@
             <field name="py3o_template_fallback">report_py3o/reporte_pagos_programados.ods</field>
         </record>
         <!--Fin MARZ-->
+        <report id="reporte_cheque_au"
+                model="account.voucher"
+                string="Cheque austro"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheque_au"/>
+        <record id="elitum_financiero.reporte_cheque_au" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheque_a.ods</field>
+        </record>
+
+        <report id="reporte_cheque_in"
+                model="account.voucher"
+                string="Cheque internacional"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheque_in"/>
+        <record id="elitum_financiero.reporte_cheque_in" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheque_i.ods</field>
+        </record>
+
+        <report id="reporte_cheque_bo"
+                model="account.voucher"
+                string="Cheque bolivariano"
+                report_type="py3o"
+                name="elitum_financiero.reporte_cheque_bo"/>
+        <record id="elitum_financiero.reporte_cheque_bo" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/reporte_cheque_b.ods</field>
+        </record>
+         <!--Retencion de Venta-->
+        <report id="reporte_retencion_venta"
+                model="tax.withhold"
+                string="Retencion de venta"
+                report_type="py3o"
+                name="elitum_financiero.reporte_retencion_venta"/>
+        <record id="elitum_financiero.reporte_retencion_venta" model="ir.actions.report.xml">
+            <field name="module">elitum_financiero</field>
+            <field name="py3o_server_id" ref="report_py3o.local_py3o_server"/>
+            <field name="py3o_template_fallback">report_py3o/Retencion.ods</field>
+        </record>
     </data>
 </odoo>

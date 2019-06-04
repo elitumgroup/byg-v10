@@ -48,11 +48,14 @@
                       default_order='date desc'>
                     <field name="date" string="Fecha Emisión"/>
                     <field name="name" string="Forma de Pago"/>
+                    <field name="forma_de_pago"/>
                     <field name="banco" string="Banco"/>
                     <field name="beneficiario" string="Beneficiario"/>
                     <field name="cantidad" string="Total" sum="Total"/>
                     <field name="concepto_pago" string="Concepto"/>
                     <field name="state" string="Estado"/>
+                    <field name="reconcile" attrs="{'invisible':['|', ('forma_de_pago', 'not in',
+                            ['transfer', 'bank']), ('state', '!=', 'posted')]}"/>
                 </tree>
             </field>
         </record>
@@ -212,6 +215,8 @@
                                 type="object"/>
                         <button name="validar_voucher_eliterp" string="Contabilizar" states="draft" class="oe_highlight"
                                 type="object" modifiers="{'invisible': [['state', 'not in', ['draft']]]}"/>
+                        <button name="imprimir_cheque" string="Imprimir cheque" attrs="{'invisible':[('forma_de_pago', '!=', 'bank')]}"
+                                type="object"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -248,8 +253,11 @@
                             <field name="post_date" attrs="{'invisible':[('forma_de_pago', '=', 'cash')], 'required':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"
                                    string="Fecha Che./Tran."/>
                             <field name="concepto_pago" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
+                            <field name="analytic_account_id"/>
+                            <field name="project_id"/>
                             <field name="cantidad" attrs="{'readonly':[('state','not in', ('draft'))]}"/>
                             <field name="account_id" required="1" attrs="{'invisible':[('forma_de_pago', '!=', 'cash')], 'readonly':[('state','not in', ('draft'))]}"/><!--Visible para forma de pago Efectivo-->
+
                         </group>
                         <group>
                             <notebook>

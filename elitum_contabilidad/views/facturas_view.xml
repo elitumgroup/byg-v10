@@ -341,7 +341,9 @@
                 </xpath>
                 <xpath expr="//field[@name='date_due']" position="after">
                     <field name="autorizacion_sri" string="Autorización" invisible="1"/>
-                    <field name="numero_factura" string="No. Documento" readonly="1"/>
+                    <field name="numero_factura"
+                           attrs="{'invisible': [('numero_factura','=', False)]}"
+                           string="No. Documento" readonly="1"/>
                     <field name="numero_factura_interno" invisible="1"/>
                     <field name="have_withhold" invisible="1"/>
                     <field name="have_nota_credito" invisible="1"/>

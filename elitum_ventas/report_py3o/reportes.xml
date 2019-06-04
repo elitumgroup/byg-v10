@@ -14,12 +14,6 @@
                                domain="[('customer','=',True)]"
                                attrs="{'invisible':[('tipo_cliente','!=','cliente')]}"
                                options="{'no_create':True}"/>
-                        <field name="tipo_asesor"
-                               widget="radio"
-                               options="{'horizontal': true}"/>
-                        <field name="asesor"
-                               options="{'no_create':True}"
-                               attrs="{'invisible':[('tipo_asesor','!=','asesor')]}"/>
                         <field name="fecha_inicio" required="1"/>
                         <field name="fecha_fin" required="1"/>
                     </group>

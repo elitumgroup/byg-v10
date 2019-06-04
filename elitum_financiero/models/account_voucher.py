@@ -21,6 +21,8 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 import datetime
 from pytz import timezone
+from odoo.tools import amount_to_text_en, float_round, float_is_zero
+import math
 
 
 class QWeb(models.AbstractModel):
@@ -174,7 +176,7 @@ class AccountVoucherCancelReason(models.Model):
         for line in move_id.line_ids:
             if line.full_reconcile_id:
                 line.remove_move_reconcile()
-        move_id.with_context(from_voucher=True, id_voucher=voucher.id).reverse_moves(voucher.post_date,
+        move_id.with_context(from_voucher=True, id_voucher=voucher.id).reverse_moves(voucher.date,
                                                                                      voucher.journal_id or False)
         move_id.write({'state': 'cancel', 'ref': self.description})
         voucher.write({'state': 'cancel'})
@@ -436,9 +438,10 @@ class AccountVoucher(models.Model):
                     'cuenta_id': self.banco.account_id.id,
                     'tipo_cheque_fecha': 'corriente',
                     'state': 'emitido',
-                    'monto': self.cantidad
+                    'monto': self.cantidad,
+                    'voucher_id': self.id,
                 })
-            elif self.forma_de_pago == 'cash': # Efectivo
+            elif self.forma_de_pago == 'cash':  # Efectivo
                 sequence = self.env['ir.sequence'].next_by_code('account.voucher.purchase.cash')
                 new_name = 'Efectivo No. ' + sequence
                 nombre_asiento = 'Egreso Efectivo No. ' + sequence
@@ -448,7 +451,9 @@ class AccountVoucher(models.Model):
                 nombre_asiento = 'Egreso Transferencia No. ' + sequence
             move_id = self.env['account.move'].create({
                 'journal_id': self.journal_id.id,
-                'date': self.date
+                'date': self.date,
+                'analytic_account_id': self.analytic_account_id.id,
+                'project_id': self.project_id.id
             })
             self.env['account.move.line'].with_context(check_move_validity=False).create({
                 'name': self.concepto_pago if self.beneficiario_proveedor != 'viaticos' else self.viatico_id.name,
@@ -461,28 +466,74 @@ class AccountVoucher(models.Model):
                 'date': self.date
             })
             count = len(self.lineas_pagos_proveedores)
-            for line in self.lineas_pagos_proveedores:
-                count -= 1
-                if count == 0:
-                    self.env['account.move.line'].with_context(check_move_validity=True).create(
-                        {'name': self.concepto_pago,
-                         'journal_id': self.journal_id.id,
-                         'partner_id': self.partner_id.id,
-                         'account_id': line.account_id.id,
-                         'move_id': move_id.id,
-                         'credit': 0.0,
-                         'debit': line.monto_pago,
-                         'date': self.date})
-                else:
-                    self.env['account.move.line'].with_context(check_move_validity=False).create(
-                        {'name': self.concepto_pago,
-                         'journal_id': self.journal_id.id,
-                         'partner_id': self.partner_id.id,
-                         'account_id': line.account_id.id,
-                         'move_id': move_id.id,
-                         'credit': 0.0,
-                         'debit': line.monto_pago,
-                         'date': self.date})
+            count_ = len(self.lineas_pagos_facturas)
+            if count_ > 1:
+                account_partner = self.partner_id.property_account_payable_id.id
+                for line in self.lineas_pagos_proveedores.filtered(lambda x: not x.account_id.id == account_partner):
+                    self.env['account.move.line'].with_context(check_move_validity=False).create({
+                        'name': self.concepto_pago,
+                        'journal_id': self.journal_id.id,
+                        'partner_id': False,
+                        'account_id': line.account_id.id,
+                        'move_id': move_id.id,
+                        'credit': 0.0,
+                        'debit': line.monto_pago,
+                        'date': self.date,
+
+
+                    })
+                for line in self.lineas_pagos_facturas:
+                    count_ -= 1
+                    if count_ == 0:
+                        self.env['account.move.line'].with_context(check_move_validity=True).create({
+                            'name': "Pago de factura: " + line.name,
+                            'journal_id': self.journal_id.id,
+                            'partner_id': self.partner_id.id,
+                            'account_id': account_partner,
+                            'move_id': move_id.id,
+                            'credit': 0.0,
+                            'debit': line.monto_pago,
+                            'date': self.date,
+                            'invoice_id': line.invoice_id.id
+                        })
+                    else:
+                        self.env['account.move.line'].with_context(check_move_validity=False).create({
+                            'name': "Pago de factura: " + line.name,
+                            'journal_id': self.journal_id.id,
+                            'partner_id': self.partner_id.id,
+                            'account_id': account_partner,
+                            'move_id': move_id.id,
+                            'credit': 0.0,
+                            'debit': line.monto_pago,
+                            'date': self.date,
+                            'invoice_id': line.invoice_id.id
+                        })
+            else:
+                for line in self.lineas_pagos_proveedores:
+                    count -= 1
+                    if count == 0:
+                        self.env['account.move.line'].with_context(check_move_validity=True).create(
+                            {'name': self.concepto_pago,
+                             'journal_id': self.journal_id.id,
+                             'partner_id': self.partner_id.id,
+                             'account_id': line.account_id.id,
+                             'move_id': move_id.id,
+                             'credit': 0.0,
+                             'debit': line.monto_pago,
+                             'date': self.date
+
+                             })
+                    else:
+                        self.env['account.move.line'].with_context(check_move_validity=False).create(
+                            {'name': self.concepto_pago,
+                             'journal_id': self.journal_id.id,
+                             'partner_id': self.partner_id.id,
+                             'account_id': line.account_id.id,
+                             'move_id': move_id.id,
+                             'credit': 0.0,
+                             'debit': line.monto_pago,
+                             'date': self.date
+                             })
             if self.beneficiario_proveedor == 'supplier':
                 for line_nota in self.lineas_notas_credito:
                     line_move_factura = line_nota.facturas_afectar.invoice_id.move_id.line_ids.filtered(
@@ -490,11 +541,19 @@ class AccountVoucher(models.Model):
                     line_move_nota = line_nota.invoice_id.move_id.line_ids.filtered(
                         lambda x: x.account_id == cuenta)
                     (line_move_factura + line_move_nota).reconcile()
-                line_move_pago = move_id.line_ids.filtered(lambda x: x.account_id == cuenta)
-                for line_factura in self.lineas_pagos_facturas:
-                    line_move_factura = line_factura.invoice_id.move_id.line_ids.filtered(
-                        lambda x: x.account_id == cuenta)
-                    (line_move_factura + line_move_pago).reconcile()
+                if len(self.lineas_pagos_facturas) > 1:
+                    for line_invoice in self.lineas_pagos_facturas:
+                        line_move_voucher = move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta and x.invoice_id.id == line_invoice.invoice_id.id)
+                        line_move_invoice = line_invoice.invoice_id.move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta)
+                        (line_move_invoice + line_move_voucher).reconcile()
+                else:
+                    line_move_pago = move_id.line_ids.filtered(lambda x: x.account_id == cuenta)
+                    for line_factura in self.lineas_pagos_facturas:
+                        line_move_factura = line_factura.invoice_id.move_id.line_ids.filtered(
+                            lambda x: x.account_id == cuenta)
+                        (line_move_factura + line_move_pago).reconcile()
             if self.beneficiario_proveedor == 'viaticos':
                 self.env['account.move.line'].with_context(check_move_validity=True).create(
                     {'name': self.viatico_id.name,
@@ -830,6 +889,54 @@ class AccountVoucher(models.Model):
             else:
                 return True
 
+    def imprimir_cheque(self):
+        reporte = []
+        reporte.append(self.id)
+        amount = self.env['report.elitum_contabilidad.reporte_factura_cliente'].get_amount_to_word(
+            self.cantidad).upper()
+        if self.banco.display_name == 'BANCO BOLIVARIANO':
+            result = {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'elitum_financiero.reporte_cheque_bo',
+                'datas': {'ids': reporte},
+                'context': {
+                    'reporte_cheque_b': True,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
+                    'nombre': self.beneficiario,
+                    'monto': '{:,.2f}'.format(self.cantidad),
+                    'monto_letras': amount
+                }
+            }
+        elif self.banco.display_name == 'BANCO INTERNACIONAL':
+            result = {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'elitum_financiero.reporte_cheque_in',
+                'datas': {'ids': reporte},
+                'context': {
+                    'reporte_cheque_i': True,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
+                    'nombre': self.beneficiario,
+                    'monto': '{:,.2f}'.format(self.cantidad),
+                    'monto_letras': amount
+                }
+            }
+        elif self.banco.display_name == 'BANCO DEL AUSTRO':
+            result = {
+                'type': 'ir.actions.report.xml',
+                'report_name': 'elitum_financiero.reporte_cheque_au',
+                'datas': {'ids': reporte},
+                'context': {
+                    'reporte_cheque_a': True,
+                    'fecha': 'GUAYAQUIL, ' + self.post_date,
+                    'nombre': self.beneficiario,
+                    'monto': '{:,.2f}'.format(self.cantidad),
+                    'monto_letras': amount
+                }
+            }
+        else:
+            return
+        return result
+
     lineas_tipos_pagos = fields.One2many('payment.type.lines', 'voucher_id', string=u'Detalle de Cobros')
     lineas_cobros_facturas = fields.One2many('lines.invoice.charges', 'voucher_id', string=u'Detalle de Cobros')
     lineas_pagos_facturas = fields.One2many('lines.invoice.charges', 'voucher_id', string=u'Detalle de Pagos')
@@ -840,7 +947,7 @@ class AccountVoucher(models.Model):
                                  default=_default_journal)
     # MARZ
     forma_de_pago = fields.Selection([('bank', 'Cheque'),
-                                      ('cash', 'Efectivo'),
+                                      ('cash', 'Varios'),
                                       ('transferencia', 'Transferencia')], string='Forma de Pago', default='bank',
                                      required=True)
     beneficiario_proveedor = fields.Selection(
@@ -849,6 +956,9 @@ class AccountVoucher(models.Model):
         string="Tipo", default='beneficiario', required=True)
     solicitud_id = fields.Many2one('eliterp.payment.request', string="Titular", domain=[('state', '=', 'approved')])
     viatico_id = fields.Many2one('eliterp.provision', string="Titular")
+    # Centro de costo y proyecto
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Centro de Costos')
+    project_id = fields.Many2one('eliterp.project', 'Proyecto')
     # Fin MARZ
     beneficiario = fields.Char('Beneficiario')
     numero_cheque = fields.Char('No. Cheque')
@@ -866,8 +976,14 @@ class AccountVoucher(models.Model):
     mostrar_cuenta = fields.Boolean('Se muestra la Cuenta?', default=False)
     account_saldo = fields.Many2one('account.account', domain=[('tipo_contable', '=', 'movimiento')])
     valor_saldo = fields.Float('saldo')
+
     state = fields.Selection([
         ('draft', 'Borrador'),
         ('cancel', 'Anulado'),
         ('posted', 'Contabilizado'),
         ('proforma', 'Pro-forma')], 'Estado', readonly=True, track_visibility='onchange', copy=False, default='draft')
+    transfer_code = fields.Char('Código de transferencia', readonly=True, states={'draft': [('readonly', False)]})
+    _sql_constraints = [
+        ('transfer_code_uniq', 'unique (bank_id, transfer_code, state)',
+         'El Código de transferencia debe ser única por banco.')
+    ]

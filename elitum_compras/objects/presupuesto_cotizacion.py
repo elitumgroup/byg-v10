@@ -20,6 +20,21 @@ from odoo import api, fields, models, _
 from odoo.tools.misc import formatLang
 
 
+class Invoice(models.Model):
+    _inherit = 'account.invoice'
+
+    @api.onchange('purchase_id')
+    def purchase_order_change(self):
+        """
+        Desde orden de compra se arregla todo
+        :return:
+        """
+        self.account_id = self.purchase_id.partner_id.property_account_payable_id.id
+        self.analytic_account_id = self.purchase_id.analytic_account_id.id if self.purchase_id.analytic_account_id else False
+        self.project_id = self.purchase_id.project_id.id if self.purchase_id.project_id else False
+        return super(Invoice, self).purchase_order_change()
+
+
 class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
@@ -144,4 +159,4 @@ class PurchaseOrder(models.Model):
         ('invoiced', 'Facturado'),
     ], string='Estado de Factura', compute='_get_invoiced', store=True, readonly=True, copy=False, default='no')
     picking_type_id = fields.Many2one('stock.picking.type', 'Deliver To', states=READONLY_STATES, required=True,
-        help="This will determine picking type of incoming shipment")
+                                      help="This will determine picking type of incoming shipment")
